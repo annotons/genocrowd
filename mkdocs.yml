@@ -1,0 +1,37 @@
+site_name: Genocrowd
+repo_url: https://github.com/annotons/genocrowd
+edit_uri: edit/master/docs/
+site_author: Anthony Bretaudeau
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - bash
+    - python
+    - javascript
+markdown_extensions:
+  - admonition
+  - fontawesome_markdown
+  - toc:
+      permalink: true
+      toc_depth: 1
+
+
+nav:
+  - Home: index.md
+  - Genocrowd tutorials:
+    - Overview tutorial: tutorial.md
+    - Contribute: issues.md
+  - Admin :
+    - Deploy Genocrowd: production-deployment.md
+    - Configure: configure.md
+  - Developer guide:
+    - Dev deployment: dev-deployment.md
+    - Contribute: contribute.md
+    - CI: ci.md
+    - Doc: docs.md
+  - Bug Tracker: https://github.com/annotons/genocrowd/issues
+  - Project monitoring: https://github.com/annotons/genocrowd/projects
+
+extra_css: [style.css]

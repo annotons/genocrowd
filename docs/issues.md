@@ -1,0 +1,1 @@
+If you have an idea for a feature to add, or an approach for a bugfix, the best way to communicate with Genocrowd developers is [Github issues](https://github.com/annotons/genocrowd/issues). Browse through existing issues to see if one seems related, or open a new one.

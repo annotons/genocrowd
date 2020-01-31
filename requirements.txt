@@ -1,0 +1,14 @@
+Flask
+Flask-ini
+flask_reverse_proxy_fix
+validate_email
+gunicorn
+requests
+celery
+redis
+watchdog
+pytest>=3.6
+pytest-cov
+flake8
+sentry-sdk[flask]==0.10.2
+configparser
