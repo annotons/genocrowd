@@ -2,7 +2,6 @@
 """
 import os
 
-from genocrowd.libgenocrowd.Database import Database
 from genocrowd.libgenocrowd.Params import Params
 
 
@@ -48,5 +47,3 @@ class Start(Params):
     def create_database(self):
         """Initialize the database file
         """
-        database = Database(self.app, self.session)
-        database.init_database()
