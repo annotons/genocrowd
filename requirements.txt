@@ -12,3 +12,4 @@ pytest-cov
 flake8
 sentry-sdk[flask]==0.10.2
 configparser
+deepdiff
