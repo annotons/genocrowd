@@ -11,10 +11,10 @@ matrix:
       install:
         - pip install -r requirements.txt
         - python setup.py install
-      before_script:
-      - docker pull redis:4.0
-      - sudo docker run -d --name redis -p 6380:6379 -t redis:4.0
-      - sleep 1m
+      #before_script:
+        #- docker pull redis:4.0
+        #- sudo docker run -d --name redis -p 6380:6379 -t redis:4.0
+        #- sleep 1m
       script:
         - flake8 genocrowd tests --ignore=E501,W504
         - pytest --cov=. -vv
