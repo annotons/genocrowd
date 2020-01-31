@@ -10,6 +10,7 @@ watchdog
 pytest>=3.6
 pytest-cov
 flake8
+gitpython
 sentry-sdk[flask]==0.10.2
 configparser
 deepdiff
