@@ -14,15 +14,3 @@ class TestApi(GenocrowdTestCase):
             "errorMessage": '',
             "message": "Welcome to Genocrowd"
         }
-
-        # Log user
-        client.log_user("jdoe")
-
-        response = client.client.get('/api/hello')
-
-        assert response.status_code == 200
-        assert response.json == {
-            "error": False,
-            "errorMessage": '',
-            "message": "Hello John Doe, Welcome to Genocrowd!"
-        }

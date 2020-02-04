@@ -19,9 +19,6 @@ def client():
 
     yield client
 
-    # teardown
-    client.clean()
-
 
 class Client(object):
     """Fixtrue class
