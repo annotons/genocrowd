@@ -23,12 +23,10 @@ export default class About extends Component {
         </p>
         <h4>Usefull links</h4>
         <p>
-          <div>
             <a target="_newtab" rel="noopener noreferrer" href="https://genocrowd.readthedocs.io">Docs</a>
-          </div>
-          <div>
+        </p>
+        <p>
             <a target="_newtab" rel="noopener noreferrer" href="https://github.com/annotons/genocrowd">Github repository</a>
-          </div>
         </p>
         <h4>Need help?</h4>
         <p>

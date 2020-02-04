@@ -11,10 +11,6 @@ export default class ErrorDiv extends Component {
   }
 
   render () {
-    if (this.props.status == 401) {
-      return <Redirect to="/login" />
-    }
-
     if (!this.props.error) {
       return null
     }
