@@ -9,7 +9,6 @@ result_backend = redis://localhost:6379
 
 [genocrowd]
 debug = false
-debug_ttl = false
 
 # If genocrowd is running under a sub path (like http://example.org/genocrowd, subpath is /genocrowd)
 #reverse_proxy_path =
@@ -18,27 +17,7 @@ debug_ttl = false
 footer_message = Welcome to Genocrowd!
 display_commit_hash = false
 
-# data directory
-data_directory = /tmp/genocrowd
 database_path = /tmp/genocrowd/database.db
-
-# Number of line preview (integration)
-npreview = 30
-
-# Authentication
-
-# Salt for user password. Use a random string
-password_salt = btgfdgbtfrsdgbtfsd
-# If true, accout are locked at creation
-default_locked_account = false
-
-# Disabled upload and integration for non admin (for external endpoint exploration)
-disable_integration = false
-
-# User quota
-# Default disk usage quota for user (0 = unlimited, <value>M or <value>G)
-# Exemple: 500M, 1G ...
-quota = 0
 
 # Github URL of the project
 github = https://github.com/annotons/genocrowd

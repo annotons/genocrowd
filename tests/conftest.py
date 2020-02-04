@@ -1,5 +1,4 @@
 """conftest"""
-import tempfile
 import random
 
 from genocrowd.app import create_app, create_celery
@@ -53,13 +52,11 @@ class Client(object):
         """
         # Config
         self.config = config
-        self.dir_path = tempfile.mkdtemp(prefix="askotest_")
         self.db_path = "{}/database.db".format(self.dir_path)
 
         # create app
         self.app = create_app(config=self.config)
         create_celery(self.app)
-        self.app.iniconfig.set('genocrowd', 'data_directory', self.dir_path)
         self.app.iniconfig.set('genocrowd', 'database_path', self.db_path)
 
         # context

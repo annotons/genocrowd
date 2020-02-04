@@ -2,7 +2,6 @@ import git
 import sys
 import traceback
 
-from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 from genocrowd.libgenocrowd.Start import Start
 
 from flask import (Blueprint, current_app, jsonify, session)
@@ -91,14 +90,6 @@ def start():
             "errorMessage": '',
             "config": config
         }
-
-        if 'user' in session:
-            current_app.logger.debug(session["user"]["username"])
-            local_auth = LocalAuth(current_app, session)
-            user = local_auth.get_user(session['user']['username'])
-            session['user'] = user
-            json['config']['user'] = user
-            json['config']['logged'] = True
 
         return jsonify(json)
 
