@@ -13,4 +13,4 @@ genocrowd is a ...
 
 ## Documentation
 
-All documentation, included installation instruction is [here](https://flgenocrowd.readthedocs.io/en/latest/)
+All documentation, included installation instruction is [here](https://genocrowd.readthedocs.io/en/latest/)
