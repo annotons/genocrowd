@@ -8,8 +8,6 @@ BLUEPRINTS : Tuple
 
 import configparser
 
-from genocrowd.api.admin import admin_bp
-from genocrowd.api.auth import auth_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
 
@@ -33,8 +31,6 @@ __all__ = ('create_app', 'create_celery')
 BLUEPRINTS = (
     start_bp,
     view_bp,
-    auth_bp,
-    admin_bp
 )
 
 

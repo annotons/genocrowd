@@ -67,10 +67,10 @@ if [[ ! -f $config_path ]]; then
 fi
 
 # Convert env to ini entry
-printenv | egrep "ASKO_" | while read setting
+printenv | egrep "GENOCROWD_" | while read setting
 do
-    section=$(echo $setting | egrep -o "^ASKO[^=]+" | sed 's/^.\{5\}//g' | cut -d "_" -f 1)
-    key=$(echo $setting | egrep -o "^ASKO[^=]+" | sed 's/^.\{5\}//g' | sed "s/$section\_//g")
+    section=$(echo $setting | egrep -o "^GENOCROWD[^=]+" | sed 's/^.\{5\}//g' | cut -d "_" -f 1)
+    key=$(echo $setting | egrep -o "^GENOCROWD[^=]+" | sed 's/^.\{5\}//g' | sed "s/$section\_//g")
     value=$(echo $setting | egrep -o "=.*$" | sed 's/^=//g')
     # crudini --set ${config_path} "${section}" "${key}" "${value}"
     python3 config_updater.py -p $config_path -s "${section}" -k "${key}" -v "${value}"
