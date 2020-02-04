@@ -38,8 +38,6 @@ class Client(object):
         Description
     db_path : TYPE
         Description
-    dir_path : TYPE
-        Description
     """
 
     def __init__(self, config="config/genocrowd.test.ini"):
@@ -52,7 +50,7 @@ class Client(object):
         """
         # Config
         self.config = config
-        self.db_path = "{}/database.db".format(self.dir_path)
+        self.db_path = "/tmp/database.db"
 
         # create app
         self.app = create_app(config=self.config)
