@@ -3,9 +3,9 @@ Flask-ini
 flask_reverse_proxy_fix
 validate_email
 Flask-PyMongo
-bcrypt
+flask-bcrypt
 Flask-OAuth
-
+flask-jwt-extended
 gunicorn
 requests
 celery

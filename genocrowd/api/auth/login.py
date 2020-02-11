@@ -54,7 +54,7 @@ def login():
         result = jsonify({"result":"No results found"})
    
     return result 
-
+    
 @auth_bp.route('/update', methods=['POST'])
 def update_user():
     return ''
