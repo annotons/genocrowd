@@ -11,6 +11,7 @@
   "version": "0.1.1",
   "description": "...",
   "author": "Anthony Bretaudeau",
+  "main": "sass/mystyles.scss",
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "@babel/preset-react": "^7.8.3",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "bulma": "^0.8.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
@@ -29,6 +31,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-standard": "^4.0.1",
+    "node-sass": "^4.13.1",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   },
@@ -40,6 +43,7 @@
     "axios": "^0.19.2",
     "babel-preset-env": "^1.7.0",
     "bootstrap": "^4.4.1",
+    "bulma": "^0.8.0",
     "css-loader": "^3.4.2",
     "dedent": "^0.7.0",
     "file-loader": "^5.0.2",

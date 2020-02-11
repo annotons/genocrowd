@@ -2,6 +2,10 @@ Flask
 Flask-ini
 flask_reverse_proxy_fix
 validate_email
+Flask-PyMongo
+bcrypt
+Flask-OAuth
+
 gunicorn
 requests
 celery

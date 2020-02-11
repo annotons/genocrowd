@@ -8,7 +8,10 @@ import GenocrowdFooter from './footer'
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-
+import Welcome from './routes/welcome/welcome'
+import Signup from './routes/login/signup'
+import Login from './routes/login/login'
+import Homepage from './routes/account/homepage'
 export default class Routes extends Component {
 
   constructor (props) {
@@ -48,7 +51,12 @@ export default class Routes extends Component {
           {redirectRoot}
           <GenocrowdNavbar waitForStart={this.state.waiting} config={this.state.config} />
           <Switch>
-            <Route path="/" exact component={() => (<About />)} />
+            <Route path="/" exact component={() => (<Welcome />)} />
+            <Route path="/signup" exact component={() => (<Signup config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/login" exact component={() => (<Login config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/homepage" exact component={() => (<Homepage config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+
+
           </Switch>
           <br />
           <br />
