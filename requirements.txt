@@ -6,6 +6,8 @@ Flask-PyMongo
 flask-bcrypt
 Flask-OAuth
 flask-jwt-extended
+Werkzeug==0.16
+PyYAML>=3.10
 gunicorn
 requests
 celery

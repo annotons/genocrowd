@@ -57,7 +57,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     Flask
         Genocrowd Flask application
     """
-    print('yo')
+   
     conf = configparser.ConfigParser()
     conf.read(config)
 

@@ -11,6 +11,8 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/')
 def signup():
     
     users = ca.mongo.db.users 
+    first_name = request.get_json()['first_name']
+    last_name = request.get_json()['last_name']
     username = request.get_json()['username']
     email = request.get_json()['email']
     password = ca.bcrypt.generate_password_hash(request.get_json()['password']).decode('utf-8')
