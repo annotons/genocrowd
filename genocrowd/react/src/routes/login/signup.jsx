@@ -56,8 +56,7 @@ export default class Signup extends Component {
 
   validateForm () {
     return (
-      this.state.first_name.length > 0 &&
-      this.state.last_name.length > 0 &&
+      
       this.validateEmail(this.state.email) &&
       this.state.username.length > 0 &&
       this.state.password.length > 0 &&
@@ -68,8 +67,6 @@ export default class Signup extends Component {
   handleSubmit (event) {
     let requestUrl = '/api/auth/signup'
     let data = {
-      first_name: this.state.first_name,
-      last_name: this.state.last_name,
       username: this.state.username,
       email: this.state.email,
       password: this.state.password,
@@ -83,7 +80,8 @@ export default class Signup extends Component {
           isLoading: false,
           error: response.data.error,
           errorMessage: response.data.errorMessage,
-          status: response.status
+          status: response.status,
+          Redirect: true
         })
         if (!this.state.error) {
           this.props.setStateNavbar({
@@ -101,8 +99,6 @@ export default class Signup extends Component {
           errorMessage: error.response.data.errorMessage,
           status: error.response.status,
           success: !response.data.error,
-          first_name: '',
-          last_name: '',
           username: '',
           email: '',
           password: '',
@@ -119,7 +115,7 @@ export default class Signup extends Component {
   }
 
   render () {
-    let html = <Redirect to="/" />
+    let html = <Redirect to="/login" />
     if (!this.props.config.logged) {
       html = (
         <div className="container">
@@ -127,14 +123,6 @@ export default class Signup extends Component {
           <hr />
           <div className="col-md-4">
             <Form onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <Label for="first_name">First name</Label>
-                <Input type="text" name="first_name" id="first_name" placeholder="first name" value={this.state.first_name} onChange={this.handleChangeFirst_name} />
-              </FormGroup>
-              <FormGroup>
-                <Label for="last_name">Last name</Label>
-                <Input type="text" name="last_name" id="last_name" placeholder="last name" value={this.state.last_name} onChange={this.handleChangeLname} />
-              </FormGroup>
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input type="email" name="email" id="email" placeholder="email" value={this.state.email} onChange={this.handleChange} />

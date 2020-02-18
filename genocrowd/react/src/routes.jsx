@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Welcome from './routes/welcome/welcome'
 import Signup from './routes/login/signup'
 import Login from './routes/login/login'
-import Homepage from './routes/account/homepage'
+import Dashboard from './routes/account/dashboard'
 export default class Routes extends Component {
 
   constructor (props) {
@@ -54,7 +54,7 @@ export default class Routes extends Component {
             <Route path="/" exact component={() => (<Welcome />)} />
             <Route path="/signup" exact component={() => (<Signup config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/login" exact component={() => (<Login config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
-            <Route path="/homepage" exact component={() => (<Homepage config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/dashboard" exact component={() => (<Dashboard config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
 
 
           </Switch>

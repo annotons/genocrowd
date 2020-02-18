@@ -11,15 +11,17 @@ export default class Login extends Component {
     super(props)
     this.state = { isLoading: true,
       error: false,
-      errorMessage: [],
+      errorMessage: '',
       email: '',
       password: '',
-      logged: false
+      logged: false,
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancelRequest = null
+    this.logged = sessionStorage.getItem('session') === 'true'
   }
+  
 
   handleChange (event) {
     this.setState({
@@ -41,14 +43,17 @@ export default class Login extends Component {
     axios.post(requestUrl, data, { baseURL: this.props.config.proxyPath, cancelToken: new axios.CancelToken((c) => { this.cancelRequest = c }) })
       .then(response => {
         console.log(requestUrl, response.data)
+        console.log(response.data.errorMessage)
         this.setState({
           isLoading: false,
           error: response.data.error,
           errorMessage: response.data.errorMessage,
           status: response.status,
           user: response.data.user,
-          logged: !response.data.error
+          logged: !response.data.error,
+          redirect: true
         })
+        
         if (!this.state.error) {
           this.props.setStateNavbar({
             config: update(this.props.config, {
@@ -57,8 +62,8 @@ export default class Login extends Component {
               
             })
           })
-          window.location.replace("http://127.0.0.1:5000/homepage");
-        
+          
+          
         
         }
       })
@@ -73,15 +78,18 @@ export default class Login extends Component {
       })
     event.preventDefault()
   }
-
+  
   componentWillUnmount () {
     if (this.cancelRequest) {
       this.cancelRequest()
     }
+    
+    
+    
   }
 
   render () {
-    let html = <Redirect to="/" />
+    let html = <Redirect to="/dashboard" />
     if (!this.state.logged) {
       html = (
         <div className="container">
@@ -100,6 +108,7 @@ export default class Login extends Component {
               <Button disabled={!this.validateForm()}>Login</Button>
               <p>(Or <Link to="/signup"> signup</Link>)</p>
             </Form>
+            
             <ErrorDiv status={this.state.status} error={this.state.error} errorMessage={this.state.errorMessage} />
           </div>
         </div>
