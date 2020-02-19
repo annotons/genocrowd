@@ -21,11 +21,12 @@ export default class GenocrowdNavbar extends Component {
   render () {
     let links
     let aboutLink
-
+    let genoLink
     // if wait is false
     if (!this.props.waitForStart) {
-      askLink = (
-        <NavItem><Link className="nav-link" to="/"><i className="fas fa-play"></i> Ask!</Link></NavItem>
+      
+      genoLink = (
+        <NavItem><Link className="nav-link" to="/"><i className="fas fa-play"></i> GenoHome</Link></NavItem>
       )
       links = (
         <>
@@ -35,7 +36,9 @@ export default class GenocrowdNavbar extends Component {
 
         </>
       )
+
       if (this.props.config.logged) {
+        console.log('here')
         let adminLinks
         if (this.props.config.user.admin) {
           adminLinks = (
@@ -49,7 +52,7 @@ export default class GenocrowdNavbar extends Component {
           integrationLinks = (
             <>
             <NavItem><Link className="nav-link" to="/files"><i className="fas fa-file"></i> Files</Link></NavItem>
-            <NavItem><Link className="nav-link" to="/datasets"><i className="fas fa-database"></i> Datasets</Link></NavItem>
+            <NavItem><Link className="nav-link" to="/dashboard"><i className="fas fa-dashboard"></i> dashboard</Link></NavItem>
             </>
           )
         }

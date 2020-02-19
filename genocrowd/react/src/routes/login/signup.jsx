@@ -12,7 +12,7 @@ export default class Signup extends Component {
     super(props)
     this.state = { isLoading: true,
       error: false,
-      errorMessage: [],
+      errorMessage: '',
       first_name: '',
       last_name: '',
       username: '',

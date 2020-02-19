@@ -19,7 +19,6 @@ export default class Login extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancelRequest = null
-    this.logged = sessionStorage.getItem('session') === 'true'
   }
   
 
@@ -53,8 +52,9 @@ export default class Login extends Component {
           logged: !response.data.error,
           redirect: true
         })
-        
-        if (!this.state.error) {
+        console.log(this.state.error)
+        if (this.state.error === false) {
+          console.log("updating navbar")
           this.props.setStateNavbar({
             config: update(this.props.config, {
               user: {$set: this.state.user},
@@ -89,7 +89,7 @@ export default class Login extends Component {
   }
 
   render () {
-    let html = <Redirect to="/dashboard" />
+    let html = <Redirect to="/" />
     if (!this.state.logged) {
       html = (
         <div className="container">

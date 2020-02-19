@@ -17,7 +17,7 @@ export default class Routes extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      waiting: true,
+      waiting: false,
       error: false,
       errorMessage: null,
       config: {
@@ -55,6 +55,7 @@ export default class Routes extends Component {
             <Route path="/signup" exact component={() => (<Signup config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/login" exact component={() => (<Login config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/dashboard" exact component={() => (<Dashboard config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/about" exact component={() => (<About config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
 
 
           </Switch>
