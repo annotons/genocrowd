@@ -7,30 +7,36 @@ BLUEPRINTS : Tuple
 """
 
 import configparser
+from genocrowd.api.auth.login import auth_bp
 
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
+
 
 from celery import Celery
 from kombu import Exchange, Queue
 
 from flask import Flask
 
+from flask_bcrypt import Bcrypt
 from flask_ini import FlaskIni
-
+from flask import session
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 from pkg_resources import get_distribution
-
+from flask_pymongo import PyMongo
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
+
+
 
 __all__ = ('create_app', 'create_celery')
 
 BLUEPRINTS = (
     start_bp,
     view_bp,
+    auth_bp,
 )
 
 
@@ -51,6 +57,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     Flask
         Genocrowd Flask application
     """
+   
     conf = configparser.ConfigParser()
     conf.read(config)
 
@@ -70,9 +77,12 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         )
 
     app = Flask(app_name, static_folder='static', template_folder='templates')
-
+    app.config['MONGO_DBNAME'] = 'Genocrowd'
+    app.config["MONGO_URI"] = "mongodb://localhost:27017/Genocrowd"
+    app.mongo = PyMongo(app)
+    app.bcrypt = Bcrypt(app)
+    
     app.iniconfig = FlaskIni()
-
     with app.app_context():
 
         app.iniconfig.read(config)
@@ -91,7 +101,6 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
 
     if proxy_path:
         ReverseProxyPrefixFix(app)
-
     return app
 
 

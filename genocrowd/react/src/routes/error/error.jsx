@@ -44,9 +44,10 @@ export default class ErrorDiv extends Component {
         </Alert>
       )
     } else {
+      console.log(this.props.errorMessage)
       error = (
         <Alert color="danger">
-          <div><i className="fas fa-exclamation-circle"></i> {messages[this.props.status.toString()]}</div>
+          <div><i className="fas fa-exclamation-circle"></i> {this.props.errorMessage}</div>
         </Alert>
       )
     }
