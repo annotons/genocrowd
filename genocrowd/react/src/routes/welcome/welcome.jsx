@@ -6,27 +6,50 @@ import ErrorDiv from '../error/error'
 import WaitingDiv from '../../components/waiting'
 import update from 'react-addons-update'
 import PropTypes from 'prop-types'
+import GenocrowdNavbar from '../../navbar'
 export default class Welcome extends Component {
   constructor (props) {
     super(props)
+    
   }
 
+  componentDidMount () {
+
+    if (this.props.config.user) {
+      console.log('wut')
+      console.log(this.props.config)
+      }
+    else {
+      axios.post('/api/auth/check')
+      .then(Response => {
+        this.props.setStateNavbar({
+          config: update(this.props.config,{
+            user: {$set: Response.data.user},
+            logged: {$set: !Response.data.error}
+          })
+        })
+
+      })
+    }
+    }
   render () {
     return (
       <div className="container">
         <h2> Welcome to Genocrowd!</h2>
+        
         <hr />
-        <h4>
-            <p>
-                <a target="_newtab" rel="noopener noreferrer" href="./login">LOGIN</a>
-            </p>
-            <p>
-                <a target="_newtab" rel="noopener noreferrer" href="./signup">REGISTER</a>
-            </p>
-        </h4>
+        
        
         
       </div>
     )
   }
 }
+
+
+Welcome.propTypes = {
+  waitForStart: PropTypes.bool,
+  config: PropTypes.object,
+  setStateNavbar: PropTypes.func
+}
+

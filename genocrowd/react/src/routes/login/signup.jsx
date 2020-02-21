@@ -13,35 +13,20 @@ export default class Signup extends Component {
     this.state = { isLoading: true,
       error: false,
       errorMessage: '',
-      first_name: '',
-      last_name: '',
       username: '',
       email: '',
       password: '',
       passwordconf: '',
-      usernameFirstChar: '',
-      usernameLastChars: ''
+      
     }
     this.handleChange = this.handleChange.bind(this)
-    this.handleChangeFirst_name = this.handleChangeFirst_name.bind(this)
-    this.handleChangeLname = this.handleChangeLname.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.cancelRequest
   }
 
-  handleChangeFirst_name (event) {
-    this.setState({
-      username: event.target.value.charAt(0).toLowerCase(),
-      first_name: event.target.value
-    })
-  }
+  
 
-  handleChangeLname (event) {
-    this.setState({
-      username: this.state.first_name.charAt(0).toLowerCase() + event.target.value.toLowerCase(),
-      last_name: event.target.value
-    })
-  }
+  
 
   handleChange (event) {
     this.setState({
@@ -115,7 +100,7 @@ export default class Signup extends Component {
   }
 
   render () {
-    let html = <Redirect to="/login" />
+    let html = <Redirect to="/dashboard" />
     if (!this.props.config.logged) {
       html = (
         <div className="container">

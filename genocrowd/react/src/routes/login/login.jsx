@@ -12,7 +12,7 @@ export default class Login extends Component {
     this.state = { isLoading: true,
       error: false,
       errorMessage: '',
-      email: '',
+      login: '',
       password: '',
       logged: false,
     }
@@ -29,13 +29,13 @@ export default class Login extends Component {
   }
 
   validateForm () {
-    return this.state.email.length > 0 && this.state.password.length > 0
+    return this.state.login.length > 0 && this.state.password.length > 0
   }
 
   handleSubmit (event) {
     let requestUrl = '/api/auth/login'
     let data = {
-      email: this.state.email,
+      login: this.state.login,
       password: this.state.password
     }
 
@@ -89,7 +89,7 @@ export default class Login extends Component {
   }
 
   render () {
-    let html = <Redirect to="/" />
+    let html = <Redirect to="/dashboard" />
     if (!this.state.logged) {
       html = (
         <div className="container">
@@ -98,8 +98,8 @@ export default class Login extends Component {
           <div className="col-md-4">
             <Form onSubmit={this.handleSubmit}>
               <FormGroup>
-                <Label for="email">Email</Label>
-                <Input type="text" name="email" id="email" placeholder="email" value={this.state.login} onChange={this.handleChange} />
+                <Label for="login">Email or Username</Label>
+                <Input type="text" name="login" id="login" placeholder="login" value={this.state.login} onChange={this.handleChange} />
               </FormGroup>
               <FormGroup>
                 <Label for="password">Password</Label>

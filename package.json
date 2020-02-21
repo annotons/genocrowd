@@ -18,6 +18,7 @@
     "url": "https://github.com/annotons/genocrowd.git"
   },
   "devDependencies": {
+    "react-bootstrap": "1.0.0-beta.16",
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",

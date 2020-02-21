@@ -84,7 +84,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     
     app.iniconfig = FlaskIni()
     with app.app_context():
-
+        
         app.iniconfig.read(config)
         proxy_path = None
         try:

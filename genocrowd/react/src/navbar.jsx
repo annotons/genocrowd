@@ -38,7 +38,7 @@ export default class GenocrowdNavbar extends Component {
       )
 
       if (this.props.config.logged) {
-        console.log('here')
+        
         let adminLinks
         if (this.props.config.user.admin) {
           adminLinks = (
@@ -51,14 +51,14 @@ export default class GenocrowdNavbar extends Component {
         if (!this.props.config.disableIntegration || this.props.config.user.admin) {
           integrationLinks = (
             <>
-            <NavItem><Link className="nav-link" to="/files"><i className="fas fa-file"></i> Files</Link></NavItem>
-            <NavItem><Link className="nav-link" to="/dashboard"><i className="fas fa-dashboard"></i> dashboard</Link></NavItem>
+            {/* <NavItem><Link className="nav-link" to="/files"><i className="fas fa-file"></i> Files</Link></NavItem> */}
+            <NavItem><Link className="nav-link" to="/dashboard"><i className="fas fa-home"></i> Dashboard</Link></NavItem>
             </>
           )
         }
         links = (
           <>
-          <NavItem><Link className="nav-link" to="/results"><i className="fas fa-tasks"></i> Results</Link></NavItem>
+          {/* <NavItem><Link className="nav-link" to="/results"><i className="fas fa-tasks"></i> Results</Link></NavItem> */}
           {integrationLinks}
           <NavItem><Link className="nav-link" to="/about"><i className="fas fa-info"></i> About</Link></NavItem>
           <NavItem>
@@ -91,7 +91,7 @@ export default class GenocrowdNavbar extends Component {
       <div>
         <Navbar color="dark" dark expand="md">
           <div className="container">
-            <NavbarBrand href={this.props.config.proxyPath == "/" ? "/" : this.props.config.proxyPath + "/"}>Genocrowd</NavbarBrand>
+            <NavbarBrand href={this.props.config.proxyPath == "/" ? "/" : this.props.config.proxyPath + "/"}> <img src="../static/logo/logoGenocrowd.png"width= {120} height={30} mode='fit'/></NavbarBrand>
             <Collapse navbar>
               <Nav className="ml-auto" navbar>
                 {links}

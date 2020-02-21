@@ -53,9 +53,14 @@ def start():
         and a footer message
     """
     try:
-        starter = Start(current_app, session)
-        starter.start()
-
+        #session.clear()
+        if 'user' in session:
+            user = session['user']
+            logged = True
+            print(user)
+        else:
+            user = {}
+            logged = False
         # Get commmit hash
         sha = None
         if current_app.iniconfig.getboolean('genocrowd', 'display_commit_hash'):
@@ -77,12 +82,9 @@ def start():
             "version": get_distribution('genocrowd').version,
             "commit": sha,
             "gitUrl": current_app.iniconfig.get('genocrowd', 'github'),
-            "disableIntegration": current_app.iniconfig.getboolean('genocrowd', 'disable_integration'),
-            "prefix": current_app.iniconfig.get('triplestore', 'prefix'),
-            "namespace": current_app.iniconfig.get('triplestore', 'namespace'),
             "proxyPath": proxy_path,
-            "user": {},
-            "logged": False
+            "user": user,
+            "logged": logged
         }
 
         json = {

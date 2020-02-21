@@ -5,12 +5,12 @@ import update from 'immutability-helper'
 import PropTypes from 'prop-types'
 
 
-export default class logout extends Component {
+export default class Logout extends Component {
   constructor (props) {
     super(props)
     this.cancelRequest
   }
-
+  
   componentDidMount () {
     let requestUrl = '/api/auth/logout'
     axios.get(requestUrl, { baseURL: this.props.config.proxyPath })
@@ -33,7 +33,7 @@ export default class logout extends Component {
   }
 }
 
-logout.propTypes = {
+Logout.propTypes = {
   setStateNavbar: PropTypes.func,
   config: PropTypes.object
 }

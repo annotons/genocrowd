@@ -8,6 +8,7 @@ Flask-OAuth
 flask-jwt-extended
 Werkzeug==0.16
 PyYAML>=3.10
+argh>=0.24.1
 gunicorn
 requests
 celery
