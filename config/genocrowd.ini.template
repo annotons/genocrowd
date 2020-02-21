@@ -19,6 +19,9 @@ display_commit_hash = false
 
 database_path = /tmp/genocrowd/database.db
 
+# Disabled upload and integration for non admin (for external endpoint exploration)
+disable_integration = false
+
 # Github URL of the project
 github = https://github.com/annotons/genocrowd
 

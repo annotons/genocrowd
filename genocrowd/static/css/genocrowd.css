@@ -1,0 +1,156 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 30px;
+    line-height: 30px; /* Vertically center the text there */
+    background-color: #343a40;
+    margin-right: auto;
+    margin-left: auto;
+    color: rgba(255,255,255,.75);
+  }
+  
+  .footer-right {
+    float: right;
+  }
+  
+  i.inactive {
+    color: #b3b3b3;
+  }
+  
+  .footer-left {
+    float: left;
+  }
+  
+  .right {
+    float: right;
+  }
+  
+  .visibility-icon {
+    padding-right: 5px;
+  }
+  
+  .center {
+    position:absolute;
+    top:50%;
+    left:50%; 
+  }
+  
+  .asko-table-div {
+    width: auto;
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 350px;
+  }
+  
+  .asko-table-height-div {
+    width: auto;
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  
+  .asko-table-wrapper {
+    width: auto;
+    white-space: nowrap;
+  }
+  
+  .asko-table {
+    table-layout: auto !important;
+  }
+  
+  .center-div {
+    text-align: center;
+  }
+  
+  .resizable {
+      overflow: auto;
+      resize: both;
+      height: 400px;
+      width: auto;
+      background-position: 0% 0%;
+  }
+  
+  .attr-select {
+    resize: vertical;
+  }
+  
+  div.startpoints-div {
+      height: 300px;
+      /*width: 30%;*/
+      overflow-y: scroll;
+      border:1px solid #ccc;
+      border-radius: 4px;
+      border-top-style: none;
+  }
+  
+  div.startpoints-filter-div {
+      /*width: 30%;*/
+  }
+  
+  label.startpoint-label {
+      cursor: pointer;
+      display: block;
+      margin-left: 5px;
+  }
+  
+  .startpoint-radio {
+      display:none;
+  }
+  
+  input[type="radio"].startpoint-radio:checked+label{
+      background-color: #ccc;
+  }
+  
+  table.startpoint-table {
+    table-layout: fixed;
+    width: 100%;
+    /*border-collapse: collapse;*/
+  }
+  
+  /*.startpoint-table {
+    border: 1px solid hotpink;
+  }*/
+  
+  td.startpoint-table.cell1 {
+    width: 60%;
+  }
+  
+  td.startpoint-table.cell2 {
+    width: 30%;
+  }
+  
+  td.startpoint-table.cell3 {
+    width: 10%;
+  }
+  
+  .icon-invisible {
+      visibility: hidden;
+  }
+  
+  div.attribute-box {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 10px;
+  
+    border: 1px solid #c5c5c5;
+    background: #f6f6f6;
+    font-weight: normal;
+    color: #454545;
+  }
+  
+  label.attr-label {
+    font-weight: 700;
+  }
+  
+  div.attr-icons {
+    float: right;
+  }
+  
+  i.attr-icon {
+    padding-right: 8px;
+    cursor: pointer;
+  }
+  
