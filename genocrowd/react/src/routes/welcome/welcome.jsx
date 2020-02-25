@@ -16,7 +16,7 @@ export default class Welcome extends Component {
   componentDidMount () {
 
     if (this.props.config.user) {
-      console.log('wut')
+      
       console.log(this.props.config)
       }
     else {

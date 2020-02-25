@@ -14,6 +14,8 @@ import Login from './routes/login/login'
 import Dashboard from './routes/account/dashboard'
 import Logout from './routes/login/logout'
 import Account from './routes/account/account'
+import DeleteAccount from './routes/account/delete_account'
+import Admin from './routes/admin/admin'
 export default class Routes extends Component {
 
   constructor (props) {
@@ -88,6 +90,8 @@ export default class Routes extends Component {
             <Route path="/about" exact component={() => (<About config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/logout" exact component={() => (<Logout config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/account" exact component={() => (<Account config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/delete" exact component={() => (<DeleteAccount config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/admin" exact component={() => (<Admin config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
 
 
           </Switch>

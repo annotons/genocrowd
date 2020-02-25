@@ -57,7 +57,6 @@ def start():
         if 'user' in session:
             user = session['user']
             logged = True
-            print(user)
         else:
             user = {}
             logged = False

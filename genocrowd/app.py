@@ -8,11 +8,10 @@ BLUEPRINTS : Tuple
 
 import configparser
 from genocrowd.api.auth.login import auth_bp
-
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
-
-
+from genocrowd.api.admin.admin import admin_bp
+from datetime import datetime
 from celery import Celery
 from kombu import Exchange, Queue
 
@@ -30,13 +29,13 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
 
 
-
 __all__ = ('create_app', 'create_celery')
 
 BLUEPRINTS = (
     start_bp,
     view_bp,
     auth_bp,
+    admin_bp,
 )
 
 
@@ -57,7 +56,6 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     Flask
         Genocrowd Flask application
     """
-   
     conf = configparser.ConfigParser()
     conf.read(config)
 
@@ -80,11 +78,22 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     app.config['MONGO_DBNAME'] = 'Genocrowd'
     app.config["MONGO_URI"] = "mongodb://localhost:27017/Genocrowd"
     app.mongo = PyMongo(app)
+    users = app.mongo.db.users
     app.bcrypt = Bcrypt(app)
-    
     app.iniconfig = FlaskIni()
+    password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
+    created = datetime.utcnow()
+    if not users.find_one({'username': 'admin'}):
+        users.insert({
+            'username': 'admin',
+            'email': 'admin@admin.fr',
+            'password': password,
+            'created': created,
+            'isAdmin': True,
+            'isExternal': False,
+            'blocked': False
+        })
     with app.app_context():
-        
         app.iniconfig.read(config)
         proxy_path = None
         try:
