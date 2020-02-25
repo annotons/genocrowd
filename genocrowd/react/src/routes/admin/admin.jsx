@@ -194,10 +194,10 @@ export default class Admin extends Component {
       <div className="container">
         <h2>Admin</h2>
         <hr />
-        <div className=".asko-table-height-div">
+        <div className=".geno-table-height-div">
           <BootstrapTable
-            classes="asko-table"
-            wrapperClasses="asko-table-wrapper"
+            classes="geno-table"
+            wrapperClasses="geno-table-wrapper"
             bootstrap4
             keyField='id'
             data={this.state.users}

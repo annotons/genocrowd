@@ -37,7 +37,7 @@
     left:50%; 
   }
   
-  .asko-table-div {
+  .-table-div {
     width: auto;
     display: block;
     overflow-x: auto;
@@ -45,19 +45,19 @@
     max-height: 350px;
   }
   
-  .asko-table-height-div {
+  .-table-height-div {
     width: auto;
     display: block;
     overflow-x: auto;
     overflow-y: auto;
   }
   
-  .asko-table-wrapper {
+  .-table-wrapper {
     width: auto;
     white-space: nowrap;
   }
   
-  .asko-table {
+  .-table {
     table-layout: auto !important;
   }
   
@@ -154,3 +154,7 @@
     cursor: pointer;
   }
   
+
+  .tile {
+    border-style: none;
+  }

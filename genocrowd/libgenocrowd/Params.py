@@ -15,7 +15,7 @@ class Params(object):
     session :
         flask session
     settings :
-        askomics settings (from ini)
+        genocrowd settings (from ini)
     """
 
     def __init__(self, app, session):

@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Button, Form, FormGroup, Label, Input, Alert, Navbar, Row, Container, Col, Table, Media, Jumbotron} from 'reactstrap'
+import {Button, CardImg, CardText, CardBody,
+  CardTitle, CardSubtitle ,Form, FormGroup, Label, Input, Alert, Navbar, Spinner,Row, Container, Col, Table, Media, Jumbotron, Card} from 'reactstrap'
 import { Redirect} from 'react-router-dom'
 import ErrorDiv from '../error/error'
 import WaitingDiv from '../../components/waiting'
 import update from 'react-addons-update'
 import PropTypes from 'prop-types'
 import Image from 'react-bootstrap/Image'
+import Identicon from 'react-identicons';
 export default class Dashboard extends Component {
   constructor (props) {
     super(props)
@@ -20,10 +22,33 @@ export default class Dashboard extends Component {
     let html = (
       <Container>
       <Row>
-        <Col xs>
-          <Image src="../static/logo/2-2-happy-person-free-download-png.png" roundedCircle />
-          </Col>
-        <Col style={{ height: 20}}> {this.props.config.user.username}</Col>   
+        
+        <Col width={50} xs>
+          <Card width= {50} body outline color="secondary">
+            <CardBody className="text-center tile">
+              <Identicon size={100} string={this.props.config.user.username}/>
+            </CardBody>
+            
+          </Card>
+        </Col>
+        <Col width={50} xs> 
+          <Card body outline color="secondary">
+            <CardBody className="text-center tile ">
+              {this.props.config.user.username}            
+            </CardBody>
+          </Card>
+        </Col>   
+      </Row>
+      
+      <Row>
+      <Jumbotron fluid >
+        <Container fluid>
+          <h1 className="display-4">Statistics</h1>
+          <h2 className="display-5">Number of Annotated genes</h2>
+          <p className="lead">57</p>
+        </Container>
+      </Jumbotron>
+        
       </Row>
       <Row>
         <Col>
