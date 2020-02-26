@@ -13,15 +13,13 @@ matrix:
         - python setup.py install
       before_script:
         - docker pull mongo:4.2-bionic
-        - dockerId=$(sudo docker run -d --name mongo -t mongo:4.2-bionic)
+        - dockerId=$(sudo docker run -d --name mongo -t -p 27017:27017 mongo:4.2-bionic)
         - sleep 1m
         - docker logs $dockerId
       script:
         - flake8 genocrowd tests --ignore=E501,W504
         - pytest --cov=. -vv
-        - docker logs $dockerId
-        - sleep 2m
-        - docker logs $dockerId
+        
 
     - language: python
       python:
@@ -35,7 +33,7 @@ matrix:
         - python setup.py install
       before_script:
         - docker pull mongo:4.2-bionic
-        - sudo docker run -d --name mongo -t mongo:4.2-bionic
+        - sudo docker run -d --name mongo -t -p 27017:27017 mongo:4.2-bionic
         - sleep 1m
       script:
         - flake8 genocrowd tests --ignore=E501,W504
