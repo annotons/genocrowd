@@ -153,11 +153,9 @@ class LocalAuth(Params):
             else:
                 error = True
                 error_message = "Invalid password"
-            
         else:
             error = True
             error_message = "User not found"
-        
 
         return {'error': error, 'errorMessage': error_message, 'user': user}
 
@@ -262,13 +260,11 @@ class LocalAuth(Params):
         list
             All user info
         """
-        
         userCursor = list(self.app.mongo.db.users.find({}))
         userList = []
         for document in userCursor:
             document['_id'] = str(document['_id'])
             userList.append(document)
-            
         return userList
 
     def set_admin(self, new_status, username):

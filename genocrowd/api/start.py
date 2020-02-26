@@ -2,7 +2,6 @@ import git
 import sys
 import traceback
 
-from genocrowd.libgenocrowd.Start import Start
 
 from flask import (Blueprint, current_app, jsonify, session)
 
@@ -24,8 +23,7 @@ def hello():
         message: a welcome message
     """
     try:
-        message = "Welcome to Genocrowd" if 'user' not in session else "Hello {} {}, Welcome to Genocrowd!".format(
-            session["user"]["fname"], session["user"]["lname"])
+        message = "Welcome to Genocrowd" if 'user' not in session else "Hello %s, Welcome to Genocrowd!" % session["user"]["username"]
 
     except Exception as e:
         traceback.print_exc(file=sys.stdout)
@@ -53,7 +51,7 @@ def start():
         and a footer message
     """
     try:
-        #session.clear()
+        # session.clear()
         if 'user' in session:
             user = session['user']
             logged = True

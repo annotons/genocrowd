@@ -50,9 +50,9 @@ class Client(object):
         self.db_path = "/tmp/database.db"
 
         # create app
-        self.app = create_app(config=self.config)
-        create_celery(self.app)
-        self.app.iniconfig.set('genocrowd', 'database_path', self.db_path)
+        # self.app = create_app(config=self.config)
+        # create_celery(self.app)
+        # self.app.iniconfig.set('genocrowd', 'database_path', self.db_path)
 
         # context
         self.ctx = self.app.app_context()

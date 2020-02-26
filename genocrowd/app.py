@@ -19,7 +19,7 @@ from flask import Flask
 
 from flask_bcrypt import Bcrypt
 from flask_ini import FlaskIni
-from flask import session
+
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 from pkg_resources import get_distribution
