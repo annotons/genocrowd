@@ -19,6 +19,9 @@ matrix:
       script:
         - flake8 genocrowd tests --ignore=E501,W504
         - pytest --cov=. -vv
+        - docker logs $dockerId
+        - sleep 2m
+        - docker logs $dockerId
 
     - language: python
       python:
