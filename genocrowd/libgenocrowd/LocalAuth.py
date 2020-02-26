@@ -21,6 +21,7 @@ class LocalAuth(Params):
             Genocrowd session, contain the user
         """
         Params.__init__(self, app, session)
+        self.users = self.app.mongo.db["users"]
 
     def check_inputs(self, inputs):
         """Check user inputs
@@ -73,8 +74,7 @@ class LocalAuth(Params):
         bool
             True if the user exist
         """
-        users = self.app.mongo.db.users
-        response = users.find_one({'username': username})
+        response = self.users.find_one({'username': username})
         if response:
             return True
         else:
@@ -94,22 +94,22 @@ class LocalAuth(Params):
         bool
             True if the email exist
         """
-        users = self.app.mongo.db.users
-        response = users.find_one({'email': email})
+        
+        response = self.users.find_one({'email': email})
         if response:
             return True
         else:
             return False
 
     def get_number_of_users(self):
-        """get the number of users in the DB
+        """get the number of self.users in the DB
 
         Returns
         -------
         int
             Number of user in the Database
         """
-        return self.app.mongo.db.users.count_documents()
+        return self.users.count_documents()
 
     def authenticate_user(self, data):
         """
@@ -127,11 +127,13 @@ class LocalAuth(Params):
         """
         login = data['login']
         password = data['password']
-        users = self.app.mongo.db.users
+        
         user = {}
         error_message = ''
+        print(True)
         if self.is_username_in_db(login):
-            response = users.find_one({'username': login})
+            
+            response = self.users.find_one({'username': login})
 
             if self.app.bcrypt.check_password_hash(
                     response['password'], password):
@@ -143,7 +145,7 @@ class LocalAuth(Params):
                 error_message = "Invalid password"
 
         elif self.is_email_in_db(login):
-            response = users.find_one({'email': login})
+            response = self.users.find_one({'email': login})
             if self.app.bcrypt.check_password_hash(
                     response['password'], password):
                 error = False
@@ -174,7 +176,7 @@ class LocalAuth(Params):
         dict
             error, error message and updated user
         """
-        users = self.app.mongo.db.users
+        
         error = False
         error_message = ''
         username = data['newUsername']
@@ -184,7 +186,7 @@ class LocalAuth(Params):
         if len(email) == 0:
             email = user['email']
         bson = BSONObjectIdConverter(BaseConverter)
-        updated_user = users.find_one_and_update({
+        updated_user = self.users.find_one_and_update({
             '_id': bson.to_python(user['_id'])}, {
                 '$set': {
                     'username': username,
@@ -215,7 +217,6 @@ class LocalAuth(Params):
         error = False
         error_message = ''
         updated_user = {}
-        users = self.app.mongo.db.users
 
         # check if new passwords are identicals
         password_identical = (inputs['newPassword'] == inputs['confPassword'])
@@ -232,7 +233,7 @@ class LocalAuth(Params):
                     password = self.app.bcrypt.generate_password_hash(
                         inputs['newPassword']).decode('utf-8')
                     bson = BSONObjectIdConverter(BaseConverter)
-                    updated_user = users.find_one_and_update({
+                    updated_user = self.users.find_one_and_update({
                         '_id': bson.to_python(user['_id'])}, {
                             '$set': {
                                 'password': password
@@ -260,7 +261,7 @@ class LocalAuth(Params):
         list
             All user info
         """
-        userCursor = list(self.app.mongo.db.users.find({}))
+        userCursor = list(self.users.find({}))
         userList = []
         for document in userCursor:
             document['_id'] = str(document['_id'])
@@ -277,8 +278,7 @@ class LocalAuth(Params):
         username : string
             The concerned username
         """
-        users = self.app.mongo.db.users
-        users.find_one_and_update({
+        self.users.find_one_and_update({
             'username': username}, {
                 '$set': {
                     'isAdmin': new_status
@@ -294,8 +294,7 @@ class LocalAuth(Params):
         username : string
             The concerned username
         """
-        users = self.app.mongo.db.users
-        users.find_one_and_update({
+        self.users.find_one_and_update({
             'username': username}, {
                 '$set': {
                     'blocked': new_status
