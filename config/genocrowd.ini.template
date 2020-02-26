@@ -2,6 +2,8 @@
 debug = false
 secret_key = genocrowd_secret_key
 session_timeout = 60
+mongo_dbname = Genocrowd
+mongo_uri = mongodb://localhost:27017/Genocrowd
 
 [celery]
 broker_url = redis://localhost:6379
@@ -19,9 +21,6 @@ display_commit_hash = false
 
 database_path = /tmp/genocrowd/database.db
 
-# Disabled upload and integration for non admin (for external endpoint exploration)
-disable_integration = false
-
 # Github URL of the project
 github = https://github.com/annotons/genocrowd
 
@@ -29,3 +28,5 @@ github = https://github.com/annotons/genocrowd
 # Sentry dsn to report python and js errors in a sentry instance
 # server_dsn = https://00000000000000000000000000000000@exemple.org/1
 # frontend_dsn = https://00000000000000000000000000000000@exemple.org/2
+
+

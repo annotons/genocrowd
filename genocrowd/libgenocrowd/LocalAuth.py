@@ -1,4 +1,4 @@
-"""Contain the Database class"""
+"""Contain the Database Auth Dialog Class"""
 
 from genocrowd.libgenocrowd.Params import Params
 
@@ -94,7 +94,6 @@ class LocalAuth(Params):
         bool
             True if the email exist
         """
-        
         response = self.users.find_one({'email': email})
         if response:
             return True
@@ -127,12 +126,9 @@ class LocalAuth(Params):
         """
         login = data['login']
         password = data['password']
-        
         user = {}
         error_message = ''
-        print(True)
         if self.is_username_in_db(login):
-            
             response = self.users.find_one({'username': login})
 
             if self.app.bcrypt.check_password_hash(
