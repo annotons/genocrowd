@@ -1,7 +1,7 @@
 """conftest"""
 import random
 
-from genocrowd.app import create_app, create_celery
+from genocrowd.app import create_app
 
 import pytest
 
@@ -50,9 +50,9 @@ class Client(object):
         self.db_path = "/tmp/database.db"
 
         # create app
-        # self.app = create_app(config=self.config)
+        self.app = create_app(config=self.config)
         # create_celery(self.app)
-        # self.app.iniconfig.set('genocrowd', 'database_path', self.db_path)
+        self.app.iniconfig.set('genocrowd', 'database_path', self.db_path)
 
         # context
         self.ctx = self.app.app_context()
