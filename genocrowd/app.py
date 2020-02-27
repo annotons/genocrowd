@@ -112,7 +112,6 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
 
     if proxy_path:
         ReverseProxyPrefixFix(app)
-    
     return app
 
 
