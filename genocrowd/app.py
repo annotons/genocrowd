@@ -58,13 +58,11 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     """
     conf = configparser.ConfigParser()
     conf.read(config)
-
     sentry_dsn = None
     try:
         sentry_dsn = conf['sentry']['server_dsn']
     except Exception:
         pass
-
     if sentry_dsn:
         version = get_distribution('genocrowd').version
         name = get_distribution('genocrowd').project_name
@@ -73,24 +71,9 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
             release="{}@{}".format(name, version),
             integrations=[FlaskIntegration(), CeleryIntegration()]
         )
-
+    print('done')
     app = Flask(app_name, static_folder='static', template_folder='templates')
-    app.mongo = PyMongo(app)
-    app.bcrypt = Bcrypt(app)
     app.iniconfig = FlaskIni()
-    users = app.mongo.db.users
-    password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
-    created = datetime.utcnow()
-    if not users.find_one({'username': 'admin'}):
-        users.insert({
-            'username': 'admin',
-            'email': 'admin@admin.fr',
-            'password': password,
-            'created': created,
-            'isAdmin': True,
-            'isExternal': False,
-            'blocked': False
-        })
     with app.app_context():
         app.iniconfig.read(config)
         proxy_path = None
@@ -99,13 +82,27 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
             app.config['REVERSE_PROXY_PATH'] = proxy_path
         except Exception:
             pass
-        try:
-            dbname = app.iniconfig.get('flask', 'mongo_dbname')
-            app.config['MONGO_DBNAME'] = dbname
-            mongo_uri = app.iniconfig.get('genocrowd', 'mongo_uri')
-            app.config['MONGO_URI'] = mongo_uri
-        except Exception:
-            pass
+        
+        dbname = app.iniconfig.get('flask', 'mongo_dbname')
+        app.config['MONGO_DBNAME'] = dbname
+        mongo_uri = app.iniconfig.get('flask', 'mongo_uri')
+        app.config['MONGO_URI'] = mongo_uri
+        
+        app.mongo = PyMongo(app)
+        app.bcrypt = Bcrypt(app)
+        users = app.mongo.db.users
+        password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
+        created = datetime.utcnow()
+        if not users.find_one({'username': 'admin'}):
+            users.insert({
+                'username': 'admin',
+                'email': 'admin@admin.fr',
+                'password': password,
+                'created': created,
+                'isAdmin': True,
+                'isExternal': False,
+                'blocked': False
+            })
         if blueprints is None:
             blueprints = BLUEPRINTS
 
@@ -114,6 +111,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
 
     if proxy_path:
         ReverseProxyPrefixFix(app)
+    
     return app
 
 

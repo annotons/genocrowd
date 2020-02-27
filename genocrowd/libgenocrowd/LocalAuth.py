@@ -172,7 +172,6 @@ class LocalAuth(Params):
         dict
             error, error message and updated user
         """
-        
         error = False
         error_message = ''
         username = data['newUsername']
