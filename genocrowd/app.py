@@ -71,7 +71,6 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
             release="{}@{}".format(name, version),
             integrations=[FlaskIntegration(), CeleryIntegration()]
         )
-    print('done')
     app = Flask(app_name, static_folder='static', template_folder='templates')
     app.iniconfig = FlaskIni()
     with app.app_context():
@@ -82,12 +81,14 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
             app.config['REVERSE_PROXY_PATH'] = proxy_path
         except Exception:
             pass
-        
-        dbname = app.iniconfig.get('flask', 'mongo_dbname')
-        app.config['MONGO_DBNAME'] = dbname
+        mongo_dbname = app.iniconfig.get('flask', 'mongo_dbname')
+        app.config['MONGO_DBNAME'] = mongo_dbname
         mongo_uri = app.iniconfig.get('flask', 'mongo_uri')
         app.config['MONGO_URI'] = mongo_uri
-        
+        if not mongo_uri:
+            raise Exception("Missing mongo_uri in config file")
+        if not mongo_dbname:
+            raise Exception("Missing mongo_dbname in config file")
         app.mongo = PyMongo(app)
         app.bcrypt = Bcrypt(app)
         users = app.mongo.db.users
