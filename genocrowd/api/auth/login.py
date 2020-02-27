@@ -58,13 +58,12 @@ def signup():
         password = ca.bcrypt.generate_password_hash(
             request.get_json()['password']).decode('utf-8')
         created = datetime.utcnow()
-        admin = ('admin' in username)
         user_id = users.insert({
             'username': username,
             'email': email,
             'password': password,
             'created': created,
-            'isAdmin': admin,
+            'isAdmin': False,
             'isExternal': False,
             'blocked': False
         })

@@ -75,12 +75,10 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         )
 
     app = Flask(app_name, static_folder='static', template_folder='templates')
-    app.config['MONGO_DBNAME'] = 'Genocrowd'
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/Genocrowd"
     app.mongo = PyMongo(app)
-    users = app.mongo.db.users
     app.bcrypt = Bcrypt(app)
     app.iniconfig = FlaskIni()
+    users = app.mongo.db.users
     password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
     created = datetime.utcnow()
     if not users.find_one({'username': 'admin'}):
@@ -101,7 +99,13 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
             app.config['REVERSE_PROXY_PATH'] = proxy_path
         except Exception:
             pass
-
+        try:
+            dbname = app.iniconfig.get('flask', 'mongo_dbname')
+            app.config['MONGO_DBNAME'] = dbname
+            mongo_uri = app.iniconfig.get('genocrowd', 'mongo_uri')
+            app.config['MONGO_URI'] = mongo_uri
+        except Exception:
+            pass
         if blueprints is None:
             blueprints = BLUEPRINTS
 

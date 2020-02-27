@@ -92,7 +92,7 @@ export default class GenocrowdNavbar extends Component {
       <div>
         <Navbar color="dark" dark expand="md">
           <div className="container">
-            <NavbarBrand href={this.props.config.proxyPath == "/" ? "/" : this.props.config.proxyPath + "/"}> <img src="../static/logo/logoGenocrowd.png"width= {120} height={30} mode='fit'/></NavbarBrand>
+            <NavbarBrand href={this.props.config.proxyPath == "/" ? "/" : this.props.config.proxyPath + "/"}> <img src="../static/logo/logoGenocrowd.png"width={120} height={30} mode='fit'/></NavbarBrand>
             <Collapse navbar>
               <Nav className="ml-auto" navbar>
                 {links}
