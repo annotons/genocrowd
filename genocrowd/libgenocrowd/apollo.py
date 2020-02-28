@@ -27,8 +27,8 @@ class Apollo(Params):
         gene = data['gene']
         text = data['text']
         self.questions.insert({
-            'gene': username,
-            'Text': email
+            'gene': gene,
+            'text': text
         })
 
     def get_all_genes(self):
