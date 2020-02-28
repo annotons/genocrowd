@@ -47,7 +47,7 @@ class Client(object):
         """
         # Config
         self.config = config
-        self.db_path = "/tmp/database.db"
+        # self.db_path = "/tmp/database.db"
 
         # create app
         self.app = create_app(config=self.config)

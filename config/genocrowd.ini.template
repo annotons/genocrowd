@@ -19,7 +19,6 @@ debug = false
 footer_message = Welcome to Genocrowd!
 display_commit_hash = false
 
-database_path = /tmp/genocrowd/database.db
 
 # Github URL of the project
 github = https://github.com/annotons/genocrowd

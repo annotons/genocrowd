@@ -23,5 +23,13 @@ class Apollo(Params):
     def get_gene_associated_questions(self, gene):
         return list(self.questions.find({"gene": gene}))
 
+    def add_question_on_the_fly(self, data):
+        gene = data['gene']
+        text = data['text']
+        self.questions.insert({
+            'gene': username,
+            'Text': email
+        })
+
     def get_all_genes(self):
         return list(self.genes.find({}))
