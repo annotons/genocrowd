@@ -24,7 +24,6 @@ class TestApi(GenocrowdTestCase):
             "version": get_distribution('genocrowd').version,
             "commit": None,
             "gitUrl": "https://github.com/annotons/genocrowd",
-            "disableAccountCreation": client.get_config('genocrowd', 'disable_account_creation', boolean=True),
             "proxyPath": "/",
             "user": {},
             "logged": False
