@@ -43,13 +43,15 @@ class TestApi(GenocrowdTestCase):
         client.log_user("jdoe")
 
         expected_config_jdoe = expected_config_nouser
-        expected_config_jdoe["logged"] = True
         expected_config_jdoe["user"] = {
             '_id': 1,
             'username': "jdoe",
             'email': "jdoe@genocrowd.org",
-            'admin': True,
+            'isAdmin': True,
             'blocked': False,
+            'logged': True,
+            'isExternal': False
+
         }
         response = client.client.get('/api/start')
 
@@ -69,8 +71,10 @@ class TestApi(GenocrowdTestCase):
             '_id': 2,
             'username': "jsmith",
             'email': "jsmith@genocrowd.org",
-            'admin': False,
+            'isAdmin': False,
             'blocked': False,
+            'logged': True,
+            'isExternal': False
         }
         response = client.client.get('/api/start')
 

@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import current_app as ca
 from flask import Blueprint, request, jsonify, session
-from datetime import datetime
+
 from flask_pymongo import BSONObjectIdConverter
 from werkzeug.routing import BaseConverter
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
@@ -40,40 +40,16 @@ def admin_required(f):
 
 @auth_bp.route('/api/auth/signup', methods=["POST"])
 def signup():
-    error = False
-    error_message = ''
     new_user = {}
-    users = ca.mongo.db.users
     local_auth = LocalAuth(ca, session)
-
-    username = request.get_json()['username']
-    email = request.get_json()['email']
-    if local_auth.is_username_in_db(username):
-        error = True
-        error_message = "Username already taken"
-    elif local_auth.is_email_in_db(email):
-        error = True
-        error_message = "This email is already used"
-    else:
-        password = ca.bcrypt.generate_password_hash(
-            request.get_json()['password']).decode('utf-8')
-        created = datetime.utcnow()
-        user_id = users.insert({
-            'username': username,
-            'email': email,
-            'password': password,
-            'created': created,
-            'isAdmin': False,
-            'isExternal': False,
-            'blocked': False
-        })
-
-        new_user = users.find_one({'_id': user_id})
+    local_auth.check_inputs(request.get_json())
+    if not local_auth.get_error():
+        new_user = local_auth.add_user_to_database(request.get_json())
         new_user['_id'] = str(new_user['_id'])
         session['user'] = new_user
     return jsonify({
-        'error': error,
-        'errorMessage': error_message,
+        'error': local_auth.get_error(),
+        'errorMessage': local_auth.get_error_message(),
         'user': new_user
     })
 

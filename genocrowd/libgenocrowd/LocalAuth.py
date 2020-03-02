@@ -1,7 +1,7 @@
 """Contain the Database Auth Dialog Class"""
 
 from genocrowd.libgenocrowd.Params import Params
-
+from datetime import datetime
 from validate_email import validate_email
 from flask_pymongo import BSONObjectIdConverter
 from werkzeug.routing import BaseConverter
@@ -46,11 +46,11 @@ class LocalAuth(Params):
 
         if not inputs['password']:
             self.error = True
-            self.error_message.append('Password empty')
+            self.error_message.append('Password is empty')
 
         if inputs['password'] != inputs['passwordconf']:
             self.error = True
-            self.error_message.append("Passwords doesn't match")
+            self.error_message.append("Password doesn't match")
 
         if self.is_username_in_db(inputs['username']):
             self.error = True
@@ -59,6 +59,14 @@ class LocalAuth(Params):
         if self.is_email_in_db(inputs['email']):
             self.error = True
             self.error_message.append('Email already registered')
+
+    def get_error(self):
+
+        return self.error
+
+    def get_error_message(self):
+
+        return self.error_message
 
     def is_username_in_db(self, username):
         """
@@ -110,6 +118,22 @@ class LocalAuth(Params):
         """
         return self.users.count_documents()
 
+    def add_user_to_database(self, data):
+        password = self.app.bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        created = datetime.utcnow()
+        user_id = self.users.insert({
+            'username': data['username'],
+            'email': data['email'],
+            'password': password,
+            'created': created,
+            'isAdmin': False,
+            'isExternal': False,
+            'blocked': False
+        })
+
+        new_user = self.users.find_one({'_id': user_id})
+        return new_user
+
     def authenticate_user(self, data):
         """
         check if the password is the good password
@@ -153,7 +177,7 @@ class LocalAuth(Params):
                 error_message = "Invalid password"
         else:
             error = True
-            error_message = "User not found"
+            error_message = "Incorrect login identifier"
 
         return {'error': error, 'errorMessage': error_message, 'user': user}
 

@@ -1,7 +1,7 @@
 """conftest"""
 import tempfile
 import random
-
+from datetime import datetime
 from genocrowd.app import create_app
 
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
@@ -108,8 +108,11 @@ class Client(object):
                 '_id': 1 if username == "jdoe" else 2,
                 'username': username,
                 'email': "%s@genocrowd.org" % (username),
-                'admin': True if username == "jdoe" else False,
                 'blocked': False,
+                'logged': True,
+                'isExternal': False,
+                'isAdmin': True if username == "jdoe" else False,
+                'created': datetime.utcnow()
             }
 
         self.session = sess
@@ -131,6 +134,9 @@ class Client(object):
             "username": "jdoe" if username == "jdoe" else "jsmith",
             "password": "iamjohndoe" if username == "jdoe" else "iamjanesmith",
             "email": "jdoe@genocrowd.org" if username == "jdoe" else "jsmith@genocrowd.org",
+            "isAdmin": True if username == "jdoe" else False,
+            "isExternal": False,
+            "created": datetime.utcnow()
         }
 
         auth = LocalAuth(self.app, self.session)
@@ -143,6 +149,16 @@ class Client(object):
         """Create jdoe and jsmith"""
         self.create_user("jdoe")
         self.create_user("jsmith")
+
+    def logout_user(self, username):
+        """Summary
+
+        Parameters
+        ----------
+        username : TYPE
+            Description
+        """
+        self.session.pop('user', None)
 
     @staticmethod
     def get_random_string(number):
