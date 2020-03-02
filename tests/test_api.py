@@ -48,7 +48,7 @@ class TestApi(GenocrowdTestCase):
             'id': 1,
             'ldap': False,
             'username': "jdoe",
-            'email': "jdoe@askomics.org",
+            'email': "jdoe@genocrowd.org",
             'admin': True,
             'blocked': False,
         }
@@ -70,7 +70,7 @@ class TestApi(GenocrowdTestCase):
             'id': 2,
             'ldap': False,
             'username': "jsmith",
-            'email': "jsmith@askomics.org",
+            'email': "jsmith@genocrowd.org",
             'admin': False,
             'blocked': False,
         }
