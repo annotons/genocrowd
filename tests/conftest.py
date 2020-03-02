@@ -108,7 +108,7 @@ class Client(object):
         bson = BSONObjectIdConverter(BaseConverter)
         with self.client.session_transaction() as sess:
             sess["user"] = {
-                '_id': bson.to_python("identifier"),
+                '_id': bson.to_python("507f1f77bcf86cd799439011"),
                 'username': username,
                 'email': "{}@genocrowd.org".format(username),
                 'admin': True if username == "jdoe" else False,
