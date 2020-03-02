@@ -105,7 +105,7 @@ class Client(object):
         """
         with self.client.session_transaction() as sess:
             sess["user"] = {
-                '_id': "507f1f77bcf86cd799439011",
+                '_id': 1 if username == "jdoe" else 2,
                 'username': username,
                 'email': "%s@genocrowd.org" % (username),
                 'admin': True if username == "jdoe" else False,

@@ -46,7 +46,6 @@ class TestApi(GenocrowdTestCase):
         expected_config_jdoe["logged"] = True
         expected_config_jdoe["user"] = {
             'id': 1,
-            'ldap': False,
             'username': "jdoe",
             'email': "jdoe@genocrowd.org",
             'admin': True,
@@ -68,7 +67,6 @@ class TestApi(GenocrowdTestCase):
         expected_config_jsmith["logged"] = True
         expected_config_jsmith["user"] = {
             'id': 2,
-            'ldap': False,
             'username': "jsmith",
             'email': "jsmith@genocrowd.org",
             'admin': False,
