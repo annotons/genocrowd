@@ -2,8 +2,6 @@
 import tempfile
 import random
 
-from flask_pymongo import BSONObjectIdConverter
-from werkzeug.routing import BaseConverter
 from genocrowd.app import create_app
 
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
@@ -105,12 +103,11 @@ class Client(object):
         username : TYPE
             Description
         """
-        bson = BSONObjectIdConverter(BaseConverter)
         with self.client.session_transaction() as sess:
             sess["user"] = {
-                '_id': bson.to_python("507f1f77bcf86cd799439011"),
+                '_id': "507f1f77bcf86cd799439011",
                 'username': username,
-                'email': "{}@genocrowd.org".format(username),
+                'email': "%s@genocrowd.org" % (username),
                 'admin': True if username == "jdoe" else False,
                 'blocked': False,
             }
