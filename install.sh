@@ -57,4 +57,5 @@ if [[ $ignored != "js" ]]; then
     npm install
 fi
 
+sudo docker run -d --name mongo -t -p 27017:27017 mongo:4.2-bionic
 echo "Installation done!"

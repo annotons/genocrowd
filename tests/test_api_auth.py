@@ -71,7 +71,7 @@ class TestApiAuth(GenocrowdTestCase):
                 'id': 1,
                 'username': "jwick",
                 'email': "jwick@genocrowd.org",
-                'admin': True,
+                'isAdmin': True,
                 'blocked': False,
             }
         }
@@ -83,7 +83,7 @@ class TestApiAuth(GenocrowdTestCase):
                 'id': 1,
                 'username': "jwick",
                 'email': "jwick@genocrowd.org",
-                'admin': True,
+                'isAdmin': True,
                 'blocked': False,
             }
 
