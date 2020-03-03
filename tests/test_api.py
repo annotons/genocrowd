@@ -1,4 +1,5 @@
 from pkg_resources import get_distribution
+
 from . import GenocrowdTestCase
 
 
@@ -42,18 +43,19 @@ class TestApi(GenocrowdTestCase):
         # Jdoe (admin) logged-
         client.log_user("jdoe")
 
+        response = client.client.get('/api/start')
+
         expected_config_jdoe = expected_config_nouser
+        expected_config_jdoe['logged'] = True
         expected_config_jdoe["user"] = {
-            '_id': 1,
             'username': "jdoe",
             'email': "jdoe@genocrowd.org",
             'isAdmin': True,
             'blocked': False,
-            'logged': True,
-            'isExternal': False
+            'isExternal': False,
+            'created': response.json["config"]["user"]["created"]
 
         }
-        response = client.client.get('/api/start')
 
         assert response.status_code == 200
         assert response.json == {
@@ -65,18 +67,18 @@ class TestApi(GenocrowdTestCase):
         # jsmith (non admin) logged
         client.log_user("jsmith")
 
+        response = client.client.get('/api/start')
+
         expected_config_jsmith = expected_config_nouser
         expected_config_jsmith["logged"] = True
         expected_config_jsmith["user"] = {
-            '_id': 2,
             'username': "jsmith",
             'email': "jsmith@genocrowd.org",
             'isAdmin': False,
             'blocked': False,
-            'logged': True,
-            'isExternal': False
+            'isExternal': False,
+            'created': response.json["config"]["user"]["created"]
         }
-        response = client.client.get('/api/start')
 
         assert response.status_code == 200
         assert response.json == {
@@ -84,3 +86,5 @@ class TestApi(GenocrowdTestCase):
             "errorMessage": '',
             "config": expected_config_jsmith
         }
+
+        client.reset_db()

@@ -85,12 +85,12 @@ trap 'kill 0' INT
 # Run
 echo "Building JS ..."
 npm run $npm_depmode &
-echo "Starting celery ..."
-if [[ $flask_depmod == "development" ]]; then
-    watchmedo auto-restart -d ${dir_genocrowd}/genocrowd --recursive -p '*.py' --ignore-patterns='*.pyc' -- celery -A genocrowd.tasks.celery worker -Q default -c ${ntasks} -n default -l info &
-else
-    celery -A genocrowd.tasks.celery worker -Q default -c ${ntasks} -n default -l info &
-fi
+# echo "Starting celery ..."
+# if [[ $flask_depmod == "development" ]]; then
+#     watchmedo auto-restart -d ${dir_genocrowd}/genocrowd --recursive -p '*.py' --ignore-patterns='*.pyc' -- celery -A genocrowd.tasks.celery worker -Q default -c ${ntasks} -n default -l info &
+# else
+#     celery -A genocrowd.tasks.celery worker -Q default -c ${ntasks} -n default -l info &
+# fi
 
 echo "Starting server ..."
 $flask_command &

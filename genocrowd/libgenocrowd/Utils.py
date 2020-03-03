@@ -1,8 +1,8 @@
 import random
 import re
+import sys
 import time
 import traceback
-import sys
 
 
 class Utils():

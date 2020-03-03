@@ -2,10 +2,11 @@
 import sys
 import traceback
 
+from flask import (Blueprint, current_app, jsonify, request, session)
+
 from genocrowd.api.auth.login import admin_required
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
-from flask import (Blueprint, current_app, jsonify, request, session)
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/')
 

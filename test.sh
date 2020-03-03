@@ -46,4 +46,4 @@ echo "Linting Python files ..."
 flake8 ${dir_genocrowd}/genocrowd ${dir_genocrowd}/tests --ignore=E501,W504 && echo "OK" || exit 1
 
 # Test Python
-pytest -q --disable-warnings && echo "OK" || exit 1
+pytest --cov=. -vv && echo "OK" || exit 1

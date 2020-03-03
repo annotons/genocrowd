@@ -1,9 +1,9 @@
-import git
 import sys
 import traceback
 
-
 from flask import (Blueprint, current_app, jsonify, session)
+
+import git
 
 from pkg_resources import get_distribution
 

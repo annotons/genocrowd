@@ -1,10 +1,13 @@
 from functools import wraps
+
+from flask import Blueprint, jsonify, request, session
 from flask import current_app as ca
-from flask import Blueprint, request, jsonify, session
 
 from flask_pymongo import BSONObjectIdConverter
-from werkzeug.routing import BaseConverter
+
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
+
+from werkzeug.routing import BaseConverter
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/')
@@ -63,7 +66,7 @@ def login():
         if result["user"]['blocked']:
             result = {
                 'error': True,
-                'errorMessage': "Your account is blocked",
+                'errorMessage': ["Your account is blocked"],
                 'user': {}}
         else:
 

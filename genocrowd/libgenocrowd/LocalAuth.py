@@ -1,9 +1,13 @@
 """Contain the Database Auth Dialog Class"""
 
-from genocrowd.libgenocrowd.Params import Params
 from datetime import datetime
-from validate_email import validate_email
+
 from flask_pymongo import BSONObjectIdConverter
+
+from genocrowd.libgenocrowd.Params import Params
+
+from validate_email import validate_email
+
 from werkzeug.routing import BaseConverter
 
 
@@ -36,7 +40,7 @@ class LocalAuth(Params):
 
         """
 
-        if not inputs['username']:
+        if not inputs['username'] or inputs['username'] == '':
             self.error = True
             self.error_message.append('Username name empty')
 
@@ -121,7 +125,7 @@ class LocalAuth(Params):
     def add_user_to_database(self, data):
         password = self.app.bcrypt.generate_password_hash(data['password']).decode('utf-8')
         created = datetime.utcnow()
-        user_id = self.users.insert({
+        user_id = self.users.insert_one({
             'username': data['username'],
             'email': data['email'],
             'password': password,
@@ -151,7 +155,7 @@ class LocalAuth(Params):
         login = data['login']
         password = data['password']
         user = {}
-        error_message = ''
+        error_message = []
         if self.is_username_in_db(login):
             response = self.users.find_one({'username': login})
 
@@ -162,7 +166,7 @@ class LocalAuth(Params):
                 user = response
             else:
                 error = True
-                error_message = "Invalid password"
+                error_message.append("Invalid password")
 
         elif self.is_email_in_db(login):
             response = self.users.find_one({'email': login})
@@ -174,10 +178,10 @@ class LocalAuth(Params):
                 user = response
             else:
                 error = True
-                error_message = "Invalid password"
+                error_message.append("Invalid password")
         else:
             error = True
-            error_message = "Incorrect login identifier"
+            error_message.append("Incorrect login identifier")
 
         return {'error': error, 'errorMessage': error_message, 'user': user}
 

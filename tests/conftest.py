@@ -1,9 +1,9 @@
 """conftest"""
-import tempfile
 import random
+import tempfile
 from datetime import datetime
-from genocrowd.app import create_app
 
+from genocrowd.app import create_app
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 import pytest
@@ -105,11 +105,9 @@ class Client(object):
         """
         with self.client.session_transaction() as sess:
             sess["user"] = {
-                '_id': 1 if username == "jdoe" else 2,
                 'username': username,
                 'email': "%s@genocrowd.org" % (username),
                 'blocked': False,
-                'logged': True,
                 'isExternal': False,
                 'isAdmin': True if username == "jdoe" else False,
                 'created': datetime.utcnow()
@@ -140,7 +138,7 @@ class Client(object):
         }
 
         auth = LocalAuth(self.app, self.session)
-        auth.users.insert(uinfo)
+        auth.users.insert_one(uinfo)
         user = auth.users.find_one({'username': uinfo['username']})
         user['_id'] = str(user['_id'])
         return user
@@ -159,6 +157,9 @@ class Client(object):
             Description
         """
         self.session.pop('user', None)
+
+    def reset_db(self):
+        self.app.mongo.db.users.drop()
 
     @staticmethod
     def get_random_string(number):

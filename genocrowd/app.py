@@ -7,26 +7,32 @@ BLUEPRINTS : Tuple
 """
 
 import configparser
-from genocrowd.api.auth.login import auth_bp
-from genocrowd.api.start import start_bp
-from genocrowd.api.view import view_bp
-from genocrowd.api.admin.admin import admin_bp
 from datetime import datetime
+
 from celery import Celery
-from kombu import Exchange, Queue
 
 from flask import Flask
 
 from flask_bcrypt import Bcrypt
+
 from flask_ini import FlaskIni
+
+from flask_pymongo import PyMongo
 
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
+from genocrowd.api.admin.admin import admin_bp
+from genocrowd.api.auth.login import auth_bp
+from genocrowd.api.start import start_bp
+from genocrowd.api.view import view_bp
+
+from kombu import Exchange, Queue
+
 from pkg_resources import get_distribution
-from flask_pymongo import PyMongo
+
 import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 
 __all__ = ('create_app', 'create_celery')
@@ -95,7 +101,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
         created = datetime.utcnow()
         if not users.find_one({'username': 'admin'}):
-            users.insert({
+            users.insert_one({
                 'username': 'admin',
                 'email': 'admin@admin.fr',
                 'password': password,

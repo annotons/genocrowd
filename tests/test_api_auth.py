@@ -10,7 +10,7 @@ class TestApiAuth(GenocrowdTestCase):
             "username": "jwick",
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
-            "email": "jwick@.org",
+            "email": "jwick@genocrowd.org",
         }
 
         empty_username_data = {
@@ -64,28 +64,13 @@ class TestApiAuth(GenocrowdTestCase):
         # ok inputs
         response = client.client.post('/api/auth/signup', json=ok_data)
         assert response.status_code == 200
-        assert response.json == {
-            'error': False,
-            'errorMessage': [],
-            'user': {
-                'id': 1,
-                'username': "jwick",
-                'email': "jwick@genocrowd.org",
-                'isAdmin': True,
-                'blocked': False,
-            }
-        }
+        assert response.json["error"] is False
+        assert response.json["user"] != {}
 
         # Test logged
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"] == {
-                'id': 1,
-                'username': "jwick",
-                'email': "jwick@genocrowd.org",
-                'isAdmin': True,
-                'blocked': False,
-            }
+            assert sess["user"]['username'] == "jwick" and sess["user"]['email'] == "jwick@genocrowd.org"
 
         # Re-insert same user
         response = client.client.post('/api/auth/signup', json=ok_data)
@@ -95,6 +80,7 @@ class TestApiAuth(GenocrowdTestCase):
             'errorMessage': ["Username already registered", "Email already registered"],
             'user': {}
         }
+        client.reset_db()
 
     def test_wrong_login(self, client):
         """Test /api/auth/login route with wrong credentials"""
@@ -235,7 +221,6 @@ class TestApiAuth(GenocrowdTestCase):
             "error": False,
             "errorMessage": '',
             "user": {
-                'id': 1,
                 'ldap': False,
                 'fname': "John",
                 'lname': "Doe",
@@ -255,7 +240,6 @@ class TestApiAuth(GenocrowdTestCase):
         with client.client.session_transaction() as sess:
             assert 'user' in sess
             assert sess["user"] == {
-                'id': 1,
                 'ldap': False,
                 'fname': "John",
                 'lname': "Doe",
@@ -274,7 +258,6 @@ class TestApiAuth(GenocrowdTestCase):
             "error": False,
             "errorMessage": '',
             "user": {
-                'id': 1,
                 'ldap': False,
                 'fname': "John",
                 'lname': "Dodo",
@@ -294,7 +277,6 @@ class TestApiAuth(GenocrowdTestCase):
         with client.client.session_transaction() as sess:
             assert 'user' in sess
             assert sess["user"] == {
-                'id': 1,
                 'ldap': False,
                 'fname': "John",
                 'lname': "Dodo",
