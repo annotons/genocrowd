@@ -125,7 +125,7 @@ class LocalAuth(Params):
     def add_user_to_database(self, data):
         password = self.app.bcrypt.generate_password_hash(data['password']).decode('utf-8')
         created = datetime.utcnow()
-        user_id = self.users.insert_one({
+        user_id = self.users.insert({
             'username': data['username'],
             'email': data['email'],
             'password': password,
@@ -159,8 +159,7 @@ class LocalAuth(Params):
         if self.is_username_in_db(login):
             response = self.users.find_one({'username': login})
 
-            if self.app.bcrypt.check_password_hash(
-                    response['password'], password):
+            if self.app.bcrypt.check_password_hash(response['password'], password):
                 error = False
                 response['_id'] = str(response['_id'])
                 user = response
@@ -170,8 +169,7 @@ class LocalAuth(Params):
 
         elif self.is_email_in_db(login):
             response = self.users.find_one({'email': login})
-            if self.app.bcrypt.check_password_hash(
-                    response['password'], password):
+            if self.app.bcrypt.check_password_hash(response['password'], password):
                 error = False
                 response['_id'] = str(response['_id'])
 
@@ -201,7 +199,7 @@ class LocalAuth(Params):
             error, error message and updated user
         """
         error = False
-        error_message = ''
+        error_message = []
         username = data['newUsername']
         email = data['newEmail']
         if len(username) == 0:
@@ -215,7 +213,6 @@ class LocalAuth(Params):
                     'username': username,
                     'email': email
                 }})
-
         return {
             'error': error,
             'errorMessage': error_message,

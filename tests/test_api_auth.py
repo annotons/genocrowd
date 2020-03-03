@@ -149,223 +149,96 @@ class TestApiAuth(GenocrowdTestCase):
         response = client.client.post('/api/auth/login', json=ok_inputs_username)
 
         assert response.status_code == 200
-        assert response.json == {
-            'error': False,
-            'errorMessage': [],
-            'user': {
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'isAdmin': True,
-                'blocked': False,
-            }
-        }
+        assert response.json["error"] is False
+        assert response.json["user"]["username"] == ok_inputs_username["login"]
 
         response = client.client.post('/api/auth/login', json=ok_inputs_email)
 
         assert response.status_code == 200
-        assert response.json == {
-            'error': False,
-            'errorMessage': [],
-            'user': {
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'isAdmin': True,
-                'blocked': False,
-            }
-        }
+        assert response.json["error"] is False
+        assert response.json["user"]['email'] == ok_inputs_email['login']
 
         # Test logged
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"] == {
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'isAdmin': True,
-                'blocked': False,
-            }
+            assert sess["user"]['username'] == "jdoe" and sess["user"]['email'] == "jdoe@genocrowd.org"
 
     def test_update_profile(self, client):
         """Test /api/auth/profile route"""
         update_all_data = {
-            "newFname": "Johnny",
-            "newLname": "Dododo",
+            "newUsername": "jdododo",
             "newEmail": "jdododo@genocrowd.org"
         }
 
-        update_lname_data = {
-            "newFname": "",
-            "newLname": "Dodo",
+        update_username_data = {
+            "newUsername": "jdododo",
             "newEmail": ""
         }
 
         update_email_data = {
-            "newFname": "",
-            "newLname": "",
-            "newEmail": "jdodo@genocrowd.org"
+            "newUsername": "",
+            "newEmail": "jdododo@genocrowd.org"
         }
 
         update_empty_data = {
-            "newFname": "",
-            "newLname": "",
+            "newUsername": "",
             "newEmail": ""
         }
 
         client.create_two_users()
-        client.log_user("jdoe")
+        login = client.client.post("/api/auth/login", json={
+            "login": "jdoe",
+            "password": "iamjohndoe"
+        })
+        assert login.status_code == 200
 
         response = client.client.post("/api/auth/profile", json=update_empty_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": False,
-            "errorMessage": '',
-            "user": {
-                'ldap': False,
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["user"]["username"] == "jdoe"
+
         # Assert database is untouched
         # TODO:
 
         # Assert session is untouched
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"] == {
-                'ldap': False,
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
+            assert sess["user"]['username'] == "jdoe" and sess["user"]['email'] == "jdoe@genocrowd.org"
 
-        response = client.client.post("/api/auth/profile", json=update_lname_data)
+        response = client.client.post("/api/auth/profile", json=update_username_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": False,
-            "errorMessage": '',
-            "user": {
-                'ldap': False,
-                'fname': "John",
-                'lname': "Dodo",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["user"]["username"] == update_username_data["newUsername"]
+
         # Assert database is updated
         # TODO:
 
         # Assert session is updated
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"] == {
-                'ldap': False,
-                'fname': "John",
-                'lname': "Dodo",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
+            assert sess["user"]['username'] == update_username_data["newUsername"] and sess["user"]['email'] == "jdoe@genocrowd.org"
 
         response = client.client.post("/api/auth/profile", json=update_email_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": False,
-            "errorMessage": '',
-            "user": {
-                'id': 1,
-                'ldap': False,
-                'fname': "John",
-                'lname': "Dodo",
-                'username': "jdoe",
-                'email': "jdodo@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["user"]["email"] == update_email_data["newEmail"]
         # Assert database is updated
         # TODO:
 
         # Assert session is updated
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"] == {
-                'id': 1,
-                'ldap': False,
-                'fname': "John",
-                'lname': "Dodo",
-                'username': "jdoe",
-                'email': "jdodo@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
+            assert sess["user"]['username'] == "jdoe" and sess["user"]['email'] == update_email_data['newEmail']
 
         response = client.client.post("/api/auth/profile", json=update_all_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": False,
-            "errorMessage": '',
-            "user": {
-                'id': 1,
-                'ldap': False,
-                'fname': "Johnny",
-                'lname': "Dododo",
-                'username': "jdoe",
-                'email': "jdododo@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["user"]["username"] == update_all_data["newUsername"]
+        assert response.json["user"]["email"] == update_all_data["newEmail"]
+
         # Assert database is updated
         # TODO:
 
         # Assert session is updated
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"] == {
-                'id': 1,
-                'ldap': False,
-                'fname': "Johnny",
-                'lname': "Dododo",
-                'username': "jdoe",
-                'email': "jdododo@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
+            assert sess["user"]['username'] == update_all_data["newUsername"] and sess["user"]['email'] == update_all_data["newEmail"]
 
     def test_update_password(self, client):
         """test /api/auth/password"""

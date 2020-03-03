@@ -48,7 +48,9 @@ class TestApi(GenocrowdTestCase):
         expected_config_jdoe = expected_config_nouser
         expected_config_jdoe['logged'] = True
         expected_config_jdoe["user"] = {
+            '_id': "jdoe",
             'username': "jdoe",
+            "password": response.json['config']['user']['password'],
             'email': "jdoe@genocrowd.org",
             'isAdmin': True,
             'blocked': False,
@@ -72,7 +74,9 @@ class TestApi(GenocrowdTestCase):
         expected_config_jsmith = expected_config_nouser
         expected_config_jsmith["logged"] = True
         expected_config_jsmith["user"] = {
+            '_id': "jsmith",
             'username': "jsmith",
+            "password": response.json['config']['user']['password'],
             'email': "jsmith@genocrowd.org",
             'isAdmin': False,
             'blocked': False,

@@ -3,10 +3,14 @@ import random
 import tempfile
 from datetime import datetime
 
+from flask_pymongo import BSONObjectIdConverter
+
 from genocrowd.app import create_app
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 import pytest
+
+from werkzeug.routing import BaseConverter
 
 
 @pytest.fixture
@@ -64,6 +68,9 @@ class Client(object):
         self.client = self.app.test_client()
         self.session = {}
 
+        # bson
+        self.bson = BSONObjectIdConverter(BaseConverter)
+
     def get_config(self, section, entry, boolean=False):
         """Summary
 
@@ -103,9 +110,12 @@ class Client(object):
         username : TYPE
             Description
         """
+
         with self.client.session_transaction() as sess:
             sess["user"] = {
+                '_id': username,
                 'username': username,
+                "password": self.app.bcrypt.generate_password_hash("iamjohndoe").decode('utf-8') if username == "jdoe" else self.app.bcrypt.generate_password_hash("iamjanesmith").decode('utf-8'),
                 'email': "%s@genocrowd.org" % (username),
                 'blocked': False,
                 'isExternal': False,
@@ -130,15 +140,16 @@ class Client(object):
         """
         uinfo = {
             "username": "jdoe" if username == "jdoe" else "jsmith",
-            "password": "iamjohndoe" if username == "jdoe" else "iamjanesmith",
+            "password": self.app.bcrypt.generate_password_hash("iamjohndoe").decode('utf-8') if username == "jdoe" else self.app.bcrypt.generate_password_hash("iamjanesmith").decode('utf-8'),
             "email": "jdoe@genocrowd.org" if username == "jdoe" else "jsmith@genocrowd.org",
             "isAdmin": True if username == "jdoe" else False,
             "isExternal": False,
-            "created": datetime.utcnow()
+            "created": datetime.utcnow(),
+            "blocked": False
         }
 
         auth = LocalAuth(self.app, self.session)
-        auth.users.insert_one(uinfo)
+        auth.users.insert(uinfo)
         user = auth.users.find_one({'username': uinfo['username']})
         user['_id'] = str(user['_id'])
         return user

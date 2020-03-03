@@ -26,7 +26,7 @@ class Apollo(Params):
     def add_question_on_the_fly(self, data):
         gene = data['gene']
         text = data['text']
-        self.questions.insert_one({
+        self.questions.insert({
             'gene': gene,
             'text': text
         })

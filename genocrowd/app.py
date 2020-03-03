@@ -101,7 +101,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
         created = datetime.utcnow()
         if not users.find_one({'username': 'admin'}):
-            users.insert_one({
+            users.insert({
                 'username': 'admin',
                 'email': 'admin@admin.fr',
                 'password': password,
