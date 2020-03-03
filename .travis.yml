@@ -18,7 +18,7 @@ matrix:
         - docker logs $dockerId
       script:
         - flake8 genocrowd tests --ignore=E501,W504
-        - PY_IGNORE_IMPORTMISMATCH=1 pytest --cov=. -vv
+        - pytest --cov=. -vv
 
 
     - language: python
@@ -37,7 +37,7 @@ matrix:
         - sleep 1m
       script:
         - flake8 genocrowd tests --ignore=E501,W504
-        - PY_IGNORE_IMPORTMISMATCH=1 pytest --cov=. -vv
+        - pytest --cov=. -vv
 
     - language: node_js
       node_js:
