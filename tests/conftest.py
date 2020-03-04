@@ -110,19 +110,11 @@ class Client(object):
         username : TYPE
             Description
         """
-
+        auth = LocalAuth(self.app, self.session)
+        user = auth.users.find_one({'username': username})
         with self.client.session_transaction() as sess:
-            sess["user"] = {
-                '_id': username,
-                'username': username,
-                "password": self.app.bcrypt.generate_password_hash("iamjohndoe").decode('utf-8') if username == "jdoe" else self.app.bcrypt.generate_password_hash("iamjanesmith").decode('utf-8'),
-                'email': "%s@genocrowd.org" % (username),
-                'blocked': False,
-                'isExternal': False,
-                'isAdmin': True if username == "jdoe" else False,
-                'created': datetime.utcnow()
-            }
-
+            user['_id'] = str(user['_id'])
+            sess["user"] = user
         self.session = sess
 
     def create_user(self, username):

@@ -6,6 +6,8 @@ from flask_pymongo import BSONObjectIdConverter
 
 from genocrowd.libgenocrowd.Params import Params
 
+from pymongo import ReturnDocument
+
 from validate_email import validate_email
 
 from werkzeug.routing import BaseConverter
@@ -203,6 +205,7 @@ class LocalAuth(Params):
         username = data['newUsername']
         email = data['newEmail']
         if len(username) == 0:
+            assert username != user['username']
             username = user['username']
         if len(email) == 0:
             email = user['email']
@@ -212,7 +215,8 @@ class LocalAuth(Params):
                 '$set': {
                     'username': username,
                     'email': email
-                }})
+                }}, return_document=ReturnDocument.AFTER)
+        assert updated_user['username'] == username
         return {
             'error': error,
             'errorMessage': error_message,

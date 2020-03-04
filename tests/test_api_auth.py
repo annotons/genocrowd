@@ -131,6 +131,7 @@ class TestApiAuth(GenocrowdTestCase):
         # Test logged
         with client.client.session_transaction() as sess:
             assert 'user' not in sess
+        client.reset_db()
 
     def test_ok_login(self, client):
         """Test /api/auth/login route with good credentials"""
@@ -162,6 +163,7 @@ class TestApiAuth(GenocrowdTestCase):
         with client.client.session_transaction() as sess:
             assert 'user' in sess
             assert sess["user"]['username'] == "jdoe" and sess["user"]['email'] == "jdoe@genocrowd.org"
+        client.reset_db()
 
     def test_update_profile(self, client):
         """Test /api/auth/profile route"""
@@ -225,7 +227,7 @@ class TestApiAuth(GenocrowdTestCase):
         # Assert session is updated
         with client.client.session_transaction() as sess:
             assert 'user' in sess
-            assert sess["user"]['username'] == "jdoe" and sess["user"]['email'] == update_email_data['newEmail']
+            assert sess["user"]['username'] == "jdododo" and sess["user"]['email'] == update_email_data['newEmail']
 
         response = client.client.post("/api/auth/profile", json=update_all_data)
         assert response.status_code == 200
@@ -239,6 +241,7 @@ class TestApiAuth(GenocrowdTestCase):
         with client.client.session_transaction() as sess:
             assert 'user' in sess
             assert sess["user"]['username'] == update_all_data["newUsername"] and sess["user"]['email'] == update_all_data["newEmail"]
+        client.reset_db()
 
     def test_update_password(self, client):
         """test /api/auth/password"""
@@ -271,23 +274,8 @@ class TestApiAuth(GenocrowdTestCase):
 
         response = client.client.post('/api/auth/password', json=empty_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": True,
-            "errorMessage": 'Empty password',
-            "user": {
-                'id': 1,
-                'ldap': False,
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["user"]["username"] == "jdoe"
+        assert response.json["user"]["password"] == "jdoe"
 
         response = client.client.post('/api/auth/password', json=unidentical_passwords_data)
         assert response.status_code == 200
@@ -348,6 +336,7 @@ class TestApiAuth(GenocrowdTestCase):
                 'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
             }
         }
+        client.reset_db()
 
     def test_logout(self, client):
         """test /api/auth/logout route"""
