@@ -39,8 +39,6 @@ class Client(object):
         Description
     ctx : TYPE
         Description
-    
-        Description
     """
 
     def __init__(self, config="config/genocrowd.test.ini"):
