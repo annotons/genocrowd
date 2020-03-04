@@ -1,5 +1,5 @@
 """Render route"""
-from flask import (Blueprint, render_template, current_app)
+from flask import (Blueprint, current_app, render_template)
 
 
 view_bp = Blueprint('view', __name__, url_prefix='/')

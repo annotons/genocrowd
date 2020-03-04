@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Alert } from 'reactstrap'
-import { Redirect } from 'react-router'
 import PropTypes from 'prop-types'
 import Utils from '../../classes/utils'
 
@@ -44,6 +43,7 @@ export default class ErrorDiv extends Component {
         </Alert>
       )
     } else {
+      console.log(this.props.errorMessage)
       error = (
         <Alert color="danger">
           <div><i className="fas fa-exclamation-circle"></i> {messages[this.props.status.toString()]}</div>

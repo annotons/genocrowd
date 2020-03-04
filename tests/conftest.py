@@ -1,9 +1,15 @@
 """conftest"""
 import random
+from datetime import datetime
 
-from genocrowd.app import create_app, create_celery
+from flask_pymongo import BSONObjectIdConverter
+
+from genocrowd.app import create_app
+from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 import pytest
+
+from werkzeug.routing import BaseConverter
 
 
 @pytest.fixture
@@ -33,8 +39,6 @@ class Client(object):
         Description
     ctx : TYPE
         Description
-    db_path : TYPE
-        Description
     """
 
     def __init__(self, config="config/genocrowd.test.ini"):
@@ -47,13 +51,9 @@ class Client(object):
         """
         # Config
         self.config = config
-        self.db_path = "/tmp/database.db"
 
         # create app
         self.app = create_app(config=self.config)
-        create_celery(self.app)
-        self.app.iniconfig.set('genocrowd', 'database_path', self.db_path)
-
         # context
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -61,6 +61,102 @@ class Client(object):
         # Client
         self.client = self.app.test_client()
         self.session = {}
+
+        # bson
+        self.bson = BSONObjectIdConverter(BaseConverter)
+
+    def get_config(self, section, entry, boolean=False):
+        """Summary
+
+        Parameters
+        ----------
+        section : TYPE
+            Description
+        entry : TYPE
+            Description
+        boolean : bool, optional
+            Description
+
+        Returns
+        -------
+        TYPE
+            Description
+        """
+        if boolean:
+            return self.app.iniconfig.getboolean(section, entry)
+        return self.app.iniconfig.get(section, entry)
+
+    def get_client(self):
+        """Summary
+
+        Returns
+        -------
+        TYPE
+            Description
+        """
+        return self.client
+
+    def log_user(self, username):
+        """Summary
+
+        Parameters
+        ----------
+        username : TYPE
+            Description
+        """
+        auth = LocalAuth(self.app, self.session)
+        user = auth.users.find_one({'username': username})
+        with self.client.session_transaction() as sess:
+            user['_id'] = str(user['_id'])
+            sess["user"] = user
+        self.session = sess
+
+    def create_user(self, username):
+        """Summary
+
+        Parameters
+        ----------
+        username : TYPE
+            Description
+
+        Returns
+        -------
+        TYPE
+            Description
+        """
+        uinfo = {
+            "username": "jdoe" if username == "jdoe" else "jsmith",
+            "password": self.app.bcrypt.generate_password_hash("iamjohndoe").decode('utf-8') if username == "jdoe" else self.app.bcrypt.generate_password_hash("iamjanesmith").decode('utf-8'),
+            "email": "jdoe@genocrowd.org" if username == "jdoe" else "jsmith@genocrowd.org",
+            "isAdmin": True if username == "jdoe" else False,
+            "isExternal": False,
+            "created": datetime.utcnow(),
+            "blocked": False
+        }
+
+        auth = LocalAuth(self.app, self.session)
+        auth.users.insert(uinfo)
+        user = auth.users.find_one({'username': uinfo['username']})
+        user['_id'] = str(user['_id'])
+        return user
+
+    def create_two_users(self):
+        """Create jdoe and jsmith"""
+        self.create_user("jdoe")
+        self.create_user("jsmith")
+
+    def logout_user(self, username):
+        """Summary
+
+        Parameters
+        ----------
+        username : TYPE
+            Description
+        """
+        self.session.pop('user', None)
+
+    def reset_db(self):
+        self.app.mongo.db.users.drop()
 
     @staticmethod
     def get_random_string(number):
