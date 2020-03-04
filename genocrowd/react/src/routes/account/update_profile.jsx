@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Col, Row, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap'
+import { Col, Button, Form, FormGroup, Label, Input, } from 'reactstrap'
 import ErrorDiv from '../error/error'
 import PropTypes from 'prop-types'
 import update from 'immutability-helper'

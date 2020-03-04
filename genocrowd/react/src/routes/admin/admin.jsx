@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Button, Form, FormGroup, Label, Input, Alert, Col, CustomInput } from 'reactstrap'
+import { FormGroup, CustomInput } from 'reactstrap'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import cellEditFactory from 'react-bootstrap-table2-editor'
@@ -135,7 +135,7 @@ export default class Admin extends Component {
       editable: false,
       dataField: 'ldap',
       text: 'Authentication type',
-      formatter: (cell, row) => { return cell ? 'Ldap' : 'Local' },
+      formatter: (cell) => { return cell ? 'Ldap' : 'Local' },
       sort: true
     }, {
       editable: false,
@@ -146,7 +146,7 @@ export default class Admin extends Component {
       editable: false,
       dataField: 'email',
       text: 'Email',
-      formatter: (cell, row) => { return <a href={'mailto:' + cell}>{cell}</a> },
+      formatter: (cell) => { return <a href={'mailto:' + cell}>{cell}</a> },
       sort: true
     }, {
       editable: false,
@@ -179,7 +179,7 @@ export default class Admin extends Component {
     }, {
       dataField: 'created',
       text: 'Created',
-      formatter: (cell, row) => {
+      formatter: (cell) => {
         return cell === 0 ? "Unlimited" : this.utils.humanFileSize(cell, true)
       },
       sort: true

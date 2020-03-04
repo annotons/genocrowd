@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-import { Button, Form, FormGroup, Label, Input, Alert, Col } from 'reactstrap'
+
+import { Button } from 'reactstrap'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import UpdateProfile from './update_profile'
 import UpdatePassword from './update_password'
-import DeleteAccount from './delete_account'
 
 import PropTypes from 'prop-types'
 
@@ -18,7 +17,7 @@ export default class Account extends Component {
     }
   }
   
-  handleRemoveAccount(event) {
+  handleRemoveAccount() {
 
   }
   render () {

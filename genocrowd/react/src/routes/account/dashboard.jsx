@@ -1,24 +1,14 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-import {Button, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle ,Form, FormGroup, Label, Input, Alert, Navbar, Spinner,Row, Container, Col, Table, Media, Jumbotron, Card} from 'reactstrap'
-import { Redirect} from 'react-router-dom'
-import ErrorDiv from '../error/error'
-import WaitingDiv from '../../components/waiting'
-import update from 'react-addons-update'
+import {Button, CardBody, Row, Container, Col, Table, Jumbotron, Card} from 'reactstrap'
 import PropTypes from 'prop-types'
-import Image from 'react-bootstrap/Image'
 import Identicon from 'react-identicons';
+
 export default class Dashboard extends Component {
   constructor (props) {
     super(props)
   }
   
   render () {
-    const imgStyle = {
-      maxHeight: 64,
-      maxWidth: 64
-    }
     let html = (
       <Container>
       <Row>

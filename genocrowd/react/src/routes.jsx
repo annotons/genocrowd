@@ -1,4 +1,4 @@
-import React, { Component, createContext } from 'react'
+import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import axios from 'axios'
 
@@ -65,10 +65,6 @@ export default class Routes extends Component {
   }
   
   render () {
-    let admin = false
-    if (this.state.config.user) {
-      admin = this.state.config.user.admin
-    }
 
     let redirectRoot
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import update from 'immutability-helper'

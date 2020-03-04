@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
 import update from 'immutability-helper'
-import { Redirect, Link, withRouter } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import ErrorDiv from '../error/error'
 

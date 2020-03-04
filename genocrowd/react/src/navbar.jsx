@@ -20,8 +20,6 @@ export default class GenocrowdNavbar extends Component {
 
   render () {
     let links
-    let aboutLink
-    let genoLink
     // if wait is false
     if (!this.props.waitForStart) {
       
