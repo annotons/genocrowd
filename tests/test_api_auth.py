@@ -248,19 +248,13 @@ class TestApiAuth(GenocrowdTestCase):
         empty_data = {
             "newPassword": "",
             "confPassword": "",
-            "oldPassword": ""
+            "oldPassword": "iamjohndoe"
         }
 
         unidentical_passwords_data = {
             "newPassword": "helloworld",
             "confPassword": "holamundo",
             "oldPassword": "iamjohndoe"
-        }
-
-        wrong_old_passwords_data = {
-            "newPassword": "helloworld",
-            "confPassword": "helloworld",
-            "oldPassword": "wrongpassword"
         }
 
         ok_data = {
@@ -274,68 +268,21 @@ class TestApiAuth(GenocrowdTestCase):
 
         response = client.client.post('/api/auth/password', json=empty_data)
         assert response.status_code == 200
+        assert response.json["error"] is True
         assert response.json["user"]["username"] == "jdoe"
-        assert response.json["user"]["password"] == "jdoe"
+        assert response.json["user"]["password"] != empty_data["newPassword"]
 
         response = client.client.post('/api/auth/password', json=unidentical_passwords_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": True,
-            "errorMessage": 'New passwords are not identical',
-            "user": {
-                'id': 1,
-                'ldap': False,
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
-
-        response = client.client.post('/api/auth/password', json=wrong_old_passwords_data)
-        assert response.status_code == 200
-        assert response.json == {
-            "error": True,
-            "errorMessage": 'Incorrect old password',
-            "user": {
-                'id': 1,
-                'ldap': False,
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["error"] is True
+        assert response.json["user"]["username"] == "jdoe"
+        assert response.json["user"]["password"] != unidentical_passwords_data['newPassword']
 
         response = client.client.post('/api/auth/password', json=ok_data)
         assert response.status_code == 200
-        assert response.json == {
-            "error": False,
-            "errorMessage": '',
-            "user": {
-                'id': 1,
-                'ldap': False,
-                'fname': "John",
-                'lname': "Doe",
-                'username': "jdoe",
-                'email': "jdoe@genocrowd.org",
-                'admin': True,
-                'blocked': False,
-                'quota': 0,
-                'apikey': "0000000001",
-                'galaxy': {"url": "http://localhost:8081", "apikey": "admin"}
-            }
-        }
+        assert response.json["error"] is False
+        assert response.json["user"]["username"] == "jdoe"
+
         client.reset_db()
 
     def test_logout(self, client):

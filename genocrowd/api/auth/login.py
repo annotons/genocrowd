@@ -123,9 +123,9 @@ def update_password():
     online_user = session['user']
     local_auth = LocalAuth(ca, session)
     result = local_auth.update_password(data, online_user)
-
-    result['user']['_id'] = str(result['user']['_id'])
-    session['user'] = result['user']
+    if '_id' in result['user']:
+        result['user']['_id'] = str(result['user']['_id'])
+        session['user'] = result['user']
     return result
 
 

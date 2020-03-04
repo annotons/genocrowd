@@ -240,7 +240,7 @@ class LocalAuth(Params):
         """
         error = False
         error_message = ''
-        updated_user = {}
+        updated_user = user
 
         # check if new passwords are identicals
         password_identical = (inputs['newPassword'] == inputs['confPassword'])
@@ -261,7 +261,7 @@ class LocalAuth(Params):
                         '_id': bson.to_python(user['_id'])}, {
                             '$set': {
                                 'password': password
-                            }})
+                            }}, return_document=ReturnDocument.AFTER)
                 else:
                     error = True
                     error_message = 'Incorrect old password'
@@ -271,7 +271,6 @@ class LocalAuth(Params):
         else:
             error = True
             error_message = 'Empty password'
-
         return {
             'error': error,
             'error_message': error_message,
