@@ -1,6 +1,5 @@
 """conftest"""
 import random
-import tempfile
 from datetime import datetime
 
 from flask_pymongo import BSONObjectIdConverter
@@ -40,9 +39,7 @@ class Client(object):
         Description
     ctx : TYPE
         Description
-    db_path : TYPE
-        Description
-    dir_path : TYPE
+    
         Description
     """
 
@@ -56,7 +53,6 @@ class Client(object):
         """
         # Config
         self.config = config
-        self.dir_path = tempfile.mkdtemp(prefix="genotest_")
 
         # create app
         self.app = create_app(config=self.config)

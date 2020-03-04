@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Button, CardBody, Row, Container, Col, Table, Jumbotron, Card} from 'reactstrap'
+import {Button, CardBody, CardHeader, Row, Container, Col, Table, Jumbotron, Card} from 'reactstrap'
 import PropTypes from 'prop-types'
 import Identicon from 'react-identicons';
 
@@ -17,6 +17,7 @@ export default class Dashboard extends Component {
           <Card width= {50} body outline color="secondary">
             <CardBody className="text-center tile">
               <Identicon size={100} string={this.props.config.user.username}/>
+              <CardHeader>{this.props.config.user.username}</CardHeader>
             </CardBody>
             
           </Card>
