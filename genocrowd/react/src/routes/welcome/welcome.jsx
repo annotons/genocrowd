@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import { Card, CardImg } from 'reactstrap'
 import update from 'react-addons-update'
 import PropTypes from 'prop-types'
 export default class Welcome extends Component {
@@ -29,14 +30,11 @@ export default class Welcome extends Component {
     }
   render () {
     return (
-      <div className="container">
-        <h2> Welcome to Genocrowd!</h2>
-        
-        <hr />
-        
-       
-        
-      </div>
+      <Card>
+        <CardImg top className="img-fluid" src="../../../../static/logo/dna.jpg"></CardImg>
+
+      </Card>
+      // <div style="background-image: url('../../../../static/logo/dna.jpg');"></div>
     )
   }
 }

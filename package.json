@@ -44,6 +44,7 @@
     "axios": "^0.19.2",
     "babel-preset-env": "^1.7.0",
     "bootstrap": "^4.4.1",
+    "react-iframe":"^1.8.0",
     "core-js": "^3.6.4",
     "css-loader": "^3.4.2",
     "dedent": "^0.7.0",

@@ -20,11 +20,12 @@ export default class GenocrowdNavbar extends Component {
 
   render () {
     let links
+    let genoLink
     // if wait is false
     if (!this.props.waitForStart) {
       
       genoLink = (
-        <NavItem><Link className="nav-link" to="/"><i className="fas fa-play"></i> GenoHome</Link></NavItem>
+        <NavItem><Link className="nav-link" to="/annotator"><i className="fas fa-play"></i> Annotator</Link></NavItem>
       )
       links = (
         <>
@@ -57,6 +58,7 @@ export default class GenocrowdNavbar extends Component {
         }
         links = (
           <>
+          {genoLink}
           {integrationLinks}
           {adminLinks}
           <NavItem><Link className="nav-link" to="/about"><i className="fas fa-info"></i> About</Link></NavItem>
@@ -98,7 +100,6 @@ export default class GenocrowdNavbar extends Component {
             </Collapse>
           </div>
         </Navbar>
-        <br />
       </div>
     )
   }
