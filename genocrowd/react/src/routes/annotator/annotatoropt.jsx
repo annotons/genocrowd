@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Row, Col, ListGroup, ListGroupItem, Card, Button, CardTitle, CardBody } from 'reactstrap'
+import { Row, Col, ListGroup, ListGroupItem, Card, Button, CardTitle, CardBody, Progress, Container } from 'reactstrap'
 import update from 'react-addons-update'
 import PropTypes from 'prop-types'
 import Iframe from 'react-iframe'
@@ -8,18 +8,16 @@ import Iframe from 'react-iframe'
 export default class Annotator extends Component {
   constructor (props) {
     super(props)
-    
   }
 
   componentDidMount () {
 
     if (this.props.config.user) {
-      
-      console.log(this.props.config)
-      }
+    }
     else {
       axios.post('/api/auth/check')
       .then(Response => {
+        console.log(Response)
         this.props.setStateNavbar({
           config: update(this.props.config,{
             user: {$set: Response.data.user},
@@ -31,11 +29,21 @@ export default class Annotator extends Component {
     }
     }
   render () {
-    return (
+    let html
+
+    html =  (
         
         <div className="center-div">
             <br/>
             <h4>Annotator Tool </h4>
+            <Container>
+                <Progress multi>
+                    <Progress bar value="1" max={5}><Button color="success">Q1</Button></Progress>
+                    <Progress bar value="1" max={5}><Button color="danger">Q2</Button></Progress>
+                    <Progress bar value="1" max={5}><Button animated color="secondary">Q3</Button></Progress>
+                </Progress>
+            </Container>
+            
             <hr/>
             <br/>
             <Row>
@@ -47,7 +55,7 @@ export default class Annotator extends Component {
             <ListGroupItem tag="button" action>Porta ac consectetur ac</ListGroupItem>
             <ListGroupItem tag="button" action>Vestibulum at eros</ListGroupItem>
           </ListGroup></Col>
-        <Col xs="auto"><Iframe url="https://www.youtube.com/embed/kv4bhktzSZ4"
+        <Col xs="auto"><Iframe url="https://jbrowse.org/code/JBrowse-1.16.8/?data=sample_data%2Fjson%2Fvolvox&tracklist=1&nav=1&overview=1&tracks=DNA%2CExampleFeatures%2CNameTest%2CMotifs%2CGenes%2CReadingFrame%2CCDS%2CTranscript%2CClones%2CEST&loc=ctgA%3A19341..28799&highlight="
             width="800px"
             height="512px"
             id="myId"
@@ -79,6 +87,7 @@ export default class Annotator extends Component {
       </div>
         
     )
+    return html
   }
 }
 

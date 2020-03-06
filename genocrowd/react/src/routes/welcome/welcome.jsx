@@ -30,11 +30,14 @@ export default class Welcome extends Component {
     }
   render () {
     return (
-      <Card>
-        <CardImg top className="img-fluid" src="../../../../static/logo/dna.jpg"></CardImg>
+      <div>
+        <h3>Welcome to Genocrowd!</h3>
+        <hr/>
+        <Card>
+          <CardImg top className="img-fluid" src="../../../../static/logo/dna.jpg"></CardImg>
 
-      </Card>
-      // <div style="background-image: url('../../../../static/logo/dna.jpg');"></div>
+        </Card>
+      </div>
     )
   }
 }

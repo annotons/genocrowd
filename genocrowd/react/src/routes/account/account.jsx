@@ -17,9 +17,6 @@ export default class Account extends Component {
     }
   }
   
-  handleRemoveAccount() {
-
-  }
   render () {
     let html = <Redirect to="/" />
     if (this.props.config.logged) {

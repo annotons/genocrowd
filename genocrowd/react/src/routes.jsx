@@ -16,7 +16,7 @@ import Logout from './routes/login/logout'
 import Account from './routes/account/account'
 import DeleteAccount from './routes/account/delete_account'
 import Admin from './routes/admin/admin'
-import Annotator from './routes/annotator/annotator'
+import Annotator from './routes/annotator/annotatoropt'
 export default class Routes extends Component {
 
   constructor (props) {

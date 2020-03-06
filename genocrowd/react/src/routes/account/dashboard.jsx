@@ -35,8 +35,8 @@ export default class Dashboard extends Component {
       </Row>
       
       <Row>
-      <Jumbotron fluid >
-        <Container fluid>
+      <Jumbotron>
+        <Container>
           <h1 className="display-4">Statistics</h1>
           <h2 className="display-5">Number of Annotated genes</h2>
           <p className="lead">57</p>

@@ -14,22 +14,22 @@ class Apollo(Params):
             Genocrowd session, contain the user
         """
         Params.__init__(self, app, session)
-        self.genes = self.app.mongo.db["genes"]
+        self.position = self.app.mongo.db["position"]
         self.questions = self.app.mongo.db["questions"]
 
     def get_all_questions(self):
         return list(self.questions.find({}))
 
-    def get_gene_associated_questions(self, gene):
-        return list(self.questions.find({"gene": gene}))
+    def get_gene_associated_questions(self, position):
+        return list(self.questions.find({"position": position}))
 
     def add_question_on_the_fly(self, data):
-        gene = data['gene']
+        gene = data['position']
         text = data['text']
         self.questions.insert({
-            'gene': gene,
+            'position': gene,
             'text': text
         })
 
-    def get_all_genes(self):
-        return list(self.genes.find({}))
+    def get_all_positions(self):
+        return list(self.position.find({}))

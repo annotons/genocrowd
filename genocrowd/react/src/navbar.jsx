@@ -58,7 +58,6 @@ export default class GenocrowdNavbar extends Component {
         }
         links = (
           <>
-          {genoLink}
           {integrationLinks}
           {adminLinks}
           <NavItem><Link className="nav-link" to="/about"><i className="fas fa-info"></i> About</Link></NavItem>
@@ -95,6 +94,7 @@ export default class GenocrowdNavbar extends Component {
             <NavbarBrand href={this.props.config.proxyPath == "/" ? "/" : this.props.config.proxyPath + "/"}> <img src="../static/logo/logoGenocrowd.png"width={120} height={30} mode='fit'/></NavbarBrand>
             <Collapse navbar>
               <Nav className="ml-auto" navbar>
+                {genoLink}
                 {links}
               </Nav>
             </Collapse>
