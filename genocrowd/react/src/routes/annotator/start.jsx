@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button, ListGroup, Label, ListGroupItem, Input} from 'reactstrap'
+import update from 'react-addons-update'
 import PropTypes from 'prop-types'
 import Utils from '../../classes/utils'
 
@@ -15,17 +16,18 @@ export default class Start extends Component {
       startinfo : { startfound:'',
         startokpos: '',
         startfoundable:'',
-        NewPosition: 0,
+        position: 0,
         }
       }
     this.toStep = this.toStep.bind(this)
-    this.setStarttoFound = this.setStartFound.bind(this)
-
+    this.setStartFound = this.setStartFound.bind(this)
+    this.setstartPosition = this.setstartPosition.bind(this)
   }
 
   setStartFound (choice) {
+
     this.setState({
-      startinfo: update(startinfo,{
+      startinfo: update(this.state.startinfo,{
         startfound: {$set: choice}
       })
 
@@ -34,12 +36,21 @@ export default class Start extends Component {
 
   setStartokPos (choice) {
     this.setState({
-      startinfo: update(startinfo,{
-        startfound: {$set: choice}
+      startinfo: update(this.state.startinfo,{
+        startokpos: {$set: choice}
       })
      })
 
   }
+
+  setstartPosition (position) {
+    this.setState({
+      startinfo: update(this.state.startinfo,{
+        position: {$set: position}
+      })
+     })
+
+  } 
 
   toStep (nextStep) {
     this.setState({Step: nextStep})

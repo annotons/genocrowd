@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Button, ListGroup, Label, ListGroupItem, Input} from 'reactstrap'
+import update from 'react-addons-update'
 import PropTypes from 'prop-types'
 import Utils from '../../classes/utils'
 
-export default class Start extends Component {
+export default class Stop extends Component {
   constructor (props) {
     super(props)
     this.utils = new Utils()
@@ -12,60 +13,72 @@ export default class Start extends Component {
       errorMessage: '',
       fadeIn: false,
       Step: 1,
-      startinfo : { startfound:'',
-        startokpos: '',
-        startfoundable:'',
-        NewPosition: 0,
+      stopinfo : { stopfound:'',
+        stopokpos: '',
+        stopfoundable:'',
+        position: 0,
         }
       }
     this.toStep = this.toStep.bind(this)
-    this.setStarttoFound = this.setStartFound.bind(this)
+    this.setstopFound = this.setstopFound.bind(this)
+    this.setstopPosition = this.setstopPosition.bind(this)
 
   }
 
-  setStartFound (choice) {
+  setstopFound (choice) {
+
     this.setState({
-      startinfo: update(startinfo,{
-        startfound: {$set: choice}
+      stopinfo: update(this.state.stopinfo,{
+        stopfound: {$set: choice}
       })
 
      })
   }
 
-  setStartokPos (choice) {
+  setstopokPos (choice) {
     this.setState({
-      startinfo: update(startinfo,{
-        startfound: {$set: choice}
+      stopinfo: update(this.state.stopinfo,{
+        stopokpos: {$set: choice}
       })
      })
 
   }
+  
+  setstopPosition (position) {
+    this.setState({
+      stopinfo: update(this.state.stopinfo,{
+        position: {$set: position}
+      })
+     })
+
+  } 
+
 
   toStep (nextStep) {
     this.setState({Step: nextStep})
   }
 
-  renderStart1 () {
+  renderQ1 () {
     return (
       <div>
         <ListGroup>
             <ListGroupItem>
-              <Label>Is the Start Codon present?</Label>
-              <Button color="success" onClick={() => {this.setStartFound(true); this.toStep(2)}}>Yes</Button>{' '}
-              <Button color="danger" onClick={() => {this.setStartFound(false); this.toStep(3)}}>No</Button>{' '}
+              <Label>Is the stop Codon present?</Label>
+              <Button color="success" onClick={() => {this.setstopFound(true); this.toStep(2)}}>Yes</Button>{' '}
+              <Button color="danger" onClick={() => {this.setstopFound(false); this.toStep(3)}}>No</Button>{' '}
             </ListGroupItem>
         </ListGroup>
       </div>
     )
   }
 
-  renderStart2 () {
+  renderQ2 () {
     return (
       <div>
         <ListGroup>
             <ListGroupItem>
               <Label>Is is at the right coordinates?</Label>
-              <Button color="success" onClick={() => {this.setStartokPos(true); this.props.categoryhandler(2)}}>Yes</Button>{' '}
+              <Button color="success" onClick={() => {this.setstopokPos(true); this.props.categoryhandler(2)}}>Yes</Button>{' '}
               <Button color="danger" onClick={() => {this.toStep(4)}}>No</Button>{' '}
             </ListGroupItem>
         </ListGroup>
@@ -73,7 +86,7 @@ export default class Start extends Component {
     )
   }
 
-  renderStart3 () {
+  renderQ3 () {
     return (
       <div>
         <ListGroup>
@@ -87,7 +100,7 @@ export default class Start extends Component {
     )
     }
 
-  renderStart4 () {
+  renderQ4 () {
     return (
       <div>
         <ListGroup>
@@ -105,22 +118,22 @@ export default class Start extends Component {
 
   render () {
     if (this.state.Step === 1) {
-      return( this.renderStart1())
+      return( this.renderQ1())
     }
     else if (this.state.Step === 2) {
-      return( this.renderStart2())
+      return( this.renderQ2())
     }
     else if (this.state.Step === 3) {
-      return( this.renderStart3())
+      return( this.renderQ3())
     }
     else if (this.state.Step === 4) {
-      return( this.renderStart4())
+      return( this.renderQ4())
     }
   }
 }
 
-Start.propTypes = {
-  waitForStart: PropTypes.bool,
+Stop.propTypes = {
+  waitForstop: PropTypes.bool,
   config: PropTypes.object,
   categoryhandler: PropTypes.func,
 }
