@@ -129,7 +129,7 @@
   .icon-invisible {
       visibility: hidden;
   }
-  
+
   div.attribute-box {
     margin: 5px;
     padding: 5px;
@@ -158,3 +158,6 @@
   .tile {
     border-style: none;
   }
+
+
+  

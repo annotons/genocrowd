@@ -23,6 +23,19 @@ class Apollo(Params):
     def get_gene_associated_questions(self, position):
         return list(self.questions.find({"position": position}))
 
+    def add_position_to_db(self, positiondata):
+        self.position.insert({
+            "chromosome": positiondata["chromosome"],
+            "strand": positiondata["chromosome"],
+            "position": positiondata["position"],
+            "specificQuestions": positiondata["specificQuestions"]
+        })
+
+    def add_batch_position_to_db(self, batchdata):
+
+        for pos in batchdata:
+            self.add_position_to_db(pos)
+
     def add_question_on_the_fly(self, data):
         gene = data['position']
         text = data['text']
