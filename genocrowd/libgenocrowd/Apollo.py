@@ -16,6 +16,8 @@ class Apollo(Params):
         Params.__init__(self, app, session)
         self.position = self.app.mongo.db["position"]
         self.questions = self.app.mongo.db["questions"]
+        self.users = self.app.mongo.db["users"]
+        self.answers = self.app.mongo.db["answers"]
 
     def get_all_questions(self):
         return list(self.questions.find({}))
@@ -46,3 +48,10 @@ class Apollo(Params):
 
     def get_all_positions(self):
         return list(self.position.find({}))
+
+    def store_answers_from_user(self, username, data):
+        response = self.answers.find_one_and_update({"username": username, })
+        if response:
+            self.answers.update_one({"username": username}, {"$set": {str(len(response) + 1): data}})
+        else:
+            self.answers[username].insert_one({"1": data})

@@ -9,8 +9,21 @@ import Stop from './stop'
 export default class Annotator extends Component {
   constructor (props) {
     super(props)
-    this.state = ({category: 1,
-
+    this.state = ({
+      category: 1,
+      answers: {
+        startinfo : {
+          startfound:'',
+          startokpos: '',
+          startfoundable:'',
+          position: 0,
+        },
+        stopinfo : {
+          stopfound:'',
+          stopokpos: '',
+          stopfoundable:'',
+          position: 0,
+        }}
   
   })
     this.nextCategory = this.nextCategory.bind(this)
@@ -26,9 +39,19 @@ export default class Annotator extends Component {
 
   componentDidMount () {
 
-    if (this.props.config.user) {
-    }
-    else {
+    if (!this.props.config.user) {
+      axios.post('/api/auth/check')
+      .then(Response => {
+        console.log(Response)
+        this.props.setStateNavbar({
+          config: update(this.props.config,{
+            user: {$set: Response.data.user},
+            logged: {$set: !Response.data.error}
+          })
+        })
+
+      })
+      
       axios.post('/api/auth/check')
       .then(Response => {
         console.log(Response)
@@ -41,7 +64,9 @@ export default class Annotator extends Component {
 
       })
     }
+
     }
+
   render () {
     let html
     let questioncategory
