@@ -1,8 +1,8 @@
 from genocrowd.libgenocrowd.Params import Params
 
 
-class Apollo(Params):
-    """Manage Apollo interactions"""
+class Data(Params):
+    """Manage DB"""
     def __init__(self, app, session):
         """init
 
@@ -27,10 +27,11 @@ class Apollo(Params):
 
     def add_position_to_db(self, positiondata):
         self.position.insert({
+            "_id": positiondata["gene_ID"],
             "chromosome": positiondata["chromosome"],
             "strand": positiondata["chromosome"],
-            "position": positiondata["position"],
-            "specificQuestions": positiondata["specificQuestions"]
+            "start": positiondata["start"],
+            "stop": positiondata["stop"]
         })
 
     def add_batch_position_to_db(self, batchdata):

@@ -5,6 +5,7 @@ validate_email
 Flask-PyMongo
 flask-bcrypt
 Flask-OAuth
+apollo
 flask-jwt-extended
 Werkzeug==0.16
 PyYAML>=3.10
