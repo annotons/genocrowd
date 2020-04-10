@@ -23,8 +23,10 @@ from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 from genocrowd.api.admin.admin import admin_bp
 from genocrowd.api.auth.login import auth_bp
+from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
+
 
 from kombu import Exchange, Queue
 
@@ -42,6 +44,7 @@ BLUEPRINTS = (
     view_bp,
     auth_bp,
     admin_bp,
+    data_bp,
 )
 
 
@@ -134,7 +137,8 @@ def create_celery(app):
     Celery
         Celery object
     """
-    celery = Celery(app.import_name, backend=app.iniconfig.get("celery", "result_backend"), broker=app.iniconfig.get("celery", "broker_url"))
+    celery = Celery(app.import_name, backend=app.iniconfig.get(
+        "celery", "result_backend"), broker=app.iniconfig.get("celery", "broker_url"))
     # celery.conf.update(app.config)
     task_base = celery.Task
 
