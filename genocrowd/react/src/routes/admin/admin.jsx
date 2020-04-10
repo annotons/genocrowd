@@ -3,7 +3,7 @@ import { Redirect } from 'react-router'
 import Users from './usersmanagement'
 
 import PropTypes from 'prop-types'
-import Questions from './questionsmanagement'
+import Data from './questionsmanagement'
 
 export default class Admin extends Component {
   constructor (props) {
@@ -14,6 +14,7 @@ export default class Admin extends Component {
     }
   }
   
+
   render () {
     let html = <Redirect to="/" />
     if (this.props.config.logged) {
@@ -21,7 +22,7 @@ export default class Admin extends Component {
       <div className="container">
         <Users config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
         <hr />
-        <Questions config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
+        <Data config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
       </div>
     )
   }

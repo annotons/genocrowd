@@ -1,7 +1,8 @@
 # from flask import current_app as ca
-from flask import Blueprint, session
+from flask import Blueprint, session, request
 from flask import current_app as ca
 
+from apollo import ApolloInstance
 from genocrowd.api.auth.login import login_required
 from genocrowd.libgenocrowd.Apollo import Data
 from genocrowd.libgenocrowd.Utils import Utils
@@ -14,10 +15,6 @@ def annotation_start():
     DataInstance = Data(ca, session)
     all_positions = DataInstance.get_all_positions()
     selected_item = Utils.get_random_items(1, all_positions)
+    # go to position
+    # display position
     return selected_item
-
-
-@apollo_bp.route('/api/apollo/questionloader', methods=["GET"])
-@login_required
-def question_loader():
-    print("work in progress")

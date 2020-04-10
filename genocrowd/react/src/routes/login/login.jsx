@@ -58,13 +58,9 @@ export default class Login extends Component {
           this.props.setStateNavbar({
             config: update(this.props.config, {
               user: {$set: this.state.user},
-              logged: {$set: this.state.logged}
-              
+              logged: {$set: this.state.logged}  
             })
           })
-          
-          
-        
         }
       })
       .catch(error => {

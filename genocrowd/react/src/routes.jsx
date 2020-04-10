@@ -29,6 +29,7 @@ export default class Routes extends Component {
         proxyPath: document.getElementById('proxy_path').getAttribute('proxy_path'),
         user: {},
         logged: false,
+        apolloActivated: true,
         footerMessage: null,
         version: null,
         commit: null,

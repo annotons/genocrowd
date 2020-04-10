@@ -11,7 +11,7 @@ class Data(Params):
         app : Flask
             flask app
         session :
-            Genocrowd session, contain the user
+            Genocrowd session, contains the user
         """
         Params.__init__(self, app, session)
         self.position = self.app.mongo.db["position"]

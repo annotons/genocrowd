@@ -1,4 +1,6 @@
+
 from functools import wraps
+
 
 from flask import Blueprint, jsonify, request, session
 from flask import current_app as ca
@@ -6,7 +8,6 @@ from flask import current_app as ca
 from flask_pymongo import BSONObjectIdConverter
 
 from genocrowd.libapollo.Users import ApolloUsers
-
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 from werkzeug.routing import BaseConverter
@@ -47,12 +48,14 @@ def admin_required(f):
 def signup():
     new_user = {}
     local_auth = LocalAuth(ca, session)
-    local_auth.check_inputs(request.get_json())
+    data = request.get_json()
+    local_auth.check_inputs(data)
     if not local_auth.get_error():
-        new_user = local_auth.add_user_to_database(request.get_json())
+        new_user = local_auth.add_user_to_database(data)
         new_user['_id'] = str(new_user['_id'])
         session['user'] = new_user
-        = ApolloUsers
+        instance = ApolloUsers()
+        instance.add_user(data)
     return jsonify({
         'error': local_auth.get_error(),
         'errorMessage': local_auth.get_error_message(),
@@ -72,7 +75,6 @@ def login():
                 'errorMessage': ["Your account is blocked"],
                 'user': {}}
         else:
-
             session['user'] = result['user']
     return result
 

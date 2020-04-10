@@ -49,10 +49,8 @@ export default class Annotator extends Component {
             logged: {$set: !Response.data.error}
           })
         })
-
       })
-      
-      axios.post('/api/auth/check')
+      axios.post('/api/apollo/questionloader')
       .then(Response => {
         console.log(Response)
         this.props.setStateNavbar({
@@ -83,7 +81,7 @@ export default class Annotator extends Component {
         <Container>
           <Row>
             <Col>
-              <Iframe
+              <Iframe url="http://localhost:8080/apollo"
                 width="900px"
                 height="700px"
                 display="inline"
