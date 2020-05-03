@@ -1,10 +1,10 @@
-import React, { Component, Text } from "react";
+import React, { Component } from "react";
 import axios from "axios";
 import { Label, Input, Button } from "reactstrap";
 import PropTypes from "prop-types";
 import Utils from "../../classes/utils";
 
-export default class Data extends Component {
+export default class GffUpload extends Component {
   constructor(props) {
     super(props);
     this.utils = new Utils();
@@ -51,15 +51,9 @@ export default class Data extends Component {
   }
 
   onChangeHandler(e) {
-    let file = e.target.files[0];
-
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      this.setState({
-        selectedFile: e.target.result,
-      });
-    };
+    this.setState({
+      selectedFile: e.target.files[0],
+    });
   }
 
   componentWillUnmount() {
@@ -72,16 +66,21 @@ export default class Data extends Component {
     return (
       <div className="container">
         <div className=".geno-table-height-div">
-          <h2>Import genes to be studied</h2>
-              <Label for="exampleFile">File</Label>
-              <Input
-                type="file"
-                name="file"
-                id="exampleFile"
-                onChange={(e) => this.onChangeHandler(e)}
-              />
-              <Text color="muted">Choose a list of genes to study</Text>
-            <Button disabled={!this.state.selectedFile} onClick={this.handleSubmit}>Upload</Button>
+          <h2>Import a new GFF file</h2>
+          <Label for="exampleFile">File</Label>
+          <Input
+            type="file"
+            name="file"
+            id="exampleFile"
+            onChange={(e) => this.onChangeHandler(e)}
+          />
+          <br></br>
+          <Button
+            disabled={!this.state.selectedFile}
+            onClick={this.handleSubmit}
+          >
+            Upload
+          </Button>
         </div>
         <hr />
         <hr />
@@ -90,7 +89,7 @@ export default class Data extends Component {
   }
 }
 
-Data.propTypes = {
+GffUpload.propTypes = {
   waitForStart: PropTypes.bool,
   config: PropTypes.object,
 };

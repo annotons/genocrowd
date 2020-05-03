@@ -14,7 +14,7 @@ class Data(Params):
             Genocrowd session, contains the user
         """
         Params.__init__(self, app, session)
-        self.position = self.app.mongo.db["position"]
+        self.genes = self.app.mongo.db["genes.files"]
         self.questions = self.app.mongo.db["questions"]
         self.users = self.app.mongo.db["users"]
         self.answers = self.app.mongo.db["answers"]
@@ -47,11 +47,15 @@ class Data(Params):
             'text': text
         })
 
+    def update_position_info(self, id, attribute, new_value):
+        updated_gene = self.genes.find_one_and_update({"_id": id}, {"$set": {attribute: new_value}})
+        return updated_gene
+
     def get_all_positions(self):
-        return list(self.position.find({}))
+        return list(self.genes.find({}))
 
     def store_answers_from_user(self, username, data):
-        response = self.answers.find_one_and_update({"username": username, })
+        response = self.answers.find_one_and_update({"username": username})
         if response:
             self.answers.update_one({"username": username}, {"$set": {str(len(response) + 1): data}})
         else:

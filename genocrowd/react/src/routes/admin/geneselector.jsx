@@ -1,37 +1,37 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { FormGroup, CustomInput } from "reactstrap";
+import { FormGroup, CustomInput, Button } from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import update from "react-addons-update";
 import PropTypes from "prop-types";
 import Utils from "../../classes/utils";
-
-export default class Users extends Component {
+export default class GeneBoard extends Component {
   constructor(props) {
     super(props);
     this.utils = new Utils();
-    this.state = { isLoading: true, error: false, errorMessage: "", users: [] };
-    this.handleChangeAdmin = this.handleChangeAdmin.bind(this);
-    this.handleChangeBlocked = this.handleChangeBlocked.bind(this);
+    this.state = { isLoading: true, error: false, errorMessage: "", genes: [] };
+    this.handleChangeAnnotable = this.handleChangeAnnotable.bind(this);
+    this.handleRemoveGene = this.handleRemoveGene.bind(this);
     this.cancelRequest;
   }
 
-  handleChangeAdmin(event) {
-    let username = event.target.getAttribute("username");
-    console.log(event.target)
-    let index = this.state.users.findIndex((user) => user.username == username);
+  handleChangeAnnotable(event) {
+    let geneT = event.target.getAttribute("gene");
+    console.log(geneT)
+    let index = this.state.genes.findIndex((gene) => gene._id == geneT);
 
-    let newAdmin = 0;
+    let newAnnot = 0;
+    console.log(event.target.value)
     if (event.target.value == 0) {
-      newAdmin = 1;
+      newAnnot = 1;
     }
 
-    let requestUrl = "/api/admin/setadmin";
+    let requestUrl = "/api/data/setannotable";
     let data = {
-      username: username,
-      newAdmin: newAdmin,
+      gene: geneT,
+      newAnnot: newAnnot,
     };
 
     axios
@@ -43,14 +43,17 @@ export default class Users extends Component {
       })
       .then((response) => {
         console.log(requestUrl, response.data);
+        console.log(this.state.genes[index])
         this.setState({
           error: response.data.error,
           errorMessage: response.data.errorMessage,
           success: !response.data.error,
-          users: update(this.state.users, {
-            [index]: { isAdmin: { $set: newAdmin } },
+          genes: update(this.state.genes, {
+            [index]: { isAnnotable: { $set: newAnnot } },
           }),
         });
+        console.log(this.state.genes[index])
+
       })
       .catch((error) => {
         console.log(error, error.response.data.errorMessage);
@@ -63,19 +66,11 @@ export default class Users extends Component {
       });
   }
 
-  handleChangeBlocked(event) {
-    let username = event.target.getAttribute("username");
-    let index = this.state.users.findIndex((user) => user.username == username);
-
-    let newBlocked = 0;
-    if (event.target.value == 0) {
-      newBlocked = 1;
-    }
-
-    let requestUrl = "/api/admin/setblocked";
+  handleRemoveGene(event) {
+    let gene = event.target.getAttribute("gene");
+    let requestUrl = "/api/data/removegene";
     let data = {
-      username: username,
-      newBlocked: newBlocked,
+      _id: gene,
     };
 
     axios
@@ -87,13 +82,13 @@ export default class Users extends Component {
       })
       .then((response) => {
         console.log(requestUrl, response.data);
+        let gene_list = this.state.genes;
+        for( var i = 0; i < gene_list.length; i++){ if ( gene_list[i]["_id"] === gene) { gene_list.splice(i, 1); }}
         this.setState({
           error: response.data.error,
           errorMessage: response.data.errorMessage,
           success: !response.data.error,
-          users: update(this.state.users, {
-            [index]: { blocked: { $set: newBlocked } },
-          }),
+          genes: gene_list,
         });
       })
       .catch((error) => {
@@ -108,10 +103,9 @@ export default class Users extends Component {
   }
 
   componentDidMount() {
-    console.log("mount")
     if (!this.props.waitForStart) {
-      let requestUrl = "/api/admin/getusers";
-
+      let requestUrl = "/api/data/getgenes";
+      console.log("mounting");
       axios
         .get(requestUrl, {
           baseURL: this.props.config.proxyPath,
@@ -125,7 +119,7 @@ export default class Users extends Component {
             isLoading: false,
             error: response.data.error,
             errorMessage: response.data.errorMessage,
-            users: response.data.users,
+            genes: response.data.genes,
           });
         })
         .catch((error) => {
@@ -147,48 +141,34 @@ export default class Users extends Component {
   }
 
   render() {
-    // console.log()
-
     let columns = [
       {
         editable: false,
-        dataField: "ldap",
-        text: "Authentication type",
-        formatter: (cell) => {
-          return cell ? "Ldap" : "Local";
-        },
+        dataField: "chromosome",
+        text: "Chromosome",
         sort: true,
       },
       {
         editable: false,
-        dataField: "username",
-        text: "Username",
+        dataField: "_id",
+        text: "Gene",
         sort: true,
       },
       {
         editable: false,
-        dataField: "email",
-        text: "Email",
-        formatter: (cell) => {
-          return <a href={"mailto:" + cell}>{cell}</a>;
-        },
-        sort: true,
-      },
-      {
-        editable: false,
-        dataField: "isAdmin",
-        text: "Admin",
+        dataField: "isAnnotable",
+        text: "Annotable",
         formatter: (cell, row) => {
           return (
             <FormGroup>
               <div>
                 <CustomInput
                   type="switch"
-                  username={row.username}
-                  id={"set-admin-" + row.username}
-                  name="isAdmin"
-                  onChange={this.handleChangeAdmin}
-                  label="Admin"
+                  gene={row._id}
+                  id={"set-annotable-" + row._id}
+                  name="isAnnotable"
+                  onChange={this.handleChangeAnnotable}
+                  label="Annotable"
                   checked={cell}
                   value={cell}
                 />
@@ -200,22 +180,18 @@ export default class Users extends Component {
       },
       {
         editable: false,
-        dataField: "blocked",
-        text: "Blocked",
+        text: "Remove",
         formatter: (cell, row) => {
           return (
             <FormGroup>
               <div>
-                <CustomInput
-                  type="switch"
-                  username={row.username}
-                  id={"set-blocked-" + row.username}
-                  name="blocked"
-                  onChange={this.handleChangeBlocked}
-                  label="Blocked"
-                  checked={cell}
-                  value={cell}
-                />
+                <Button
+                  color="danger"
+                  name="remove"
+                  label="removeButton"
+                  gene={row._id}
+                  onClick={this.handleRemoveGene}
+                >Remove</Button>
               </div>
             </FormGroup>
           );
@@ -223,8 +199,8 @@ export default class Users extends Component {
         sort: true,
       },
       {
-        dataField: "created",
-        text: "Created",
+        dataField: "uploadDate",
+        text: "Added",
         formatter: (cell) => {
           return cell === 0 ? "Unlimited" : cell;
         },
@@ -241,7 +217,7 @@ export default class Users extends Component {
 
     return (
       <div className="container">
-        <h2>User management</h2>
+        <h2>Gene management</h2>
         <hr />
         <div className=".geno-table-height-div">
           <BootstrapTable
@@ -249,16 +225,13 @@ export default class Users extends Component {
             wrapperClasses="geno-table-wrapper"
             bootstrap4
             keyField="_id"
-            data={this.state.users}
+            data={this.state.genes}
             columns={columns}
             defaultSorted={defaultSorted}
             pagination={paginationFactory()}
             cellEdit={cellEditFactory({
               mode: "click",
               autoSelectText: true,
-              beforeSaveCell: (oldValue, newValue, row) => {
-                this.updateQuota(oldValue, newValue, row);
-              },
             })}
           />
         </div>
@@ -267,7 +240,7 @@ export default class Users extends Component {
   }
 }
 
-Users.propTypes = {
+GeneBoard.propTypes = {
   waitForStart: PropTypes.bool,
   config: PropTypes.object,
 };

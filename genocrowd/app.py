@@ -13,6 +13,7 @@ from celery import Celery
 
 from flask import Flask
 
+
 from flask_bcrypt import Bcrypt
 
 from flask_ini import FlaskIni
@@ -27,6 +28,7 @@ from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
 
+import gridfs
 
 from kombu import Exchange, Queue
 
@@ -101,6 +103,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         app.mongo = PyMongo(app)
         app.bcrypt = Bcrypt(app)
         users = app.mongo.db.users
+        genes = app.mongo.db.genes
         password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
         created = datetime.utcnow()
         if not users.find_one({'username': 'admin'}):

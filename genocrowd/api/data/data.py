@@ -1,10 +1,99 @@
 # from flask import current_app as ca
-from flask import Blueprint, request
+from BCBio import GFF
+
+from flask import Blueprint, request, session
+from flask import current_app as ca
+
+from genocrowd.api.auth.login import admin_required
+from genocrowd.libgenocrowd.Data import Data
+
+import gridfs
+
 
 data_bp = Blueprint('data', __name__, url_prefix='/')
 
 
-@data_bp.route('/api/data/selectedgenes', methods=["POST"])
-def gff_from_apollo():
+@data_bp.route('/api/data/uploadgenes', methods=["POST"])
+@admin_required
+def gene_from_apollo():
+    db = ca.mongo.db
+    db.genes.files.drop()
+    db.genes.chunks.drop()
+    fs = gridfs.GridFS(db, collection="genes")
     file = request.files['file']
-    print(file)
+    file.save("./genocrowd/tmp/specificgene.gff")
+    result = {'error': False,
+              'errorMessage': "",
+              }
+    print('done')
+    in_file = "./genocrowd/tmp/%s.gff" % ("specificgene")
+
+    in_handle = open(in_file)
+    count = 1
+    for rec in GFF.parse(in_handle):
+        gene_list = rec.features
+        print(gene_list)
+        # print(gene_list)
+        for gene in gene_list:
+            print(gene.location.end)
+            out_file = "./genocrowd/tmp/%s_%d.gff" % ("temp", count)  # creation fichier temporaire en python maketempfile à voir
+            rec.annotations = {}
+            rec.seq = ""
+            rec.features = [gene]
+            # print(rec.features.qualifiers)
+            with open(out_file, "w") as out_handle:
+                GFF.write([rec], out_handle)
+            with open(out_file, "r") as out_handle:
+                text = out_handle.read()
+                a = fs.put(text.encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
+                print(fs.get(a).chromosome)
+            count += 1
+    in_handle.close()
+    print("DONE")
+    return result
+
+
+@data_bp.route('api/data/getgenes', methods=["GET"])
+@admin_required
+def admin_get_genes():
+    dataInstance = Data(ca, session)
+    gene_list = dataInstance.get_all_positions()
+    result = {'error': False,
+              'errorMessage': "",
+              'genes': gene_list
+              }
+    return result
+
+
+@data_bp.route('api/data/setannotable', methods=["POST"])
+@admin_required
+def set_annotable():
+    data = request.get_json()
+    dataInstance = Data(ca, session)
+    gene = dataInstance.update_position_info(data["gene"], "isAnnotable", data["newAnnot"])
+    print(gene)
+    if gene["isAnnotable"] == data["newAnnot"]:
+        result = {
+            'error': False,
+            'errorMessage': ""
+        }
+    else:
+        result = {
+            'error': True,
+            'errorMessage': "No Update!"
+        }
+    return result
+
+
+@data_bp.route('api/data/removegene', methods=["POST"])
+@admin_required
+def remove_gene_from_db():
+    data = request.get_json()
+    db = ca.mongo.db
+    fs = gridfs.GridFS(db, collection="genes")
+    fs.delete(data["_id"])
+    result = {'error': False,
+              'errorMessage': ""
+              }
+    print("removed %s!" % (data["_id"]))
+    return result

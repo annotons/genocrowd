@@ -3,8 +3,8 @@ import { Redirect } from 'react-router'
 import Users from './usersmanagement'
 
 import PropTypes from 'prop-types'
-import Data from './questionsmanagement'
-
+import SpecificGeneSelection from './specificgeneselection'
+import GeneBoard from './geneselector'
 export default class Admin extends Component {
   constructor (props) {
     super(props)
@@ -22,7 +22,8 @@ export default class Admin extends Component {
       <div className="container">
         <Users config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
         <hr />
-        <Data config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
+        <GeneBoard config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
+        <SpecificGeneSelection config={this.props.config} setStateNavbar={this.props.setStateNavbar} />
       </div>
     )
   }
