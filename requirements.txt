@@ -21,4 +21,4 @@ flake8-import-order>=0.9
 gitpython
 sentry-sdk[flask]==0.10.2
 configparser
-deepdiff
+
