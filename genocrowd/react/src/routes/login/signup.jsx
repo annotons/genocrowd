@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input, Spinner} from 'reactstrap'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
 import update from 'immutability-helper'
@@ -10,14 +10,13 @@ import PropTypes from 'prop-types'
 export default class Signup extends Component {
   constructor (props) {
     super(props)
-    this.state = { isLoading: true,
+    this.state = { isLoading: false,
       error: false,
       errorMessage: '',
       username: '',
       email: '',
       password: '',
       passwordconf: '',
-      
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -57,16 +56,16 @@ export default class Signup extends Component {
       password: this.state.password,
       passwordconf: this.state.passwordconf
     }
-
+    this.setState({isLoading: true} , () => {
     axios.post(requestUrl, data, { baseURL: this.props.config.proxyPath, cancelToken: new axios.CancelToken((c) => { this.cancelRequest = c }) })
       .then(response => {
         console.log(requestUrl, response.data)
         this.setState({
-          isLoading: false,
           error: response.data.error,
           errorMessage: response.data.errorMessage,
           status: response.status,
           Redirect: true
+
         })
         if (!this.state.error) {
           this.props.setStateNavbar({
@@ -76,6 +75,9 @@ export default class Signup extends Component {
             })
           })
         }
+        this.setState({
+          isLoading: false,
+        })
       })
       .catch(error => {
         console.log(error)
@@ -91,6 +93,7 @@ export default class Signup extends Component {
         })
       })
     event.preventDefault()
+  });
   }
 
   componentWillUnmount () {
@@ -101,6 +104,7 @@ export default class Signup extends Component {
 
   render () {
     let html = <Redirect to="/dashboard" />
+
     if (!this.props.config.logged) {
       html = (
         <div className="container">
@@ -132,6 +136,10 @@ export default class Signup extends Component {
         </div>
       )
     }
+    if (this.state.isLoading) {
+      html = <> <Spinner color="secondary" /> <p>Creating user organism...</p> </>
+
+    } 
     return html
   }
 }

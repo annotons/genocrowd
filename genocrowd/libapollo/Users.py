@@ -1,11 +1,14 @@
 
 from apollo import ApolloInstance
 
+import time
+
 
 class ApolloUsers(object):
 
     def __init__(self):
-        self.wa = ApolloInstance('http://localhost:8080/apollo', 'admin@admin.fr', "admin")
+        self.wa = ApolloInstance(
+            'http://localhost:8080/apollo', 'admin@admin.fr', "admin")
 
     def add_user(self, data):
         print(data)
@@ -17,16 +20,19 @@ class ApolloUsers(object):
 
         if len(user) == 1:
             # Update name, regen password if the user ran it again
-            returnData = self.wa.users.update_user(data['email'], data['username'], data['username'], data['password'])
+            returnData = self.wa.users.update_user(
+                data['email'], data['username'], data['username'], data['password'])
         else:
-            returnData = self.wa.users.create_user(data['email'], data['username'], data['username'], data['password'], role='user')
+            returnData = self.wa.users.create_user(
+                data['email'], data['username'], data['username'], data['password'], role='user')
             self.wa.organisms.add_organism(
                 "puceron_{}".format(data["email"]),
-                "/home/konogan/Téléchargements/yeast",
+                "/home/konogan/Téléchargements/apisum_v3",
                 genus='Saccharomyces',
                 species='cerevisiae',
                 public=False)
-            data = self.wa.users.update_organism_permissions(
+            time.sleep(2)
+            self.wa.users.update_organism_permissions(
                 data["email"],
                 "puceron_{}".format(data["email"]),
                 write=True,
@@ -43,7 +49,9 @@ class ApolloUsers(object):
 
         if len(user) == 1:
             # Update name, regen password if the user ran it again
-            returnData = self.wa.users.update_user(data['email'], data['username'], data['username'], data['password'])
+            returnData = self.wa.users.update_user(
+                data['email'], data['username'], data['username'], data['password'])
         else:
-            returnData = self.wa.users.create_user(data['email'], data['username'], data['username'], data['password'], role='user')
+            returnData = self.wa.users.create_user(
+                data['email'], data['username'], data['username'], data['password'], role='user')
         return returnData

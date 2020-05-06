@@ -17,8 +17,6 @@ data_bp = Blueprint('data', __name__, url_prefix='/')
 @admin_required
 def gene_from_apollo():
     db = ca.mongo.db
-    db.genes.files.drop()
-    db.genes.chunks.drop()
     fs = gridfs.GridFS(db, collection="genes")
     file = request.files['file']
     file.save("./genocrowd/tmp/specificgene.gff")

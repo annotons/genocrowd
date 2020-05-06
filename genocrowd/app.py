@@ -27,6 +27,7 @@ from genocrowd.api.auth.login import auth_bp
 from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
+from genocrowd.api.apollo.apollo import apollo_bp
 
 import gridfs
 
@@ -47,6 +48,7 @@ BLUEPRINTS = (
     auth_bp,
     admin_bp,
     data_bp,
+    apollo_bp,
 )
 
 
