@@ -1,17 +1,16 @@
-# from flask import current_app as ca
-from flask import Blueprint, request, session
-from flask import current_app as ca
+import time
 
 from apollo import ApolloInstance
+# from flask import current_app as ca
 
-from genocrowd.api.auth.login import login_required
+from flask import Blueprint, request, session
+from flask import current_app as ca
 
 from genocrowd.libgenocrowd.Data import Data
 from genocrowd.libgenocrowd.Utils import Utils
 
 import gridfs
-import tempfile
-import time
+
 apollo_bp = Blueprint('apollo', __name__, url_prefix='/')
 
 
@@ -37,6 +36,10 @@ def annotation_start():
 
 @apollo_bp.route('api/apollo/save', methods=["POST"])
 def annotation_end():
+    db = ca.mongo.db
+    data = request.files['file']
+    fs = gridfs.GridFS(db, collection="answers")
+    fs.put(data.read().encode())
     print("i'm saving everything!")
     apollo = ApolloInstance("http://localhost:8080/apollo", "admin@admin.fr", "admin")
     feature_id = apollo.annotations.get_features("puceron_%s" % (session["user"]["email"]))["features"][0]

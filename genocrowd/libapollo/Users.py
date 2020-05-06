@@ -1,7 +1,6 @@
+import time
 
 from apollo import ApolloInstance
-
-import time
 
 
 class ApolloUsers(object):
