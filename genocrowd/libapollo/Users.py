@@ -7,7 +7,7 @@ class ApolloUsers(object):
 
     def __init__(self):
         self.wa = ApolloInstance(
-            'http://localhost:8080/apollo', 'admin@admin.fr', "admin")
+            'http://localhost:8080/apollo', "admin@local.host", "password")
 
     def add_user(self, data):
         print(data)
@@ -23,7 +23,7 @@ class ApolloUsers(object):
                 data['email'], data['username'], data['username'], data['password'])
         else:
             returnData = self.wa.users.create_user(
-                data['email'], data['username'], data['username'], data['password'], role='user')
+                data['email'], data['username'], data['username'], data['password'], role=data['role'])
             self.wa.organisms.add_organism(
                 "puceron_{}".format(data["email"]),
                 "/home/konogan/Téléchargements/apisum_v3",

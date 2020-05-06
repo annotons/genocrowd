@@ -106,18 +106,19 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         users = app.mongo.db.users
         app.mongo.db.genes
         app.mongo.db.answers
-        password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
+        password = app.bcrypt.generate_password_hash('password').decode('utf-8')
         created = datetime.utcnow()
         if not users.find_one({'username': 'admin'}):
             users.insert({
                 'username': 'admin',
-                'email': 'admin@admin.fr',
+                'email': '"admin@local.host"',
                 'password': password,
                 'created': created,
                 'isAdmin': True,
                 'isExternal': False,
                 'blocked': False
             })
+        
         if blueprints is None:
             blueprints = BLUEPRINTS
 

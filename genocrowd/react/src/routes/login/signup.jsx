@@ -54,7 +54,8 @@ export default class Signup extends Component {
       username: this.state.username,
       email: this.state.email,
       password: this.state.password,
-      passwordconf: this.state.passwordconf
+      passwordconf: this.state.passwordconf,
+      role: 'user'
     }
     this.setState({isLoading: true} , () => {
     axios.post(requestUrl, data, { baseURL: this.props.config.proxyPath, cancelToken: new axios.CancelToken((c) => { this.cancelRequest = c }) })
