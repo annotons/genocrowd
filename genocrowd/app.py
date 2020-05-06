@@ -23,13 +23,12 @@ from flask_pymongo import PyMongo
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 from genocrowd.api.admin.admin import admin_bp
+from genocrowd.api.apollo.apollo import apollo_bp
 from genocrowd.api.auth.login import auth_bp
 from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
-from genocrowd.api.apollo.apollo import apollo_bp
 
-import gridfs
 
 from kombu import Exchange, Queue
 
@@ -105,7 +104,8 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         app.mongo = PyMongo(app)
         app.bcrypt = Bcrypt(app)
         users = app.mongo.db.users
-        genes = app.mongo.db.genes
+        app.mongo.db.genes
+        app.mongo.db.answers
         password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
         created = datetime.utcnow()
         if not users.find_one({'username': 'admin'}):
