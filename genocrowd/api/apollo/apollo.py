@@ -27,7 +27,7 @@ def annotation_start():
     f.write(gff_file.read().decode('UTF-8'))
     f.close()
     f = open("./gff.txt", mode="r")
-    apollo = ApolloInstance("http://localhost:8080/apollo", "admin@local.host", "password")
+    apollo = ApolloInstance("http://localhost:8080/apollo", ca.apollo_admin_email, ca.apollo_admin_password)
     apollo.annotations.load_gff3("puceron_%s" % (session["user"]["email"]), f)
     time.sleep(1)
     url = "http://localhost:8080/apollo/annotator/loadLink?loc=%s:%s..%s&organism=puceron_%s" % (selected_item["chromosome"], selected_item["start"], selected_item["end"], session["user"]["email"])
@@ -41,7 +41,7 @@ def annotation_end():
     fs = gridfs.GridFS(db, collection="answers")
     fs.put(data.read().encode())
     print("i'm saving everything!")
-    apollo = ApolloInstance("http://localhost:8080/apollo", "admin@local.host", "password")
+    apollo = ApolloInstance("http://localhost:8080/apollo", ca.apollo_admin_email, ca.apollo_admin_password)
     feature_id = apollo.annotations.get_features("puceron_%s" % (session["user"]["email"]))["features"][0]
     gff_file = apollo.annotations.get_gff3(feature_id, "puceron_%s" % (session["user"]["email"]))
     DataInstance = Data(ca, session)
