@@ -1,5 +1,5 @@
 .footer {
-    position: relative;
+    position: fixed;
     bottom: 0;
     width: 100%;
     /* Set the fixed height of the footer here */
@@ -86,9 +86,9 @@
       border-top-style: none;
   }
   
-  div.startpoints-filter-div {
+  /* div.startpoints-filter-div {
       /*width: 30%;*/
-  }
+  } */
   
   label.startpoint-label {
       cursor: pointer;
@@ -160,4 +160,53 @@
   }
 
 
-  
+.welcome-jumbotron {
+  background-image: url("../../../../static/logo/dna.jpg");
+  background-repeat: no-repeat, repeat;
+  background-size: cover;
+  padding-top: 50px;
+  font-weight: bold;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  padding: 100px;
+  border-radius: 50px;
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0, 75);
+  text-align: center;
+}
+  .welcome-h1{
+    
+    background-color: #ffffff73;
+    padding: 50px;
+    
+  }
+  .welcome-p{
+    
+    background-color: #ffffff73;
+    padding: 50px;
+    
+  }
+
+  div.annotator {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+
+  .dashboard-cards {
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    text-align: center;
+  }
+
+  .dashboard-statcards {
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    width: 300px;
+    text-align: center;
+  }

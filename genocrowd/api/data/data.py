@@ -25,20 +25,16 @@ def gene_from_apollo():
               }
     print('done')
     in_file = "./genocrowd/tmp/%s.gff" % ("specificgene")
-
     in_handle = open(in_file)
     count = 1
     for rec in GFF.parse(in_handle):
         gene_list = rec.features
-        print(gene_list)
-        # print(gene_list)
         for gene in gene_list:
             print(gene.location.end)
             out_file = "./genocrowd/tmp/%s_%d.gff" % ("temp", count)  # creation fichier temporaire en python maketempfile à voir
             rec.annotations = {}
             rec.seq = ""
             rec.features = [gene]
-            # print(rec.features.qualifiers)
             with open(out_file, "w") as out_handle:
                 GFF.write([rec], out_handle)
             with open(out_file, "r") as out_handle:

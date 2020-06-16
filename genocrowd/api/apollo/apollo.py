@@ -31,18 +31,18 @@ def annotation_start():
     apollo.annotations.load_gff3("puceron_%s" % (session["user"]["email"]), f)
     time.sleep(1)
     url = "http://localhost:8080/apollo/annotator/loadLink?loc=%s:%s..%s&organism=puceron_%s" % (selected_item["chromosome"], selected_item["start"], selected_item["end"], session["user"]["email"])
-    return url
+    return {'url': url, 'attributes': selected_item["chromosome"]}
 
 
 @apollo_bp.route('api/apollo/save', methods=["POST"])
 def annotation_end():
-    db = ca.mongo.db
-    data = request.files['file']
-    fs = gridfs.GridFS(db, collection="answers")
-    fs.put(data.read().encode())
-    print("i'm saving everything!")
+    print('HERE WE ARE')
+    data = request.get_json()
+    print(data)
     apollo = ApolloInstance("http://localhost:8080/apollo", ca.apollo_admin_email, ca.apollo_admin_password)
-    feature_id = apollo.annotations.get_features("puceron_%s" % (session["user"]["email"]))["features"][0]
-    gff_file = apollo.annotations.get_gff3(feature_id, "puceron_%s" % (session["user"]["email"]))
-    DataInstance = Data(ca, session)
-    DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
+    feature_id = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=data["sequence"])["features"]
+    with open("dump.json", 'w') as dump:
+        dump.write(str(feature_id))
+    # gff_file = apollo.annotations.get_gff3(feature_id, "puceron_%s" % (session["user"]["email"]))
+    # DataInstance = Data(ca, session)
+    # DataInstance.store_answers_from_user(session["user"]["username"], gff_file)

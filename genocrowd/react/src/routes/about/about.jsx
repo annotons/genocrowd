@@ -12,9 +12,9 @@ export default class About extends Component {
         <hr />
         <h4>What is Genocrowd?</h4>
         <p>
-          Genocrowd is...
+          Genocrowd is a web based manual annotation tool designed towards citizen science
         </p>
-        <h4>Usefull links</h4>
+        <h4>Useful links</h4>
         <p>
             <a target="_newtab" rel="noopener noreferrer" href="https://genocrowd.readthedocs.io">Docs</a>
         </p>
