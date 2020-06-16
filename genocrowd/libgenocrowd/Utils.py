@@ -108,7 +108,7 @@ class Utils():
     @staticmethod
     def unique(liste):
         """return the list with duplicate elements removed and keep order"""
-        return [i for n, i in enumerate(liste) if i not in l[n + 1:]]
+        return [i for n, i in enumerate(liste) if i not in liste[n + 1:]]
 
     @staticmethod
     def intersect(a, b):
