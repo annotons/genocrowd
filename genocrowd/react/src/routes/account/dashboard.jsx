@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import {
   Button,
-  Media,
   CardBody,
   Row,
   Container,
   Col,
-  Table,
-  Jumbotron,
   Card,
   CardTitle,
   CardSubtitle,
