@@ -15,7 +15,7 @@ requests
 celery
 redis
 watchdog
-pytest>=4.5
+pytest
 pytest-cov
 flake8
 flake8-import-order>=0.9
