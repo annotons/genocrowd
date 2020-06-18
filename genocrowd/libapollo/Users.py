@@ -9,7 +9,7 @@ class ApolloUsers(object):
 
     def __init__(self):
         self.wa = ApolloInstance(
-            'http://localhost:8080/apollo', ca.apollo_admin_email, ca.apollo_admin_password)
+            'http://localhost:8080/', ca.apollo_admin_email, ca.apollo_admin_password)
 
     def add_user(self, data):
         print(data)
