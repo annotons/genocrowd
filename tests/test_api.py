@@ -56,7 +56,7 @@ class TestApi(GenocrowdTestCase):
             'blocked': False,
             'isExternal': False,
             'created': response.json["config"]["user"]["created"],
-            'role' : 'admin'
+            'role': 'admin'
 
         }
 
