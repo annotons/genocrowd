@@ -38,8 +38,10 @@ def annotation_start():
 def annotation_end():
     print('HERE WE ARE')
     data = request.get_json()
+
     print(data)
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
+    apollo.organisms.delete_features("puceron_senor@sanchez.fr")
     feature_id = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=data["sequence"])["features"]
     with open("dump.json", 'w') as dump:
         dump.write(str(feature_id))
