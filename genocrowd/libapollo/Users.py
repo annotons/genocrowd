@@ -31,7 +31,7 @@ class ApolloUsers(object):
             print("IMPORT")
             self.wa.organisms.add_organism(
                 "puceron_{}".format(data["email"]),
-                "/data/apisum_v3",
+                "/data/dataset",
                 genus='Acyrthosiphon',
                 species='pisum',
                 public=False)
