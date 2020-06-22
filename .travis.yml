@@ -16,7 +16,7 @@ matrix:
         - docker pull quay.io/gmod/apollo:latest
         - dockerId=$(sudo docker run -d --name mongo -t -p 27017:27017 mongo:4.2-bionic)
         - dockerId=$(sudo docker run -d --name apollo -it -v /jbrowse/root/directory/:/data -v postgres-data:/var/lib/postgresql  -p 8888:8080 quay.io/gmod/apollo:latest)
-        - docker cp ./tests/dataset/ apollo:/data/dataset/
+        - docker cp ./tests/test_data/dataset/ apollo:/data/dataset/
         - sleep 1m
         - docker logs $dockerId
       script:
@@ -39,7 +39,7 @@ matrix:
         - docker pull quay.io/gmod/apollo:latest
         - dockerId=$(sudo docker run -d --name mongo -t -p 27017:27017 mongo:4.2-bionic)
         - dockerId=$(sudo docker run -d --name apollo -t -p 8888:8080 quay.io/gmod/apollo:latest)
-        - docker cp ./tests/dataset/ apollo:/data/dataset/
+        - docker cp ./tests/test_data/dataset/ apollo:/data/dataset/
         - sleep 1m
         - docker logs $dockerId
       script:
