@@ -11,27 +11,32 @@ class TestApiAuth(GenocrowdTestCase):
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
             "email": "jwick@genocrowd.org",
+            "role": 'user'
+            
         }
 
         empty_username_data = {
             "username": "",
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
-            "email": "jwick@genocrowd.org"
+            "email": "jwick@genocrowd.org",
+            "role": 'user'
         }
 
         unvalid_email_data = {
             "username": "jwick",
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
-            "email": "xx"
+            "email": "xx",
+            "role": 'user'
         }
 
         diff_password_data = {
             "username": "jwick",
             "password": "dontkillmydog",
             "passwordconf": "dontstealmycar",
-            "email": "jwick@genocrowd.org"
+            "email": "jwick@genocrowd.org",
+            "role": 'user'
         }
 
         # username empty
