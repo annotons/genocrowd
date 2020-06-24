@@ -47,7 +47,7 @@ def gene_from_apollo():
                 GFF.write([rec], out_handle)
             with open(out_file, "r") as out_handle:
                 text = out_handle.read()
-                a = fs.put(text.encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
+                fs.put(text.encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
             count += 1
     in_handle.close()
     return result
