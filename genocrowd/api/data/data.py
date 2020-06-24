@@ -16,6 +16,16 @@ data_bp = Blueprint('data', __name__, url_prefix='/')
 @data_bp.route('/api/data/uploadgenes', methods=["POST"])
 @admin_required
 def gene_from_apollo():
+    """ Receives the GFF file from the client:
+        - Splits the genes in separate GFF files
+        - Saves them in the database
+    Returns
+    -------
+
+    json
+        error
+        errorMessage
+    """
     db = ca.mongo.db
     fs = gridfs.GridFS(db, collection="genes")
     file = request.files['file']
@@ -50,6 +60,16 @@ def gene_from_apollo():
 @data_bp.route('api/data/getgenes', methods=["GET"])
 @admin_required
 def admin_get_genes():
+    """ Gets all the genes in the database to display them in the admin tab
+
+    Returns
+    -------
+
+    json
+        error : Boolean
+        errorMessage : str
+        genes : List
+    """
     dataInstance = Data(ca, session)
     gene_list = dataInstance.get_all_positions()
     result = {'error': False,
@@ -62,10 +82,18 @@ def admin_get_genes():
 @data_bp.route('api/data/setannotable', methods=["POST"])
 @admin_required
 def set_annotable():
+    """ set the rceived gene as Annotable in the database
+
+    Returns
+    -------
+
+    json
+        error : Boolean
+        errorMessage : str
+    """
     data = request.get_json()
     dataInstance = Data(ca, session)
     gene = dataInstance.update_position_info(data["gene"], "isAnnotable", data["newAnnot"])
-    print(gene)
     if gene["isAnnotable"] == data["newAnnot"]:
         result = {
             'error': False,
@@ -82,6 +110,15 @@ def set_annotable():
 @data_bp.route('api/data/removegene', methods=["POST"])
 @admin_required
 def remove_gene_from_db():
+    """ Remove the received gene from the database
+
+    Returns
+    -------
+
+    json
+        error : Boolean
+        errorMessage : str
+    """
     data = request.get_json()
     db = ca.mongo.db
     fs = gridfs.GridFS(db, collection="genes")

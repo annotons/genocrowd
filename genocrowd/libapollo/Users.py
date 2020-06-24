@@ -6,15 +6,21 @@ from flask import current_app as ca
 
 
 class ApolloUsers(object):
+    """Allows the management of the Apollo users """
 
     def __init__(self):
-        print("INIT")
         self.wa = ApolloInstance(
             'http://localhost:8888', ca.apollo_admin_email, ca.apollo_admin_password)
-        print("INIT worked")
 
     def add_user(self, data):
-        print(data)
+        """ Add a user to Apollo and creates a copy of the studied genome for him
+
+    Returns
+    -------
+
+    json
+        user: dict
+    """
         users = self.wa.users.get_users()
         user = {}
         for u in users:
@@ -28,14 +34,12 @@ class ApolloUsers(object):
         else:
             returnData = self.wa.users.create_user(
                 data['email'], data['username'], data['username'], data['password'], role=data['role'])
-            print("IMPORT")
             self.wa.organisms.add_organism(
                 "puceron_{}".format(data["email"]),
                 "/data/dataset",
                 genus='Acyrthosiphon',
                 species='pisum',
                 public=False)
-            print("IMPORTED")
             time.sleep(2)
             self.wa.users.update_organism_permissions(
                 data["email"],
@@ -44,10 +48,17 @@ class ApolloUsers(object):
                 export=True,
                 read=True,
             )
-            # modif = self.wa.annotations.add_feature(feature={}, organism=, sequence=None)
         return returnData
 
     def log_user(self, data):
+        """ Add a user to Apollo and creates a copy of the studied genome for him
+
+    Returns
+    -------
+
+    json
+        user: dict
+    """
         users = self.wa.users.get_users()
         user = [u for u in users
                 if u['username'] == data['email']]

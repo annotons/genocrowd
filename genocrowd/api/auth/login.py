@@ -45,6 +45,8 @@ def admin_required(f):
 
 @auth_bp.route('/api/auth/signup', methods=["POST"])
 def signup():
+    """Creates a new user for Genocrowd
+    """
     new_user = {}
     local_auth = LocalAuth(ca, session)
     data = request.get_json()
@@ -64,6 +66,13 @@ def signup():
 
 @auth_bp.route('/api/auth/login', methods=['POST'])
 def login():
+    """Allows a user to log in on Genocrowd
+
+    Returns
+    -------
+
+    user info in json format
+    """
     data = request.get_json()
     local_auth = LocalAuth(ca, session)
     result = local_auth.authenticate_user(data)
@@ -81,12 +90,27 @@ def login():
 @auth_bp.route('/api/auth/check', methods=['POST'])
 @login_required
 def is_user_logged_in():
+    """Checks if a user is logged in
+
+    Returns
+    -------
+
+    user data in session in json format
+    """
     return session['user']
 
 
 @auth_bp.route('/api/auth/logout', methods=['GET'])
 @login_required
 def logout():
+    """ Logs the user out
+    
+    Returns
+    -------
+    json
+        user : empty dictionnary
+        logged: False
+    """
     session.pop('user', None)
 
     ca.logger.debug(session)
@@ -136,6 +160,14 @@ def update_password():
 @auth_bp.route('/api/auth/delete', methods=['GET'])
 @login_required
 def delete_account():
+    """ Delete the user account and logs him out
+    
+    Returns
+    -------
+    json
+        user : empty dictionnary
+        logged: False
+    """
     users = ca.mongo.db.users
     bson = BSONObjectIdConverter(BaseConverter)
     users.find_one_and_delete({'_id': bson.to_python(session['user']['_id'])})

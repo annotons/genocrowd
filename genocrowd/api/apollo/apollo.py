@@ -16,6 +16,14 @@ apollo_bp = Blueprint('apollo', __name__, url_prefix='/')
 
 @apollo_bp.route('/api/apollo/genechoice', methods=["GET"])
 def annotation_start():
+    """Selects a gene in MongoDB and imports it in the Annotation track
+
+    Returns
+    -------
+    json
+        url: url for the apollo window, centered on the gene position
+        attributes: chromosome on which the gene is
+    """
     DataInstance = Data(ca, session)
     all_positions = DataInstance.get_all_positions()
     selected_item = Utils.get_random_items(1, all_positions)[0]
@@ -36,6 +44,9 @@ def annotation_start():
 
 @apollo_bp.route('api/apollo/save', methods=["POST"])
 def annotation_end():
+    """gets the new annotation and saves it in mongodb
+
+    """
     print('HERE WE ARE')
     data = request.get_json()
 
