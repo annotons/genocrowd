@@ -31,6 +31,3 @@ class Data(Params):
             self.answers.update_one({"username": username}, {"$set": {str(len(response) + 1): data}})
         else:
             self.answers[username].insert_one({"1": data})
-
-    def define_questions(self, file):
-        print("todo")

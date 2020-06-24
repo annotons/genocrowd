@@ -33,14 +33,12 @@ def gene_from_apollo():
     result = {'error': False,
               'errorMessage': "",
               }
-    print('done')
     in_file = "./genocrowd/tmp/%s.gff" % ("specificgene")
     in_handle = open(in_file)
     count = 1
     for rec in GFF.parse(in_handle):
         gene_list = rec.features
         for gene in gene_list:
-            print(gene.location.end)
             out_file = "./genocrowd/tmp/%s_%d.gff" % ("temp", count)  # creation fichier temporaire en python maketempfile à voir
             rec.annotations = {}
             rec.seq = ""
@@ -50,10 +48,8 @@ def gene_from_apollo():
             with open(out_file, "r") as out_handle:
                 text = out_handle.read()
                 a = fs.put(text.encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
-                print(fs.get(a).chromosome)
             count += 1
     in_handle.close()
-    print("DONE")
     return result
 
 
@@ -126,5 +122,4 @@ def remove_gene_from_db():
     result = {'error': False,
               'errorMessage': ""
               }
-    print("removed %s!" % (data["_id"]))
     return result

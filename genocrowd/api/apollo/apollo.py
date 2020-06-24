@@ -27,7 +27,6 @@ def annotation_start():
     DataInstance = Data(ca, session)
     all_positions = DataInstance.get_all_positions()
     selected_item = Utils.get_random_items(1, all_positions)[0]
-    print(selected_item)
     db = ca.mongo.db
     fs = gridfs.GridFS(db, collection="genes")
     gff_file = fs.get(selected_item["_id"])
@@ -47,10 +46,7 @@ def annotation_end():
     """gets the new annotation and saves it in mongodb
 
     """
-    print('HERE WE ARE')
     data = request.get_json()
-
-    print(data)
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
     apollo.organisms.delete_features("puceron_senor@sanchez.fr")
     feature_id = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=data["sequence"])["features"]
