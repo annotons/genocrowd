@@ -6,7 +6,7 @@ from flask import current_app as ca
 
 
 class ApolloUsers(object):
-    """Allows the management of the Apollo users """
+    """Allows the management of the Apollo users"""
 
     def __init__(self):
         self.wa = ApolloInstance(

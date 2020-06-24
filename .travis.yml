@@ -45,6 +45,7 @@ matrix:
       script:
         - flake8 genocrowd tests --ignore=E501,W504
         - pytest --cov=. -vv
+
     - language: node_js
       node_js:
         - 8

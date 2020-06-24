@@ -46,10 +46,12 @@ def annotation_end():
     """gets the new annotation and saves it in mongodb"""
     data = request.get_json()
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
-    apollo.organisms.delete_features("puceron_senor@sanchez.fr")
-    feature_id = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=data["sequence"])["features"]
+    features = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=data["sequence"])["features"]
     with open("dump.json", 'w') as dump:
-        dump.write(str(feature_id))
-    # gff_file = apollo.annotations.get_gff3(feature_id, "puceron_%s" % (session["user"]["email"]))
-    # DataInstance = Data(ca, session)
-    # DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
+        dump.write(str(features))
+    gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "puceron_%s" % (session["user"]["email"]))
+    with open("GFF_OUT.gff", "w") as gffout:
+        gffout.write(str(gff_file))
+    DataInstance = Data(ca, session)
+    DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
+    # apollo.organisms.delete_features("puceron_%s" % (session.user.email))

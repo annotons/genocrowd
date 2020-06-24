@@ -1,0 +1,10 @@
+##gff-version 3
+##sequence-region NC_042494.1 1 170740645
+NC_042494.1	.	gene	60571042	60571837	.	+	.	owner=admin@local.host;gene=["LOC100572688"];dbxref=["GeneID:100572688"];ID=cd01fb8b-78a3-4d58-ab9c-2296ee50e66a;gene_biotype=["protein_coding"];gbkey=["Gene"];date_last_modified=2020-06-24;Name=LOC100572688;date_creation=2020-06-24
+NC_042494.1	.	mRNA	60571042	60571837	.	+	.	owner=admin@local.host;Parent=cd01fb8b-78a3-4d58-ab9c-2296ee50e66a;ID=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa;date_last_modified=2020-06-24;Name=LOC100572688;date_creation=2020-06-24
+NC_042494.1	.	exon	60571042	60571254	.	+	.	Parent=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa;ID=a93933a2-7a46-412b-8ab8-c1fc4223640b;Name=a93933a2-7a46-412b-8ab8-c1fc4223640b
+NC_042494.1	.	CDS	60571376	60571500	.	+	0	Parent=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa;ID=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa-CDS;Name=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa-CDS
+NC_042494.1	.	CDS	60571610	60571837	.	+	1	Parent=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa;ID=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa-CDS;Name=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa-CDS
+NC_042494.1	.	exon	60571325	60571500	.	+	.	Parent=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa;ID=43ce1311-65e0-462c-a1da-2a9d78824a57;Name=43ce1311-65e0-462c-a1da-2a9d78824a57
+NC_042494.1	.	exon	60571610	60571837	.	+	.	Parent=1b5e02cb-b4eb-47ab-b1b6-ee5e5918a5fa;ID=618c9e1e-4a2f-4b6b-b816-a07f200f6611;Name=618c9e1e-4a2f-4b6b-b816-a07f200f6611
+###
