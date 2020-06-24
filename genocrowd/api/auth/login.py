@@ -104,7 +104,7 @@ def is_user_logged_in():
 @login_required
 def logout():
     """ Logs the user out
-    
+
     Returns
     -------
     json
@@ -161,7 +161,6 @@ def update_password():
 @login_required
 def delete_account():
     """ Delete the user account and logs him out
-    
     Returns
     -------
     json
