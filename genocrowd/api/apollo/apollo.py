@@ -43,9 +43,7 @@ def annotation_start():
 
 @apollo_bp.route('api/apollo/save', methods=["POST"])
 def annotation_end():
-    """gets the new annotation and saves it in mongodb
-
-    """
+    """gets the new annotation and saves it in mongodb"""
     data = request.get_json()
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
     apollo.organisms.delete_features("puceron_senor@sanchez.fr")
