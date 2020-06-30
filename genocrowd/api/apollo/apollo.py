@@ -37,21 +37,24 @@ def annotation_start():
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
     apollo.annotations.load_gff3("puceron_%s" % (session["user"]["email"]), f)
     time.sleep(1)
+    print(selected_item)
     url = "http://localhost:8888/annotator/loadLink?loc=%s:%s..%s&organism=puceron_%s" % (selected_item["chromosome"], selected_item["start"], selected_item["end"], session["user"]["email"])
-    return {'url': url, 'attributes': selected_item["chromosome"]}
+    DataInstance.update_current_annotation(session["user"]["username"], selected_item)
+    return {'url': url}
 
 
 @apollo_bp.route('api/apollo/save', methods=["POST"])
 def annotation_end():
     """gets the new annotation and saves it in mongodb"""
-    data = request.get_json()
+    DataInstance = Data(ca, session)
+    current_gene = DataInstance.get_current_annotation(session["user"]["username"])
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
-    features = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=data["sequence"])["features"]
+    features = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=current_gene["chromosome"])["features"]
     with open("dump.json", 'w') as dump:
         dump.write(str(features))
     gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "puceron_%s" % (session["user"]["email"]))
     with open("GFF_OUT.gff", "w") as gffout:
         gffout.write(str(gff_file))
-    DataInstance = Data(ca, session)
+    
     DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
-    # apollo.organisms.delete_features("puceron_%s" % (session.user.email))
+    apollo.organisms.delete_features("puceron_%s" % (session["user"]["email"]))

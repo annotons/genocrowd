@@ -13,7 +13,6 @@ export default class Annotator extends Component {
       category: 1,
       
       url: "",
-      sequenceName: "",
       finished: false
   })
     this.nextCategory = this.nextCategory.bind(this)
@@ -27,7 +26,7 @@ export default class Annotator extends Component {
 
   setFinish () {
     let requestUrl = 'api/apollo/save'
-    let data = {sequence: this.state.sequenceName}
+    let data = {}
     axios.post(requestUrl, data , { baseURL: this.props.config.proxyPath, cancelToken: new axios.CancelToken((c) => { this.cancelRequest = c }) })
       .then(response => {
         console.log(requestUrl, response.data)
@@ -75,8 +74,7 @@ export default class Annotator extends Component {
       .then(Response => {
         console.log(Response)
         this.setState({
-          url: Response.data.url,
-          sequenceName: Response.data.attributes
+          url: Response.data.url
         })
 
       })

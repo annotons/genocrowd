@@ -133,38 +133,38 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     return app
 
 
-def create_celery(app):
-    """Create the celery object
+# def create_celery(app):
+#     """Create the celery object
 
-    Parameters
-    ----------
-    app : Flask
-        Genocrowd Flask application
+#     Parameters
+#     ----------
+#     app : Flask
+#         Genocrowd Flask application
 
-    Returns
-    -------
-    Celery
-        Celery object
-    """
-    celery = Celery(app.import_name, backend=app.iniconfig.get(
-        "celery", "result_backend"), broker=app.iniconfig.get("celery", "broker_url"))
-    # celery.conf.update(app.config)
-    task_base = celery.Task
+#     Returns
+#     -------
+#     Celery
+#         Celery object
+#     """
+#     celery = Celery(app.import_name, backend=app.iniconfig.get(
+#         "celery", "result_backend"), broker=app.iniconfig.get("celery", "broker_url"))
+#     # celery.conf.update(app.config)
+#     task_base = celery.Task
 
-    default_exchange = Exchange('default', type='direct')
+#     default_exchange = Exchange('default', type='direct')
 
-    celery.conf.task_queues = (
-        Queue('default', default_exchange, routing_key='default'),
-    )
-    celery.conf.task_default_queue = 'default'
+#     celery.conf.task_queues = (
+#         Queue('default', default_exchange, routing_key='default'),
+#     )
+#     celery.conf.task_default_queue = 'default'
 
-    class ContextTask(task_base):
-        abstract = True
+#     class ContextTask(task_base):
+#         abstract = True
 
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return task_base.__call__(self, *args, **kwargs)
-    celery.Task = ContextTask
+#         def __call__(self, *args, **kwargs):
+#             with app.app_context():
+#                 return task_base.__call__(self, *args, **kwargs)
+#     celery.Task = ContextTask
 
-    app.celery = celery
-    return celery
+#     app.celery = celery
+#     return celery

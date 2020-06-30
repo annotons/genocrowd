@@ -12,6 +12,7 @@ class TestApiAuth(GenocrowdTestCase):
             "passwordconf": "dontkillmydog",
             "email": "jwick@genocrowd.org",
             "role": 'user'
+            
         }
 
         empty_username_data = {

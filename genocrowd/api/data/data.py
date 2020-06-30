@@ -78,7 +78,7 @@ def admin_get_genes():
 @data_bp.route('api/data/setannotable', methods=["POST"])
 @admin_required
 def set_annotable():
-    """ set the rceived gene as Annotable in the database
+    """ set the received gene as Annotable in the database
 
     Returns
     -------
