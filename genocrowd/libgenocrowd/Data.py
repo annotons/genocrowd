@@ -49,9 +49,5 @@ class Data(Params):
         db = ca.mongo.db
         fs = gridfs.GridFS(db, collection="answers")
         gene = self.get_current_annotation(username)
-        # response = self.answers.files.find_one({"username": username})
-        # if response:
-        fs.put(data.encode(), _id=gene["_id"], chromosome=gene["chromosome"], start=gene["start"], end=gene["end"], strand=gene["strand"], isAnnotable=True) 
+        fs.put(data.encode(), _id=gene["_id"], chromosome=gene["chromosome"], start=gene["start"], end=gene["end"], strand=gene["strand"], isAnnotable=True)
         gene = self.update_current_annotation(username, None)
-        # else:
-        #     self.answers[username].insert_one({"1": data})
