@@ -9,7 +9,7 @@ BLUEPRINTS : Tuple
 import configparser
 from datetime import datetime
 
-from celery import Celery
+# from celery import Celery
 
 from flask import Flask
 
@@ -30,7 +30,7 @@ from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
 
 
-from kombu import Exchange, Queue
+# from kombu import Exchange, Queue
 
 from pkg_resources import get_distribution
 
@@ -39,7 +39,7 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 
-__all__ = ('create_app', 'create_celery')
+__all__ = ('create_app')
 
 BLUEPRINTS = (
     start_bp,
@@ -111,7 +111,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         app.apollo_admin_password = app.iniconfig.get('genocrowd', 'admin_password')
         password = app.bcrypt.generate_password_hash(app.apollo_admin_password).decode('utf-8')
         created = datetime.utcnow()
-        if not users.find_one():
+        if users.find_one() is None:
             users.insert_one({
                 'username': 'admin',
                 'email': app.apollo_admin_email,
@@ -119,7 +119,8 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
                 'created': created,
                 'isAdmin': True,
                 'isExternal': False,
-                'blocked': False
+                'blocked': False,
+                'current_annotation': None
             })
 
         if blueprints is None:

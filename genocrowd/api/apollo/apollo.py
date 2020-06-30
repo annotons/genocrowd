@@ -3,7 +3,7 @@ import time
 from apollo import ApolloInstance
 # from flask import current_app as ca
 
-from flask import Blueprint, request, session
+from flask import Blueprint, session
 from flask import current_app as ca
 
 from genocrowd.libgenocrowd.Data import Data
@@ -55,6 +55,6 @@ def annotation_end():
     gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "puceron_%s" % (session["user"]["email"]))
     with open("GFF_OUT.gff", "w") as gffout:
         gffout.write(str(gff_file))
-    
     DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
     apollo.organisms.delete_features("puceron_%s" % (session["user"]["email"]))
+    return {'error': False, 'errorMessage': 'no error'}

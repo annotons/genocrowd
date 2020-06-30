@@ -11,7 +11,6 @@ export default class Annotator extends Component {
     super(props)
     this.state = ({
       category: 1,
-      
       url: "",
       finished: false
   })
@@ -34,13 +33,9 @@ export default class Annotator extends Component {
           error: response.data.error,
           errorMessage: response.data.errorMessage,
           status: response.status,
-          Redirect: true
-        })
-          })
-        
-        this.setState({
           finished: true
         })
+          })
       .catch(error => {
         console.log(error)
         this.setState({
@@ -124,7 +119,7 @@ export default class Annotator extends Component {
                       5&apos; and 3&apos; UTR
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey="1">
-                      <CardBody>Hello! I m another body</CardBody>
+                      <CardBody>Are they at the right place?</CardBody>
                     </Accordion.Collapse>
                   </Card>
                   <Card>
@@ -132,7 +127,7 @@ export default class Annotator extends Component {
                       Introns and Exons
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey="2">
-                      <CardBody>Hello! I m another body</CardBody>
+                      <CardBody>Check each exon and introns boundaries</CardBody>
                     </Accordion.Collapse>
                   </Card>
                 </Accordion>
