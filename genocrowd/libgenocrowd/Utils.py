@@ -83,14 +83,32 @@ class Utils():
         return ''.join(random.choice(alpabet) for i in range(number))
 
     @staticmethod
+    def get_random_items(number, list_of_items):
+        """return n items from a list
+
+        Parameters
+        ----------
+        number : int
+            number of character of the random string
+
+        list_of_items : list
+            list of items to be chosen
+        Returns
+        -------
+        list
+            a random list of n items
+        """
+        return random.choices(list_of_items, k=number)
+
+    @staticmethod
     def camel_case(string):
         """camelCase a string"""
         return ''.join(x for x in string.title() if not x.isspace())
 
     @staticmethod
-    def unique(l):
+    def unique(liste):
         """return the list with duplicate elements removed and keep order"""
-        return [i for n, i in enumerate(l) if i not in l[n + 1:]]
+        return [i for n, i in enumerate(liste) if i not in liste[n + 1:]]
 
     @staticmethod
     def intersect(a, b):

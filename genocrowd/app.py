@@ -9,9 +9,10 @@ BLUEPRINTS : Tuple
 import configparser
 from datetime import datetime
 
-from celery import Celery
+# from celery import Celery
 
 from flask import Flask
+
 
 from flask_bcrypt import Bcrypt
 
@@ -22,11 +23,14 @@ from flask_pymongo import PyMongo
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 from genocrowd.api.admin.admin import admin_bp
+from genocrowd.api.apollo.apollo import apollo_bp
 from genocrowd.api.auth.login import auth_bp
+from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
 
-from kombu import Exchange, Queue
+
+# from kombu import Exchange, Queue
 
 from pkg_resources import get_distribution
 
@@ -35,13 +39,15 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 
-__all__ = ('create_app', 'create_celery')
+__all__ = ('create_app')
 
 BLUEPRINTS = (
     start_bp,
     view_bp,
     auth_bp,
     admin_bp,
+    data_bp,
+    apollo_bp,
 )
 
 
@@ -98,18 +104,25 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         app.mongo = PyMongo(app)
         app.bcrypt = Bcrypt(app)
         users = app.mongo.db.users
-        password = app.bcrypt.generate_password_hash('admin').decode('utf-8')
+        app.mongo.db.genes
+        app.mongo.db.answers
+
+        app.apollo_admin_email = app.iniconfig.get('genocrowd', 'admin_email')
+        app.apollo_admin_password = app.iniconfig.get('genocrowd', 'admin_password')
+        password = app.bcrypt.generate_password_hash(app.apollo_admin_password).decode('utf-8')
         created = datetime.utcnow()
-        if not users.find_one({'username': 'admin'}):
-            users.insert({
+        if users.find_one() is None:
+            users.insert_one({
                 'username': 'admin',
-                'email': 'admin@admin.fr',
+                'email': app.apollo_admin_email,
                 'password': password,
                 'created': created,
                 'isAdmin': True,
                 'isExternal': False,
-                'blocked': False
+                'blocked': False,
+                'current_annotation': None
             })
+
         if blueprints is None:
             blueprints = BLUEPRINTS
 
@@ -121,37 +134,38 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     return app
 
 
-def create_celery(app):
-    """Create the celery object
+# def create_celery(app):
+#     """Create the celery object
 
-    Parameters
-    ----------
-    app : Flask
-        Genocrowd Flask application
+#     Parameters
+#     ----------
+#     app : Flask
+#         Genocrowd Flask application
 
-    Returns
-    -------
-    Celery
-        Celery object
-    """
-    celery = Celery(app.import_name, backend=app.iniconfig.get("celery", "result_backend"), broker=app.iniconfig.get("celery", "broker_url"))
-    # celery.conf.update(app.config)
-    task_base = celery.Task
+#     Returns
+#     -------
+#     Celery
+#         Celery object
+#     """
+#     celery = Celery(app.import_name, backend=app.iniconfig.get(
+#         "celery", "result_backend"), broker=app.iniconfig.get("celery", "broker_url"))
+#     # celery.conf.update(app.config)
+#     task_base = celery.Task
 
-    default_exchange = Exchange('default', type='direct')
+#     default_exchange = Exchange('default', type='direct')
 
-    celery.conf.task_queues = (
-        Queue('default', default_exchange, routing_key='default'),
-    )
-    celery.conf.task_default_queue = 'default'
+#     celery.conf.task_queues = (
+#         Queue('default', default_exchange, routing_key='default'),
+#     )
+#     celery.conf.task_default_queue = 'default'
 
-    class ContextTask(task_base):
-        abstract = True
+#     class ContextTask(task_base):
+#         abstract = True
 
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return task_base.__call__(self, *args, **kwargs)
-    celery.Task = ContextTask
+#         def __call__(self, *args, **kwargs):
+#             with app.app_context():
+#                 return task_base.__call__(self, *args, **kwargs)
+#     celery.Task = ContextTask
 
-    app.celery = celery
-    return celery
+#     app.celery = celery
+#     return celery

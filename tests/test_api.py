@@ -55,7 +55,8 @@ class TestApi(GenocrowdTestCase):
             'isAdmin': True,
             'blocked': False,
             'isExternal': False,
-            'created': response.json["config"]["user"]["created"]
+            'created': response.json["config"]["user"]["created"],
+            'role': 'admin'
 
         }
 
@@ -81,7 +82,8 @@ class TestApi(GenocrowdTestCase):
             'isAdmin': False,
             'blocked': False,
             'isExternal': False,
-            'created': response.json["config"]["user"]["created"]
+            'created': response.json["config"]["user"]["created"],
+            'role': 'user'
         }
 
         assert response.status_code == 200

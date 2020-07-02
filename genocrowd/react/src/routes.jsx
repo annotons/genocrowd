@@ -16,6 +16,7 @@ import Logout from './routes/login/logout'
 import Account from './routes/account/account'
 import DeleteAccount from './routes/account/delete_account'
 import Admin from './routes/admin/admin'
+import Annotator from './routes/annotator/annotator'
 export default class Routes extends Component {
 
   constructor (props) {
@@ -28,6 +29,7 @@ export default class Routes extends Component {
         proxyPath: document.getElementById('proxy_path').getAttribute('proxy_path'),
         user: {},
         logged: false,
+        apolloActivated: true,
         footerMessage: null,
         version: null,
         commit: null,
@@ -88,11 +90,10 @@ export default class Routes extends Component {
             <Route path="/account" exact component={() => (<Account config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/delete" exact component={() => (<DeleteAccount config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
             <Route path="/admin" exact component={() => (<Admin config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
+            <Route path="/annotator" exact component={() => (<Annotator config={this.state.config} waitForStart={this.state.waiting} setStateNavbar={p => this.setState(p)} />)} />
 
 
           </Switch>
-          <br />
-          <br />
           <GenocrowdFooter config={this.state.config} />
         </div>
       </Router>

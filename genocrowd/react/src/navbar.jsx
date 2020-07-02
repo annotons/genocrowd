@@ -20,11 +20,12 @@ export default class GenocrowdNavbar extends Component {
 
   render () {
     let links
+    let genoLink
     // if wait is false
     if (!this.props.waitForStart) {
       
       genoLink = (
-        <NavItem><Link className="nav-link" to="/"><i className="fas fa-play"></i> GenoHome</Link></NavItem>
+        <NavItem><Link className="nav-link" to="/annotator"><i className="fas fa-play"></i> Annotator</Link></NavItem>
       )
       links = (
         <>
@@ -93,12 +94,12 @@ export default class GenocrowdNavbar extends Component {
             <NavbarBrand href={this.props.config.proxyPath == "/" ? "/" : this.props.config.proxyPath + "/"}> <img src="../static/logo/logoGenocrowd.png"width={120} height={30} mode='fit'/></NavbarBrand>
             <Collapse navbar>
               <Nav className="ml-auto" navbar>
+                {genoLink}
                 {links}
               </Nav>
             </Collapse>
           </div>
         </Navbar>
-        <br />
       </div>
     )
   }

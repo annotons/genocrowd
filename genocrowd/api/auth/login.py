@@ -1,10 +1,12 @@
 from functools import wraps
 
+
 from flask import Blueprint, jsonify, request, session
 from flask import current_app as ca
 
 from flask_pymongo import BSONObjectIdConverter
 
+from genocrowd.libapollo.Users import ApolloUsers
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 from werkzeug.routing import BaseConverter
@@ -43,13 +45,18 @@ def admin_required(f):
 
 @auth_bp.route('/api/auth/signup', methods=["POST"])
 def signup():
+    """Creates a new user for Genocrowd
+    """
     new_user = {}
     local_auth = LocalAuth(ca, session)
-    local_auth.check_inputs(request.get_json())
+    data = request.get_json()
+    local_auth.check_inputs(data)
     if not local_auth.get_error():
-        new_user = local_auth.add_user_to_database(request.get_json())
+        new_user = local_auth.add_user_to_database(data)
         new_user['_id'] = str(new_user['_id'])
         session['user'] = new_user
+        instance = ApolloUsers()
+        instance.add_user(data)
     return jsonify({
         'error': local_auth.get_error(),
         'errorMessage': local_auth.get_error_message(),
@@ -59,6 +66,13 @@ def signup():
 
 @auth_bp.route('/api/auth/login', methods=['POST'])
 def login():
+    """Allows a user to log in on Genocrowd
+
+    Returns
+    -------
+
+    user info in json format
+    """
     data = request.get_json()
     local_auth = LocalAuth(ca, session)
     result = local_auth.authenticate_user(data)
@@ -69,7 +83,6 @@ def login():
                 'errorMessage': ["Your account is blocked"],
                 'user': {}}
         else:
-
             session['user'] = result['user']
     return result
 
@@ -77,12 +90,27 @@ def login():
 @auth_bp.route('/api/auth/check', methods=['POST'])
 @login_required
 def is_user_logged_in():
+    """Checks if a user is logged in
+
+    Returns
+    -------
+
+    user data in session in json format
+    """
     return session['user']
 
 
 @auth_bp.route('/api/auth/logout', methods=['GET'])
 @login_required
 def logout():
+    """ Logs the user out
+
+    Returns
+    -------
+    json
+        user : empty dictionnary
+        logged: False
+    """
     session.pop('user', None)
 
     ca.logger.debug(session)
@@ -132,6 +160,13 @@ def update_password():
 @auth_bp.route('/api/auth/delete', methods=['GET'])
 @login_required
 def delete_account():
+    """ Delete the user account and logs him out
+    Returns
+    -------
+    json
+        user : empty dictionnary
+        logged: False
+    """
     users = ca.mongo.db.users
     bson = BSONObjectIdConverter(BaseConverter)
     users.find_one_and_delete({'_id': bson.to_python(session['user']['_id'])})

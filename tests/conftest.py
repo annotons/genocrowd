@@ -131,7 +131,8 @@ class Client(object):
             "isAdmin": True if username == "jdoe" else False,
             "isExternal": False,
             "created": datetime.utcnow(),
-            "blocked": False
+            "blocked": False,
+            "role": 'admin' if username == "jdoe" else "user"
         }
 
         auth = LocalAuth(self.app, self.session)

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import { Jumbotron, Button } from 'reactstrap'
 import update from 'react-addons-update'
 import PropTypes from 'prop-types'
 export default class Welcome extends Component {
@@ -29,13 +30,16 @@ export default class Welcome extends Component {
     }
   render () {
     return (
-      <div className="container">
-        <h2> Welcome to Genocrowd!</h2>
-        
-        <hr />
-        
-       
-        
+      <div className='container'>
+        <Jumbotron className='welcome-jumbotron'>
+          <h1 className='welcome-h1'>Welcome to Genocrowd!</h1>
+          <p className='welcome-p'>This is a Web-based Annotation tool designed towards citizen science</p>
+          <p className='welcome-p'> <Button variant="primary">Jump in!</Button></p>
+        </Jumbotron>
+        {/* <Card>
+          <CardImg top className="img-fluid" src="../../../../static/logo/dna.jpg"></CardImg>
+
+        </Card> */}
       </div>
     )
   }
