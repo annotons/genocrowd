@@ -191,7 +191,16 @@
 
 
 
-  .dashboard-cards {
+  .dashboard-usercards {
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    text-align: center;
+    width: 200px;
+
+  }
+  .dashboard-progresscards {
     margin-top: 5px;
     margin-left: 5px;
     margin-bottom: 5px;
@@ -203,7 +212,17 @@
     margin-top: 5px;
     margin-left: 5px;
     margin-bottom: 10px;
+    margin-right: 0px;
+    width: 300px;
+    text-align: center;
+  }
+
+  .dashboard-historycards {
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
     margin-right: 5px;
     width: 300px;
     text-align: center;
   }
+

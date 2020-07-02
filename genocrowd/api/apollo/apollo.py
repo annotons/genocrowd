@@ -50,11 +50,7 @@ def annotation_end():
     current_gene = DataInstance.get_current_annotation(session["user"]["username"])
     apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
     features = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=current_gene["chromosome"])["features"]
-    with open("dump.json", 'w') as dump:
-        dump.write(str(features))
     gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "puceron_%s" % (session["user"]["email"]))
-    with open("GFF_OUT.gff", "w") as gffout:
-        gffout.write(str(gff_file))
     DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
     apollo.organisms.delete_features("puceron_%s" % (session["user"]["email"]))
     return {'error': False, 'errorMessage': 'no error'}
