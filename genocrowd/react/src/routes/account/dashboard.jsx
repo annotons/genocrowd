@@ -13,6 +13,7 @@ import {
   Progress,
   ListGroup,
   ListGroupItem,
+  Table,
 } from "reactstrap";
 import PropTypes from "prop-types";
 import Identicon from "react-identicons";
@@ -88,13 +89,57 @@ export default class Dashboard extends Component {
             </Col>
           </Row>
           <Row>
-            <Card className="dashboard-hystorycards">
-              <ListGroup>
-                <ListGroupItem color="warning ">gene <Button color="success">Resume</Button></ListGroupItem>
-                <ListGroupItem color="danger">gene <Button color="success">Resume</Button></ListGroupItem>
-                <ListGroupItem color="success">gene <Button color="success">Resume</Button></ListGroupItem>
-              </ListGroup>
-            </Card>
+            <Col>
+              <Card className="dashboard-hystorycards">
+                <ListGroup>
+                  <ListGroupItem color="warning ">
+                    gene <Button color="success">Resume</Button>
+                  </ListGroupItem>
+                  <ListGroupItem color="danger">
+                    gene <Button color="success">Resume</Button>
+                  </ListGroupItem>
+                  <ListGroupItem color="success">
+                    gene <Button color="success">Resume</Button>
+                  </ListGroupItem>
+                </ListGroup>
+              </Card>
+            </Col>
+            <Col>
+              <Card>
+                <Col>
+                  <Card>
+                    <CardHeader className="center-div">
+                      Top annotators
+                    </CardHeader>
+                    <CardBody>
+                      <Table className="center-div">
+                        <thead>
+                          <tr>
+                            <th>Weekly</th>
+                            <th>Global</th>
+                          </tr>
+                        </thead>
+                      </Table>
+                    </CardBody>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card>
+                    <CardHeader className="center-div">Top groups</CardHeader>
+                    <CardBody>
+                      <Table className="center-div">
+                        <thead>
+                          <tr>
+                            <th>Weekly</th>
+                            <th>Global</th>
+                          </tr>
+                        </thead>
+                      </Table>
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Card>
+            </Col>
           </Row>
         </Container>
       );
