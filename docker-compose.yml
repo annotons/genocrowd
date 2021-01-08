@@ -1,0 +1,25 @@
+# This is a development docker-compose.yml, don't use this one in production
+version: "3.7"
+
+services:
+    genocrowd:
+        build: ./
+        ports:
+            - 9100:80
+        depends_on:
+            - mongo
+            - apollo
+        environment:
+            WAIT_HOSTS: apollo:8080, mongo:27017
+        volumes:
+            - ./:/genocrowd/
+            - ./docker/genocrowd.ini:/genocrowd/config/genocrowd.ini:ro
+            - ./docker/uwsgi_dev.ini:/etc/uwsgi/uwsgi.ini:ro
+
+    apollo:
+        image: quay.io/gmod/apollo:latest
+        volumes:
+            - ./test_data/dataset/:/data/dataset/:ro
+
+    mongo:
+        image: mongo:4.2-bionic

@@ -26,6 +26,7 @@ def annotation_start():
     """
     DataInstance = Data(ca, session)
     all_positions = DataInstance.get_all_positions()
+    # FIXME error if no gene in db
     selected_item = Utils.get_random_items(1, all_positions)[0]
     db = ca.mongo.db
     fs = gridfs.GridFS(db, collection="genes")
