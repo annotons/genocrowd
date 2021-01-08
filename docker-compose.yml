@@ -19,7 +19,7 @@ services:
     apollo:
         image: quay.io/gmod/apollo:latest
         volumes:
-            - ./test_data/dataset/:/data/dataset/:ro
+            - ./test-data/dataset/:/data/dataset/:ro
 
     mongo:
         image: mongo:4.2-bionic

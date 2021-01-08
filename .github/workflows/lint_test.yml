@@ -47,7 +47,7 @@ jobs:
         docker pull quay.io/gmod/apollo:latest
         dockerIdMongo=$(sudo docker run -d --name mongo -t -p 27017:27017 mongo:4.2-bionic)
         dockerIdApollo=$(sudo docker run -d --name apollo -it -v /jbrowse/root/directory/:/data -v postgres-data:/var/lib/postgresql -p 8888:8080 quay.io/gmod/apollo:latest)
-        docker cp ./test_data/dataset/ apollo:/data/dataset/
+        docker cp ./test-data/dataset/ apollo:/data/dataset/
         sleep 1m
         docker logs $dockerIdMongo
         docker logs $dockerIdApollo
