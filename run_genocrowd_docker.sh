@@ -24,5 +24,13 @@ if [[ ! -f $config_path ]]; then
     done
 fi
 
+if [[ "$GENOCROWD_MODE" == "dev" ]]; then
+    echo "Rebuilding js in dev mode..."
+    npm run -d dev &
+    cp docker/uwsgi_dev.ini /etc/uwsgi/uwsgi.ini
+else
+    cp docker/uwsgi.ini /etc/uwsgi/uwsgi.ini
+fi
+
 echo "Starting genocrowd ..."
 /usr/bin/supervisord
