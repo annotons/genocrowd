@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 let config = {
     entry: [
@@ -14,7 +14,10 @@ let config = {
             },
             {
                 test: /\.css$/,
-                loader: ['style-loader', 'css-loader']
+                use: [
+                    { loader: 'style-loader' },
+                    { loader: 'css-loader' },
+                ]
             }
         ]
     },
@@ -25,25 +28,10 @@ let config = {
     resolve: {
         extensions: ['.js', '.jsx'],
     },
-    // plugins: [
-    //   new webpack.DefinePlugin({
-    //     'process.env': {
-    //       'NODE_ENV': JSON.stringify('production')
-    //     }
-    //   }),
-    //   new UglifyJsPlugin({
-    //     cache: true,
-    //     parallel: true,
-    //     uglifyOptions: {
-    //       compress: true,
-    //       ecma: 6,
-    //       mangle: true
-    //     },
-    //     sourceMap: true
-    //   })
-    // ]
-
-
+    optimization: {
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    },
 };
 
 module.exports = config;
