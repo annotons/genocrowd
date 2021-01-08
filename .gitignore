@@ -1,6 +1,6 @@
 ### genocrowd ###
 config/genocrowd.ini
-genocrowd/static/js/genocrowd.js
+genocrowd/static/js/genocrowd.js*
 
 ### Flask ###
 instance/*
