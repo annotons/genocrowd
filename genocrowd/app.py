@@ -107,8 +107,12 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         app.mongo.db.genes
         app.mongo.db.answers
 
-        app.apollo_admin_email = app.iniconfig.get('genocrowd', 'admin_email')
-        app.apollo_admin_password = app.iniconfig.get('genocrowd', 'admin_password')
+        app.apollo_admin_email = app.iniconfig.get('genocrowd', 'apollo_admin_email')
+        app.apollo_admin_password = app.iniconfig.get('genocrowd', 'apollo_admin_password')
+        app.apollo_url = app.iniconfig.get('genocrowd', 'apollo_url')
+        if not app.apollo_url.endswith("/"):
+            app.apollo_url += "/"
+
         password = app.bcrypt.generate_password_hash(app.apollo_admin_password).decode('utf-8')
         created = datetime.utcnow()
         if users.find_one() is None:

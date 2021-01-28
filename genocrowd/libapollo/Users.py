@@ -9,8 +9,7 @@ class ApolloUsers(object):
     """Allows the management of the Apollo users"""
 
     def __init__(self):
-        self.wa = ApolloInstance(
-            'http://localhost:8888', ca.apollo_admin_email, ca.apollo_admin_password)
+        self.wa = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
 
     def add_user(self, data):
         """ Add a user to Apollo and creates a copy of the studied genome for him

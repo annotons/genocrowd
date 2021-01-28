@@ -35,11 +35,11 @@ def annotation_start():
     f.write(gff_file.read().decode('UTF-8'))
     f.close()
     f = open("./gff.txt", mode="r")
-    apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
+    apollo = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
     apollo.annotations.load_gff3("puceron_%s" % (session["user"]["email"]), f)
     time.sleep(1)
     print(selected_item)
-    url = "http://localhost:8888/annotator/loadLink?loc=%s:%s..%s&organism=puceron_%s" % (selected_item["chromosome"], selected_item["start"], selected_item["end"], session["user"]["email"])
+    url = "%sannotator/loadLink?loc=%s:%s..%s&organism=puceron_%s" % (ca.apollo_url, selected_item["chromosome"], selected_item["start"], selected_item["end"], session["user"]["email"])
     DataInstance.update_current_annotation(session["user"]["username"], selected_item)
     return {'url': url}
 
@@ -49,7 +49,7 @@ def annotation_end():
     """gets the new annotation and saves it in mongodb"""
     DataInstance = Data(ca, session)
     current_gene = DataInstance.get_current_annotation(session["user"]["username"])
-    apollo = ApolloInstance("http://localhost:8888", ca.apollo_admin_email, ca.apollo_admin_password)
+    apollo = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
     features = apollo.annotations.get_features(organism="puceron_%s" % (session["user"]["email"]), sequence=current_gene["chromosome"])["features"]
     gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "puceron_%s" % (session["user"]["email"]))
     DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
