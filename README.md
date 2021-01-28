@@ -18,7 +18,7 @@ All documentation, included installation instruction will be [here](https://geno
 
 ```
 docker-compose build
-docker-compose up -d
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 Browse to http://localhost:5555/
@@ -26,7 +26,7 @@ Browse to http://localhost:5555/
 To run in dev mode (code auto reload, non-minified js), use the corresponding docker-compose config:
 
 ```
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 ```
 
 # Running tests
