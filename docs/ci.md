@@ -3,7 +3,7 @@ Genocrowd continuous integration is composed of code linting and unit tests on t
 
 # Setup CI environment
 
-Genocrowd CI need a clean environment. To get it, use `ci/docker-compose.yml` of [genocrowd-docker-compose](https://github.com/annotons/genocrowd-docker-compose). This file will deploy all dependencies on ports specified in `config/genocrowd.test.ini`.
+Genocrowd CI needs a clean environment. To get it, use `ci/docker-compose.yml` of [genocrowd-docker-compose](https://github.com/annotons/genocrowd-docker-compose). This file will deploy all dependencies on ports specified in `config/genocrowd.test.ini`.
 
 ```bash
 git clone https://github.com/annotons/genocrowd-docker-compose

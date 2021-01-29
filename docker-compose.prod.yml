@@ -1,4 +1,4 @@
-# This is a development docker-compose.yml, don't use this one in production
+# This is a production docker-compose.yml, remember to change secret key and passwords below
 version: "3.7"
 
 services:
@@ -17,9 +17,50 @@ services:
             - ./docker/genocrowd.ini:/genocrowd/config/genocrowd.ini:ro
 
     apollo:
-        image: quay.io/gmod/apollo:latest
+        image: quay.io/abretaud/apollo:bipaa
+        depends_on:
+            - apollo-db
+        environment:
+            APOLLO_ADMIN_EMAIL: "admin@annotons"
+            APOLLO_ADMIN_PASSWORD: "some_random_key_change_it"
+            APOLLO_BASE_HOST: "http://localhost:9200/"
+            APOLLO_PATH_PREFIX: ""
+            APOLLO_REMOTE_ADMINS: ""
+            WEBAPOLLO_DB_USERNAME: postgres
+            WEBAPOLLO_DB_PASSWORD: password
+            WEBAPOLLO_DB_DRIVER: "org.postgresql.Driver"
+            WEBAPOLLO_DB_DIALECT: "org.hibernate.dialect.PostgresPlusDialect"
+            WEBAPOLLO_DB_URI: "jdbc:postgresql://apollo-db/postgres"
+            WEBAPOLLO_FEATURE_HAS_DBXREFS: "true"
+            WEBAPOLLO_FEATURE_HAS_ATTRS: "true"
+            WEBAPOLLO_FEATURE_HAS_PUBMED: "true"
+            WEBAPOLLO_FEATURE_HAS_GO: "true"
+            WEBAPOLLO_FEATURE_HAS_COMMENTS: "true"
+            WEBAPOLLO_FEATURE_HAS_STATUS: "true"
+            CATALINA_OPTS: "-Xms512m -Xmx10g -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"
         volumes:
-            - ./test-data/dataset/:/data/dataset/:ro
+            - ./test-data/dataset/:/apollo-data-local/dataset/
+
+    apollo-db:
+        image: postgres:11.7-alpine
+        environment:
+            POSTGRES_PASSWORD: password
+        volumes:
+            - type: tmpfs
+              target: /dev/shm
+              tmpfs:
+                  size: 536870912
+
+    cookie_proxy:
+        image: quay.io/annotons/genocrowd-cookie-proxy
+        ports:
+            - 9200:9200
+        environment:
+            GENOCROWD_SECRET: genocrowd_secret_key
+            #GXC_MAX_AGE: 60
+            GXC_LOGLEVEL: DEBUG
+            GXC_LISTEN_ADDR: 0.0.0.0:9200
+            GXC_BACKEND_URL: apollo:8080
 
     mongo:
         image: mongo:4.2-bionic
