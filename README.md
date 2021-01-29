@@ -18,10 +18,9 @@ All documentation, included installation instruction will be [here](https://geno
 
 First, if running in production, make sure to change default password and secret keys in `./docker/genocrowd.ini` and `docker-compose.prod.yml`.
 
-Then build the Genocrowd container, and run all containers like this:
+Then run all containers like this (using the specific production docker-compose file):
 
 ```
-docker-compose build
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
@@ -29,11 +28,19 @@ Browse to http://localhost:9100/
 
 ### Development mode
 
-To run in dev mode (code auto reload, non-minified js), do as above, but use the corresponding default docker-compose config:
+To run in dev mode (code auto reload, non-minified js), you need to build the Docker image:
+
+```
+docker-compose build
+```
+
+And then run all containers like this:
 
 ```
 docker-compose up -d
 ```
+
+Browse to http://localhost:9100/
 
 ## Running tests
 

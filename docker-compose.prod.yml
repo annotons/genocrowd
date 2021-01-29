@@ -3,7 +3,7 @@ version: "3.7"
 
 services:
     genocrowd:
-        build: ./
+        image: quay.io/annotons/genocrowd:latest
         ports:
             - 9100:80
         depends_on:
