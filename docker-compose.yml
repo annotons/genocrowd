@@ -17,11 +17,6 @@ services:
             - ./docker/genocrowd.ini:/genocrowd/config/genocrowd.ini:ro
 
     apollo:
-        image: quay.io/gmod/apollo:latest
-        volumes:
-            - ./test-data/dataset/:/data/dataset/:ro
-
-    apollo:
         image: quay.io/abretaud/apollo:bipaa
         depends_on:
             - apollo-db
@@ -44,7 +39,7 @@ services:
             WEBAPOLLO_FEATURE_HAS_STATUS: "true"
             CATALINA_OPTS: "-Xms512m -Xmx10g -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"
         volumes:
-            - ./test-data/dataset/:/apollo-data-local/
+            - ./test-data/dataset/:/apollo-data-local/dataset/
 
     apollo-db:
         image: postgres:11.7-alpine

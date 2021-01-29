@@ -4,8 +4,7 @@ from . import GenocrowdTestCase
 class TestApiAuth(GenocrowdTestCase):
     """Test AskOmics API /api/auth/<something>"""
 
-    def test_signup(self, client):
-        """Test /api/auth/signup route"""
+    def test_signup_ok(self, client):
         ok_data = {
             "username": "jwick",
             "password": "dontkillmydog",
@@ -14,62 +13,31 @@ class TestApiAuth(GenocrowdTestCase):
             "role": 'user'
         }
 
-        empty_username_data = {
-            "username": "",
-            "password": "dontkillmydog",
-            "passwordconf": "dontkillmydog",
-            "email": "jwick@genocrowd.org",
-            "role": 'user'
-        }
-
-        unvalid_email_data = {
-            "username": "jwick",
-            "password": "dontkillmydog",
-            "passwordconf": "dontkillmydog",
-            "email": "xx",
-            "role": 'user'
-        }
-
-        diff_password_data = {
-            "username": "jwick",
-            "password": "dontkillmydog",
-            "passwordconf": "dontstealmycar",
-            "email": "jwick@genocrowd.org",
-            "role": 'user'
-        }
-
-        # username empty
-        response = client.client.post('/api/auth/signup', json=empty_username_data)
-        assert response.status_code == 200
-        assert response.json == {
-            'error': True,
-            'errorMessage': ['Username name empty'],
-            'user': {}
-        }
-
-        # non valid email
-        response = client.client.post('/api/auth/signup', json=unvalid_email_data)
-        assert response.status_code == 200
-        assert response.json == {
-            'error': True,
-            'errorMessage': ['Not a valid email'],
-            'user': {}
-        }
-
-        # different password
-        response = client.client.post('/api/auth/signup', json=diff_password_data)
-        assert response.status_code == 200
-        assert response.json == {
-            'error': True,
-            'errorMessage': ["Password doesn't match"],
-            'user': {}
-        }
-
-        # ok inputs
         response = client.client.post('/api/auth/signup', json=ok_data)
         assert response.status_code == 200
-        assert response.json["error"] is False
-        assert response.json["user"] != {}
+        assert response.json['error'] is False
+        assert response.json['errorMessage'] == []
+        assert response.json['user'] != {} and '_id' in response.json['user'] != {}
+
+        # Test logged
+        with client.client.session_transaction() as sess:
+            assert 'user' in sess
+            assert sess["user"]['username'] == "jwick" and sess["user"]['email'] == "jwick@genocrowd.org"
+
+    def test_signup_duplicate(self, client):
+        ok_data = {
+            "username": "jwick",
+            "password": "dontkillmydog",
+            "passwordconf": "dontkillmydog",
+            "email": "jwick@genocrowd.org",
+            "role": 'user'
+        }
+
+        response = client.client.post('/api/auth/signup', json=ok_data)
+        assert response.status_code == 200
+        assert response.json['error'] is False
+        assert response.json['errorMessage'] == []
+        assert response.json['user'] != {} and '_id' in response.json['user'] != {}
 
         # Test logged
         with client.client.session_transaction() as sess:
@@ -84,23 +52,69 @@ class TestApiAuth(GenocrowdTestCase):
             'errorMessage': ["Username already registered", "Email already registered"],
             'user': {}
         }
-        client.reset_db()
 
-    def test_wrong_login(self, client):
+    def test_signup_empty(self, client):
+
+        empty_username_data = {
+            "username": "",
+            "password": "dontkillmydog",
+            "passwordconf": "dontkillmydog",
+            "email": "jwick@genocrowd.org",
+            "role": 'user'
+        }
+
+        # username empty
+        response = client.client.post('/api/auth/signup', json=empty_username_data)
+        assert response.status_code == 200
+        assert response.json == {
+            'error': True,
+            'errorMessage': ['Username name empty'],
+            'user': {}
+        }
+
+    def test_signup_invalid_email(self, client):
+
+        invalid_email_data = {
+            "username": "jwick",
+            "password": "dontkillmydog",
+            "passwordconf": "dontkillmydog",
+            "email": "xx",
+            "role": 'user'
+        }
+
+        # non valid email
+        response = client.client.post('/api/auth/signup', json=invalid_email_data)
+        assert response.status_code == 200
+        assert response.json == {
+            'error': True,
+            'errorMessage': ['Not a valid email'],
+            'user': {}
+        }
+
+    def test_signup_bad_passw(self, client):
+
+        diff_password_data = {
+            "username": "jwick",
+            "password": "dontkillmydog",
+            "passwordconf": "dontstealmycar",
+            "email": "jwick@genocrowd.org",
+            "role": 'user'
+        }
+
+        # different password
+        response = client.client.post('/api/auth/signup', json=diff_password_data)
+        assert response.status_code == 200
+        assert response.json == {
+            'error': True,
+            'errorMessage': ["Password doesn't match"],
+            'user': {}
+        }
+
+    def test_wrong_login_name(self, client):
         """Test /api/auth/login route with wrong credentials"""
         inputs_wrong_username = {
             "login": "xx",
             "password": "iamjohndoe"
-        }
-
-        inputs_wrong_email = {
-            "login": "xx@example.org",
-            "password": "iamjohndoe"
-        }
-
-        inputs_wrong_password = {
-            "login": "jdoe@genocrowd.org",
-            "password": "xx"
         }
 
         client.create_two_users()
@@ -114,6 +128,20 @@ class TestApiAuth(GenocrowdTestCase):
             'user': {}
         }
 
+        # Test logged
+        with client.client.session_transaction() as sess:
+            assert 'user' not in sess
+
+    def test_wrong_login_email(self, client):
+        """Test /api/auth/login route with wrong credentials"""
+
+        inputs_wrong_email = {
+            "login": "xx@example.org",
+            "password": "iamjohndoe"
+        }
+
+        client.create_two_users()
+
         response = client.client.post('/api/auth/login', json=inputs_wrong_email)
 
         assert response.status_code == 200
@@ -122,6 +150,19 @@ class TestApiAuth(GenocrowdTestCase):
             'errorMessage': ["Incorrect login identifier"],
             'user': {}
         }
+
+        # Test logged
+        with client.client.session_transaction() as sess:
+            assert 'user' not in sess
+
+    def test_wrong_login_pass(self, client):
+        """Test /api/auth/login route with wrong credentials"""
+        inputs_wrong_password = {
+            "login": "jdoe@genocrowd.org",
+            "password": "xx"
+        }
+
+        client.create_two_users()
 
         response = client.client.post('/api/auth/login', json=inputs_wrong_password)
 
@@ -135,7 +176,6 @@ class TestApiAuth(GenocrowdTestCase):
         # Test logged
         with client.client.session_transaction() as sess:
             assert 'user' not in sess
-        client.reset_db()
 
     def test_ok_login(self, client):
         """Test /api/auth/login route with good credentials"""
@@ -167,7 +207,6 @@ class TestApiAuth(GenocrowdTestCase):
         with client.client.session_transaction() as sess:
             assert 'user' in sess
             assert sess["user"]['username'] == "jdoe" and sess["user"]['email'] == "jdoe@genocrowd.org"
-        client.reset_db()
 
     def test_update_profile(self, client):
         """Test /api/auth/profile route"""
@@ -245,25 +284,29 @@ class TestApiAuth(GenocrowdTestCase):
         with client.client.session_transaction() as sess:
             assert 'user' in sess
             assert sess["user"]['username'] == update_all_data["newUsername"] and sess["user"]['email'] == update_all_data["newEmail"]
-        client.reset_db()
 
-    def test_update_password(self, client):
+    def test_update_password_ok(self, client):
         """test /api/auth/password"""
-        empty_data = {
-            "newPassword": "",
-            "confPassword": "",
-            "oldPassword": "iamjohndoe"
-        }
-
-        unidentical_passwords_data = {
-            "newPassword": "helloworld",
-            "confPassword": "holamundo",
-            "oldPassword": "iamjohndoe"
-        }
 
         ok_data = {
             "newPassword": "helloworld",
             "confPassword": "helloworld",
+            "oldPassword": "iamjohndoe"
+        }
+
+        client.create_two_users()
+        client.log_user("jdoe")
+
+        response = client.client.post('/api/auth/password', json=ok_data)
+        assert response.status_code == 200
+        assert response.json["error"] is False
+        assert response.json["user"]["username"] == "jdoe"
+
+    def test_update_password_empty(self, client):
+        """test /api/auth/password"""
+        empty_data = {
+            "newPassword": "",
+            "confPassword": "",
             "oldPassword": "iamjohndoe"
         }
 
@@ -276,18 +319,22 @@ class TestApiAuth(GenocrowdTestCase):
         assert response.json["user"]["username"] == "jdoe"
         assert response.json["user"]["password"] != empty_data["newPassword"]
 
+    def test_update_password_bad(self, client):
+        """test /api/auth/password"""
+        unidentical_passwords_data = {
+            "newPassword": "helloworld",
+            "confPassword": "holamundo",
+            "oldPassword": "iamjohndoe"
+        }
+
+        client.create_two_users()
+        client.log_user("jdoe")
+
         response = client.client.post('/api/auth/password', json=unidentical_passwords_data)
         assert response.status_code == 200
         assert response.json["error"] is True
         assert response.json["user"]["username"] == "jdoe"
         assert response.json["user"]["password"] != unidentical_passwords_data['newPassword']
-
-        response = client.client.post('/api/auth/password', json=ok_data)
-        assert response.status_code == 200
-        assert response.json["error"] is False
-        assert response.json["user"]["username"] == "jdoe"
-
-        client.reset_db()
 
     def test_logout(self, client):
         """test /api/auth/logout route"""

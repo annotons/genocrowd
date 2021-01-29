@@ -109,9 +109,11 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
 
         app.apollo_admin_email = app.iniconfig.get('genocrowd', 'apollo_admin_email')
         app.apollo_admin_password = app.iniconfig.get('genocrowd', 'apollo_admin_password')
+        app.apollo_dataset_path = app.iniconfig.get('genocrowd', 'apollo_dataset_path')
         app.apollo_url = app.iniconfig.get('genocrowd', 'apollo_url')
-        if not app.apollo_url.endswith("/"):
-            app.apollo_url += "/"
+        # We don't want ending slash
+        if app.apollo_url.endswith("/"):
+            app.apollo_url = app.apollo_url[:-1]
 
         password = app.bcrypt.generate_password_hash(app.apollo_admin_password).decode('utf-8')
         created = datetime.utcnow()

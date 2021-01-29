@@ -27,7 +27,7 @@ def client():
 
 
 class Client(object):
-    """Fixtrue class
+    """Fixture class
 
     Attributes
     ----------
@@ -64,6 +64,8 @@ class Client(object):
 
         # bson
         self.bson = BSONObjectIdConverter(BaseConverter)
+
+        self.reset_db()
 
     def get_config(self, section, entry, boolean=False):
         """Summary

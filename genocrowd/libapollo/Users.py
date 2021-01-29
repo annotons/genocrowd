@@ -14,12 +14,12 @@ class ApolloUsers(object):
     def add_user(self, data):
         """ Add a user to Apollo and creates a copy of the studied genome for him
 
-    Returns
-    -------
+        Returns
+        -------
 
-    json
-        user: dict
-    """
+        json
+            user: dict
+        """
         users = self.wa.users.get_users()
         user = {}
         for u in users:
@@ -35,7 +35,7 @@ class ApolloUsers(object):
                 data['email'], data['username'], data['username'], data['password'], role=data['role'])
             self.wa.organisms.add_organism(
                 "puceron_{}".format(data["email"]),
-                "/data/dataset",
+                ca.apollo_dataset_path,
                 genus='Acyrthosiphon',
                 species='pisum',
                 public=False)
@@ -52,12 +52,12 @@ class ApolloUsers(object):
     def log_user(self, data):
         """ Add a user to Apollo and creates a copy of the studied genome for him
 
-    Returns
-    -------
+        Returns
+        -------
 
-    json
-        user: dict
-    """
+        json
+            user: dict
+        """
         users = self.wa.users.get_users()
         user = [u for u in users
                 if u['username'] == data['email']]
