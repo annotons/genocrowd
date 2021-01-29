@@ -17,7 +17,7 @@ class TestApi(GenocrowdTestCase):
             "message": "Welcome to Genocrowd"
         }
 
-    def test_start(self, client):
+    def test_start_anonymous(self, client):
         """Test /api/start route"""
         # Non logged
         expected_config_nouser = {
@@ -37,15 +37,25 @@ class TestApi(GenocrowdTestCase):
             "config": expected_config_nouser
         }
 
+    def test_start_admin(self, client):
+
         # Create database and user
         client.create_two_users()
 
-        # Jdoe (admin) logged-
+        # Jdoe (admin) logged
         client.log_user("jdoe")
 
         response = client.client.get('/api/start')
 
-        expected_config_jdoe = expected_config_nouser
+        expected_config_jdoe = {
+            'footerMessage': client.get_config('genocrowd', 'footer_message'),
+            "version": get_distribution('genocrowd').version,
+            "commit": None,
+            "gitUrl": "https://github.com/annotons/genocrowd",
+            "proxyPath": "/",
+            "user": {},
+            "logged": False
+        }
         expected_config_jdoe['logged'] = True
         expected_config_jdoe["user"] = {
             '_id': response.json['config']['user']['_id'],
@@ -67,12 +77,25 @@ class TestApi(GenocrowdTestCase):
             "config": expected_config_jdoe
         }
 
+    def test_start_user(self, client):
+
+        # Create database and user
+        client.create_two_users()
+
         # jsmith (non admin) logged
         client.log_user("jsmith")
 
         response = client.client.get('/api/start')
 
-        expected_config_jsmith = expected_config_nouser
+        expected_config_jsmith = {
+            'footerMessage': client.get_config('genocrowd', 'footer_message'),
+            "version": get_distribution('genocrowd').version,
+            "commit": None,
+            "gitUrl": "https://github.com/annotons/genocrowd",
+            "proxyPath": "/",
+            "user": {},
+            "logged": False
+        }
         expected_config_jsmith["logged"] = True
         expected_config_jsmith["user"] = {
             '_id': response.json['config']['user']['_id'],
@@ -92,5 +115,3 @@ class TestApi(GenocrowdTestCase):
             "errorMessage": '',
             "config": expected_config_jsmith
         }
-
-        client.reset_db()
