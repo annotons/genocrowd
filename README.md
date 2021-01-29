@@ -10,7 +10,7 @@ It is still under heavy development.
 
 ## Documentation
 
-All documentation, included installation instruction will be [here](https://genocrowd.readthedocs.io/en/latest/) when it's written
+All documentation, included installation instruction is [here](https://genocrowd.readthedocs.io/en/latest/).
 
 ## Running it with Docker
 

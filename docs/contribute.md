@@ -18,7 +18,7 @@ Write tests for your changes, and make sure that they [passes](dev.md#launch-con
 
 Open a pull request against the master branch of genocrowd. The message of your pull request should describe your modifications (why and how).
 
-The pull request should pass all the [continuous integration](ci.md) which is automatically run by Github using Travis CI. The coverage must be at least remain the same (but it's better if it increases)
+The pull request should pass all the Continuous Integration checks automatically run by Github Actions.
 
 
 ## Coding style guidelines

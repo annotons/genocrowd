@@ -1,4 +1,4 @@
-all the documentation (including what you are reading) can be found [here](https://genocrowd.readthedocs.io). Files are on the [Genocrowd repository](https://github.com/annotons/genocrowd/tree/master/docs).
+All the documentation (including what you are reading) can be found [here](https://genocrowd.readthedocs.io). Files are on the [Genocrowd repository](https://github.com/annotons/genocrowd/tree/master/docs).
 
 # Serve doc locally
 
@@ -6,8 +6,12 @@ To serve docs locally, run
 
 ```bash
 cd genocrowd
-# source the genocrowd virtual env
-source venv/bin/activate
+
+# Create the genocrowd virtual env if not already existing
+virtualenv .venv
+. .venv/bin/activate
+pip install -r docs/requirements.txt
+
 mkdocs serve
 ```
 
