@@ -1,5 +1,5 @@
-from io import StringIO
 import tempfile
+from io import StringIO
 
 from BCBio import GFF
 
