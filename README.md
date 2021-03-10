@@ -42,6 +42,12 @@ docker-compose up -d
 
 Browse to http://localhost:9100/
 
+## Admin user account
+
+By default a new admin user account is created at startup. Login: `admin@annotons`, password: `some_random_key_change_it`
+
+This is configurable in `./docker/genocrowd.ini`.
+
 ## Running tests
 
 Run the app with docker-compose, then run this:
