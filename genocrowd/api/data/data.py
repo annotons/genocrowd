@@ -1,4 +1,6 @@
-# from flask import current_app as ca
+from io import StringIO
+import tempfile
+
 from BCBio import GFF
 
 from flask import Blueprint, request, session
@@ -8,10 +10,6 @@ from genocrowd.api.auth.login import admin_required
 from genocrowd.libgenocrowd.Data import Data
 
 import gridfs
-
-import tempfile
-
-from io import StringIO
 
 
 data_bp = Blueprint('data', __name__, url_prefix='/')
