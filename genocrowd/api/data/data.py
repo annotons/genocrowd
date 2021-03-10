@@ -9,6 +9,10 @@ from genocrowd.libgenocrowd.Data import Data
 
 import gridfs
 
+import tempfile
+
+from io import StringIO
+
 
 data_bp = Blueprint('data', __name__, url_prefix='/')
 
@@ -29,27 +33,23 @@ def gene_from_apollo():
     db = ca.mongo.db
     fs = gridfs.GridFS(db, collection="genes")
     file = request.files['file']
-    file.save("./genocrowd/tmp/specificgene.gff")
-    result = {'error': False,
-              'errorMessage': "",
-              }
-    in_file = "./genocrowd/tmp/%s.gff" % ("specificgene")
-    in_handle = open(in_file)
-    count = 1
-    for rec in GFF.parse(in_handle):
-        gene_list = rec.features
-        for gene in gene_list:
-            out_file = "./genocrowd/tmp/%s_%d.gff" % ("temp", count)  # creation fichier temporaire en python maketempfile à voir
-            rec.annotations = {}
-            rec.seq = ""
-            rec.features = [gene]
-            with open(out_file, "w") as out_handle:
-                GFF.write([rec], out_handle)
-            with open(out_file, "r") as out_handle:
-                text = out_handle.read()
-                fs.put(text.encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
-            count += 1
-    in_handle.close()
+    with tempfile.NamedTemporaryFile(mode='w+') as full_gff:
+        file.save(full_gff.name)
+        result = {
+            'error': False,
+            'errorMessage': "",
+        }
+        count = 1
+        for rec in GFF.parse(full_gff):
+            gene_list = rec.features
+            for gene in gene_list:
+                rec.annotations = {}
+                rec.seq = ""
+                rec.features = [gene]
+                gff_out = StringIO()
+                GFF.write([rec], gff_out)
+                fs.put(gff_out.getvalue().encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
+                count += 1
     return result
 
 
