@@ -32,5 +32,8 @@ else
     cp docker/uwsgi.ini /etc/uwsgi/uwsgi.ini
 fi
 
+echo "Waiting for Apollo startup"
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' apollo:8080/annotator/index)" != "200" ]]; do sleep 5; done
+
 echo "Starting genocrowd ..."
 /usr/bin/supervisord

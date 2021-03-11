@@ -22,6 +22,7 @@ RUN apk add --no-cache \
     nodejs-npm \
     git \
     nano \
+    curl \
     bash && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
