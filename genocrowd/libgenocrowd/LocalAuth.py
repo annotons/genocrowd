@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask_pymongo import BSONObjectIdConverter
 
+from genocrowd.libapollo.ApolloUsers import ApolloUsers
 from genocrowd.libgenocrowd.Params import Params
 
 from pymongo import ReturnDocument
@@ -124,21 +125,25 @@ class LocalAuth(Params):
         """
         return self.users.count_documents()
 
-    def add_user_to_database(self, data):
-        password = self.app.bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    def add_user_to_database(self, username, email, password, role="user"):
+        password = self.app.bcrypt.generate_password_hash(password).decode('utf-8')
         created = datetime.utcnow()
         user_id = self.users.insert({
-            'username': data['username'],
-            'email': data['email'],
+            'username': username,
+            'email': email,
             'password': password,
             'created': created,
-            'isAdmin': False,
+            'isAdmin': role == 'admin',
             'isExternal': False,
             'blocked': False,
             'current_annotation': None
         })
 
         new_user = self.users.find_one({'_id': user_id})
+
+        apolloinstance = ApolloUsers()
+        apolloinstance.add_user(username, email, password, role)
+
         return new_user
 
     def authenticate_user(self, data):

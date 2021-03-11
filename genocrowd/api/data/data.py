@@ -48,6 +48,8 @@ def gene_from_apollo():
                 GFF.write([rec], gff_out)
                 fs.put(gff_out.getvalue().encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
                 count += 1
+
+    # FIXME refresh gene list in UI
     return result
 
 

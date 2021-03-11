@@ -6,7 +6,6 @@ from flask import current_app as ca
 
 from flask_pymongo import BSONObjectIdConverter
 
-from genocrowd.libapollo.Users import ApolloUsers
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 from werkzeug.routing import BaseConverter
@@ -52,11 +51,10 @@ def signup():
     data = request.get_json()
     local_auth.check_inputs(data)
     if not local_auth.get_error():
-        new_user = local_auth.add_user_to_database(data)
+        # FIXME is it safe to pass role? where does it come from?
+        new_user = local_auth.add_user_to_database(data['username'], data['email'], data['password'], data['role'])
         new_user['_id'] = str(new_user['_id'])
         session['user'] = new_user
-        instance = ApolloUsers()
-        instance.add_user(data)
     return jsonify({
         'error': local_auth.get_error(),
         'errorMessage': local_auth.get_error_message(),

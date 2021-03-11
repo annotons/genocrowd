@@ -7,7 +7,6 @@ BLUEPRINTS : Tuple
 """
 
 import configparser
-from datetime import datetime
 
 # from celery import Celery
 
@@ -28,6 +27,7 @@ from genocrowd.api.auth.login import auth_bp
 from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
+from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 
 # from kombu import Exchange, Queue
@@ -110,24 +110,24 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         app.apollo_admin_email = app.iniconfig.get('genocrowd', 'apollo_admin_email')
         app.apollo_admin_password = app.iniconfig.get('genocrowd', 'apollo_admin_password')
         app.apollo_dataset_path = app.iniconfig.get('genocrowd', 'apollo_dataset_path')
+        app.apollo_org_id = app.iniconfig.get('genocrowd', 'apollo_org_id')
         app.apollo_url = app.iniconfig.get('genocrowd', 'apollo_url')
         # We don't want ending slash
         if app.apollo_url.endswith("/"):
             app.apollo_url = app.apollo_url[:-1]
 
-        password = app.bcrypt.generate_password_hash(app.apollo_admin_password).decode('utf-8')
-        created = datetime.utcnow()
+        app.apollo_url_ext = app.iniconfig.get('genocrowd', 'apollo_url_ext')
+        # We don't want ending slash
+        if app.apollo_url_ext.endswith("/"):
+            app.apollo_url_ext = app.apollo_url_ext[:-1]
+
+        configure_logging(app)
+
         if users.find_one() is None:
-            users.insert_one({
-                'username': 'admin',
-                'email': app.apollo_admin_email,
-                'password': password,
-                'created': created,
-                'isAdmin': True,
-                'isExternal': False,
-                'blocked': False,
-                'current_annotation': None
-            })
+            # Create default admin user
+            # FIXME wait for apollo to be ready?
+            local_auth = LocalAuth(app, None)
+            local_auth.add_user_to_database('admin', app.apollo_admin_email, app.apollo_admin_password, 'admin')
 
         if blueprints is None:
             blueprints = BLUEPRINTS
@@ -138,6 +138,15 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
     if proxy_path:
         ReverseProxyPrefixFix(app)
     return app
+
+
+def configure_logging(app):
+    """Configure logging."""
+
+    import logging
+
+    # Set log level
+    app.logger.setLevel(logging.INFO)
 
 
 # def create_celery(app):
