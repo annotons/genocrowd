@@ -45,6 +45,8 @@ COPY docker/uwsgi.ini /etc/uwsgi/
 COPY docker/supervisord.conf /etc/supervisord.conf
 
 RUN rm -f config/genocrowd.ini && \
+    echo "Installing webpack..." && \
+    npm install --global webpack && \
     echo "Installing node deps..." && \
     npm install && \
     echo "" && \
