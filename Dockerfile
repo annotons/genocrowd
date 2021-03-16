@@ -39,6 +39,8 @@ RUN apk add --no-cache \
 COPY . /genocrowd
 WORKDIR /genocrowd
 
+RUN pip install -e .
+
 COPY docker/nginx.conf /etc/nginx/
 COPY docker/nginx_genocrowd.conf /etc/nginx/conf.d/
 COPY docker/uwsgi.ini /etc/uwsgi/
@@ -46,8 +48,6 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 
 RUN rm -f config/genocrowd.ini && \
     npm config set registry http://registry.npmjs.org/ && \
-    echo "Installing webpack..." && \
-    npm install --global webpack webpack-cli && \
     echo "Installing node deps..." && \
     npm install --loglevel verbose && \
     echo "" && \

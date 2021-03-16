@@ -13,7 +13,10 @@ services:
             WAIT_HOSTS: apollo:8080, mongo:27017
             GENOCROWD_MODE: dev
         volumes:
-            - ./:/genocrowd/
+            - ./genocrowd/:/genocrowd/genocrowd/
+            - ./sass/:/genocrowd/sass/
+            - ./test-data/:/genocrowd/test-data/
+            - ./tests/:/genocrowd/tests/
             - ./docker/genocrowd.ini:/genocrowd/config/genocrowd.ini:ro
 
     apollo:
