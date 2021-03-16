@@ -46,9 +46,9 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 
 RUN rm -f config/genocrowd.ini && \
     echo "Installing webpack..." && \
-    npm install --global webpack && \
+    npm install --global webpack webpack-cli && \
     echo "Installing node deps..." && \
-    npm install && \
+    npm install --loglevel verbose && \
     echo "" && \
     echo "-----------" && \
     echo "" && \
