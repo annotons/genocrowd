@@ -126,6 +126,8 @@ class LocalAuth(Params):
         return self.users.count_documents()
 
     def add_user_to_database(self, username, email, password, role="user"):
+
+        self.app.logger.info("Creating user %s" % username)
         password = self.app.bcrypt.generate_password_hash(password).decode('utf-8')
         created = datetime.utcnow()
         user_id = self.users.insert({

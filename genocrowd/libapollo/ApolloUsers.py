@@ -28,9 +28,11 @@ class ApolloUsers(object):
 
         if len(user) == 1:
             # Update name, regen password if the user ran it again
+            ca.logger.info("Updating existing Apollo user %s" % username)
             returnData = self.wa.users.update_user(
                 email, username, username, password)
         else:
+            ca.logger.info("Creating new Apollo user %s" % username)
             returnData = self.wa.users.create_user(
                 email, username, username, password, role=role)
 
@@ -42,6 +44,7 @@ class ApolloUsers(object):
         if not no_orgs:
             orgs_ids = [org['id'] for org in orgs]
         if no_orgs or org_id not in orgs_ids:
+            ca.logger.info("Creating new Apollo organism: %s" % org_id)
             self.wa.organisms.add_organism(
                 org_id,
                 ca.apollo_dataset_path,

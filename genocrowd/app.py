@@ -125,7 +125,6 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
 
         if users.find_one() is None:
             # Create default admin user
-            # FIXME wait for apollo to be ready?
             local_auth = LocalAuth(app, None)
             local_auth.add_user_to_database('admin', app.apollo_admin_email, app.apollo_admin_password, 'admin')
 
