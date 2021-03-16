@@ -35,5 +35,9 @@ fi
 echo "Waiting for Apollo startup"
 while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' apollo:8080/annotator/index)" != "200" ]]; do sleep 5; done
 
+# We want to make sure bootstrap is finished
+echo "Apollo startep, waiting a bit more"
+sleep 30
+
 echo "Starting genocrowd ..."
 /usr/bin/supervisord
