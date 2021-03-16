@@ -25,7 +25,7 @@ if [[ ! -f $config_path ]]; then
 fi
 
 if [[ "$GENOCROWD_MODE" == "dev" ]]; then
-    echo "Rebuilding js in dev mode..."
+    echo "Rebuilding js in dev mode (background)..."
     npm run -d dev &
     cp docker/uwsgi_dev.ini /etc/uwsgi/uwsgi.ini
 else
@@ -36,7 +36,7 @@ echo "Waiting for Apollo startup"
 while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' apollo:8080/annotator/index)" != "200" ]]; do sleep 5; done
 
 # We want to make sure bootstrap is finished
-echo "Apollo startep, waiting a bit more"
+echo "Apollo started, waiting a bit more"
 sleep 30
 
 echo "Starting genocrowd ..."
