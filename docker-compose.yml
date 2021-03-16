@@ -24,11 +24,11 @@ services:
         depends_on:
             - apollo-db
         environment:
-            APOLLO_ADMIN_EMAIL: "admin@annotons"
+            APOLLO_ADMIN_EMAIL: "admin-apollo@annotons"
             APOLLO_ADMIN_PASSWORD: "some_random_key_change_it"
             APOLLO_BASE_HOST: "http://localhost:9200/"
             APOLLO_PATH_PREFIX: ""
-            APOLLO_REMOTE_ADMINS: ""
+            APOLLO_REMOTE_ADMINS: "admin@annotons"
             WEBAPOLLO_DB_USERNAME: postgres
             WEBAPOLLO_DB_PASSWORD: password
             WEBAPOLLO_DB_DRIVER: "org.postgresql.Driver"
