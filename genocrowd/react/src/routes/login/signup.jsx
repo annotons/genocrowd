@@ -120,7 +120,7 @@ export default class Signup extends Component {
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input type="email" name="email" id="email" placeholder="email" value={this.state.email} onChange={this.handleChange} />
-                    <span className='error' hidden={this.validateEmail(this.state.email)}>Pease respect the format email : user@exemple.com</span>
+                    <span className='error' hidden={this.validateEmail(this.state.email)}>Please respect the email format: user@example.com</span>
               </FormGroup>
               <FormGroup>
                 <Label for="username">Username</Label>
