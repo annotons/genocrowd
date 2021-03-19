@@ -134,7 +134,7 @@ export default class Signup extends Component {
               <FormGroup>
                 <Label for="passwordconf">Password (confirmation)</Label>
                 <Input type="password" name="passwordconf" id="passwordconf" placeholder="password (confirmation)" value={this.state.passwordconf} onChange={this.handleChange} />
-                	<span className='error' hidden={this.validatePassword()}>Password are not equal</span>
+                	<span className='error' hidden={this.validatePassword()}>Passwords are not equal</span>
               </FormGroup>
               <Button disabled={!this.validateForm()}>Signup</Button>
               <p>(Or <Link to="/login"> login</Link>)</p>
