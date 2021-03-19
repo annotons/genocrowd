@@ -23,19 +23,23 @@ export default class Signup extends Component {
     this.cancelRequest
   }
 
-  
-
-  
-
+ 
   handleChange (event) {
+    event.preventDefault();
     this.setState({
       [event.target.id]: event.target.value
     })
   }
 
+
   validateEmail (email) {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())
+  }
+
+  validatePassword () {
+    return ( this.state.passwordconf == this.state.password
+    )
   }
 
   validateForm () {
@@ -44,7 +48,7 @@ export default class Signup extends Component {
       this.validateEmail(this.state.email) &&
       this.state.username.length > 0 &&
       this.state.password.length > 0 &&
-      this.state.passwordconf == this.state.password
+      this.validatePassword()
     )
   }
 
@@ -116,6 +120,7 @@ export default class Signup extends Component {
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input type="email" name="email" id="email" placeholder="email" value={this.state.email} onChange={this.handleChange} />
+                    <span className='error' hidden={this.validateEmail(this.state.email)}>Please respect the email format: user@example.com</span>
               </FormGroup>
               <FormGroup>
                 <Label for="username">Username</Label>
@@ -124,10 +129,12 @@ export default class Signup extends Component {
               <FormGroup>
                 <Label for="password">Password</Label>
                 <Input type="password" name="password" id="password" placeholder="password" value={this.state.password} onChange={this.handleChange} />
+                <span className='error' hidden={this.validatePassword()}>Passwords are not equal</span>
               </FormGroup>
               <FormGroup>
                 <Label for="passwordconf">Password (confirmation)</Label>
                 <Input type="password" name="passwordconf" id="passwordconf" placeholder="password (confirmation)" value={this.state.passwordconf} onChange={this.handleChange} />
+                	<span className='error' hidden={this.validatePassword()}>Passwords are not equal</span>
               </FormGroup>
               <Button disabled={!this.validateForm()}>Signup</Button>
               <p>(Or <Link to="/login"> login</Link>)</p>
