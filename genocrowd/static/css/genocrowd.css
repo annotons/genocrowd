@@ -175,12 +175,18 @@
     background-color: #ffffff73;
     padding: 50px;
     
+    
   }
   .welcome-p{
     
     background-color: #ffffff73;
     padding: 50px;
     
+  }
+
+  .error{
+    color : red;
+    font-size : 0.775em;
   }
 
   div.annotator {
