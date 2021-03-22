@@ -1,7 +1,7 @@
 from functools import wraps
 
 
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, make_response, request, session
 from flask import current_app as ca
 
 from flask_pymongo import BSONObjectIdConverter
@@ -55,11 +55,12 @@ def signup():
         new_user = local_auth.add_user_to_database(data['username'], data['email'], data['password'], data['role'])
         new_user['_id'] = str(new_user['_id'])
         session['user'] = new_user
-    return jsonify({
+
+    return kill_apollo_session(jsonify({
         'error': local_auth.get_error(),
         'errorMessage': local_auth.get_error_message(),
         'user': new_user
-    })
+    }))
 
 
 @auth_bp.route('/api/auth/login', methods=['POST'])
@@ -82,7 +83,8 @@ def login():
                 'user': {}}
         else:
             session['user'] = result['user']
-    return result
+
+    return kill_apollo_session(result)
 
 
 @auth_bp.route('/api/auth/check', methods=['POST'])
@@ -131,7 +133,7 @@ def update_profile():
     result = local_auth.update_profile(data, online_user)
     result['user']['_id'] = str(result['user']['_id'])
     session['user'] = result['user']
-    return result
+    return kill_apollo_session(result)
 
 
 @auth_bp.route('/api/auth/password', methods=['POST'])
@@ -172,3 +174,13 @@ def delete_account():
     ca.logger.debug(session)
 
     return {'user': {}, 'logged': False}
+
+
+def kill_apollo_session(content):
+    """
+    Unset the cookie used by Apollo for authentication.
+    Need to use it when the logged user changes (or logs out)
+    """
+    resp = make_response(content)
+    resp.set_cookie('JSESSIONID', '', expires=0)
+    return resp
