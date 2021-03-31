@@ -8,6 +8,7 @@ from flask import current_app as ca
 
 from genocrowd.api.auth.login import admin_required
 from genocrowd.libgenocrowd.Data import Data
+from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 import gridfs
 
@@ -122,4 +123,23 @@ def remove_gene_from_db():
     result = {'error': False,
               'errorMessage': ""
               }
+    return result
+
+
+@data_bp.route('api/data/getusersamount', methods=["GET"])
+def get_user_amount():
+    """get the number of user in the database
+
+    Returns
+    -------
+    int
+        Number of user in the Database
+    """
+    dataInstance = LocalAuth(ca, session)
+    users_amount = dataInstance.get_number_of_users()
+    result = {
+        'error': False,
+        'errorMessage': "",
+        'usersAmount': users_amount
+    }
     return result
