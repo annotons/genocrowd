@@ -123,7 +123,7 @@ class LocalAuth(Params):
         int
             Number of user in the Database
         """
-        return self.users.count_documents()
+        return self.users.count_documents({})
 
     def add_user_to_database(self, username, email, password, role="user"):
 

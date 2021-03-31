@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import {
   Button,
   CardBody,
@@ -31,6 +32,29 @@ export default class Dashboard extends Component {
   setStart() {
     this.setState({ start: true });
   }
+
+  componentDidMount(){
+    if (!this.props.waitForStart) {
+      let requestUrl = 'api/data/getusersamount';
+        axios
+          .get(requestUrl, {
+            baseURL: this.props.config.proxyPath,
+            cancelToken: new axios.CancelToken((c) => {
+              this.cancelRequest = c;
+            }),
+          })
+        .then((response) => {
+          console.log(requestUrl, response.data);
+          this.setState({
+            isLoading : false,
+            error : response.data.error,
+            errorMessage : response.data.errorMessage,
+            usersAmount : response.data.usersAmount
+          });
+        });
+    }
+  }
+
   render() {
     let html = <Redirect to="/annotator" />;
     if (this.state.start === false) {
@@ -77,7 +101,7 @@ export default class Dashboard extends Component {
               <Row>
                 <Card className="dashboard-statcards">
                   <CardHeader>Number of annotators</CardHeader>
-                  <CardBody>150</CardBody>
+                  <CardBody>{this.state.usersAmount}</CardBody>
                 </Card>
               </Row>
               <Row>
@@ -145,6 +169,7 @@ export default class Dashboard extends Component {
       );
     }
     return html;
+
   }
 }
 Dashboard.propTypes = {
