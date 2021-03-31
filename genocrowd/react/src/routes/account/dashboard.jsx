@@ -173,5 +173,6 @@ export default class Dashboard extends Component {
   }
 }
 Dashboard.propTypes = {
+  waitForStart : PropTypes.bool,
   config: PropTypes.object,
 };
