@@ -35,25 +35,36 @@ export default class Dashboard extends Component {
 
   componentDidMount(){
     if (!this.props.waitForStart) {
-      let requestUrl = 'api/data/getusersamount';
-        axios
-          .get(requestUrl, {
-            baseURL: this.props.config.proxyPath,
-            cancelToken: new axios.CancelToken((c) => {
-              this.cancelRequest = c;
+      let requestUrl_users = 'api/data/getusersamount';
+      let requestUrl_answers = 'api/data/getanswersamount';
+      
+      Promise.all([
+        axios.get(requestUrl_users, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
             }),
-          })
-        .then((response) => {
-          console.log(requestUrl, response.data);
-          this.setState({
-            isLoading : false,
-            error : response.data.error,
-            errorMessage : response.data.errorMessage,
-            usersAmount : response.data.usersAmount
-          });
+        }),
+        axios.get(requestUrl_answers, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
+          }),
+        })
+      ])
+      .then(([response_users, response_answers]) => {
+        console.log([requestUrl_users, requestUrl_answers], [response_users.data, response_answers]);
+        this.setState({
+          isLoading: false,
+          error: [response_users.data.error,response_answers.data.error],
+          errorMessage: [response_users.data.errorMessage, response_answers.data.errorMessage],
+          usersAmount: response_users.data.usersAmount,
+          answersAmount: response_answers.data.answersAmount
         });
+      })
     }
   }
+
 
   render() {
     let html = <Redirect to="/annotator" />;
@@ -95,7 +106,7 @@ export default class Dashboard extends Component {
               <Row>
                 <Card className="dashboard-statcards">
                   <CardHeader>Annotated genes</CardHeader>
-                  <CardBody>1000</CardBody>
+                  <CardBody>{this.state.answersAmount}</CardBody>
                 </Card>
               </Row>
               <Row>
