@@ -132,18 +132,17 @@ def get_answers_amount():
 
     Return
     ------
-    int 
+    int
         Number of annotations
     """
     dataInstance = Data(ca, session)
     answers_amount = dataInstance.get_number_of_answers()
-    result ={
+    result = {
         'error': False,
         'errorMessage': "",
         'answersAmount': answers_amount
     }
     return result
-
 
 
 @data_bp.route('api/data/getusersamount', methods=["GET"])
