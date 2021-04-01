@@ -126,6 +126,26 @@ def remove_gene_from_db():
     return result
 
 
+@data_bp.route('api/data/getanswersamount', methods=["GET"])
+def get_answers_amount():
+    """get the number of annotations in the database
+
+    Return
+    ------
+    int 
+        Number of annotations
+    """
+    dataInstance = Data(ca, session)
+    answers_amount = dataInstance.get_number_of_answers()
+    result ={
+        'error': False,
+        'errorMessage': "",
+        'answersAmount': answers_amount
+    }
+    return result
+
+
+
 @data_bp.route('api/data/getusersamount', methods=["GET"])
 def get_user_amount():
     """get the number of user in the database

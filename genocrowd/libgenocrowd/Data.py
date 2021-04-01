@@ -51,3 +51,14 @@ class Data(Params):
         gene = self.get_current_annotation(username)
         fs.put(data.encode(), _id=gene["_id"], chromosome=gene["chromosome"], start=gene["start"], end=gene["end"], strand=gene["strand"], isAnnotable=True)
         gene = self.update_current_annotation(username, None)
+    
+
+    def get_number_of_answers(self):
+        """get the number of annotations in the database
+
+        Return
+        ------
+        int
+            Number of annotation
+        """
+        return self.answers.count_documents({})
