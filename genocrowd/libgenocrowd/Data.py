@@ -64,10 +64,10 @@ class Data(Params):
         return self.answers.count_documents({})
 
     def initiate_groups(self):
-        groupsInfo = self.groups.insert({
-            'groupsAmount' : 2,
-            'groupsList' : ""
-            })
+        self.groups.insert({
+            'groupsAmount': 2,
+            'groupsList': ""
+        })
 
     def get_number_of_groups(self):
         """get the number of groups
@@ -77,5 +77,5 @@ class Data(Params):
         int
             Number of groups
         """
-        amount = self.groups.find_one({ 'groupsAmount':{'$exists': True}})
+        amount = self.groups.find_one({ 'groupsAmount': { '$exists': True}})
         return amount['groupsAmount']

@@ -139,7 +139,7 @@ class LocalAuth(Params):
             'isExternal': False,
             'blocked': False,
             'current_annotation': None,
-            'group' : None
+            'group': None
         })
 
         new_user = self.users.find_one({'_id': user_id})

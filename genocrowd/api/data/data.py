@@ -163,6 +163,7 @@ def get_user_amount():
     }
     return result
 
+
 @data_bp.route('api/data/getgroupsamount', methods=['GET'])
 def get_groups_amount():
     """get the number of groups in the database

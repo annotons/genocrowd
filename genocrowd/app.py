@@ -27,8 +27,8 @@ from genocrowd.api.auth.login import auth_bp
 from genocrowd.api.data.data import data_bp
 from genocrowd.api.start import start_bp
 from genocrowd.api.view import view_bp
-from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 from genocrowd.libgenocrowd.Data import Data
+from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 
 # from kombu import Exchange, Queue
@@ -140,8 +140,8 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
             app.register_blueprint(blueprint)
 
         if groups.find_one() is None:
-            #Initiate the groups database
-            data = Data(app, session)
+            # Initiate the groups database
+            data = Data(app, None)
             data.initiate_groups()
 
     if proxy_path:
