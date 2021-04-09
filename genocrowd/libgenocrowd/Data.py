@@ -79,3 +79,4 @@ class Data(Params):
         """
         amount = self.groups.find_one({ 'groupsAmount':{'$exists': True}})
         return amount['groupsAmount']
+        
