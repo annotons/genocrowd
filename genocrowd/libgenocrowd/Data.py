@@ -77,5 +77,5 @@ class Data(Params):
         int
             Number of groups
         """
-        amount = self.groups.find_one({ 'groupsAmount': { '$exists': True}})
+        amount = self.groups.find_one({'groupsAmount': {'$exists': True}})
         return amount['groupsAmount']
