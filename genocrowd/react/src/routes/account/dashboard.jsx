@@ -37,6 +37,7 @@ export default class Dashboard extends Component {
     if (!this.props.waitForStart) {
       let requestUrl_users = 'api/data/getusersamount';
       let requestUrl_answers = 'api/data/getanswersamount';
+      let requestUrl_groups = 'api/data/getgroupsamount';
       
       Promise.all([
         axios.get(requestUrl_users, {
@@ -50,16 +51,25 @@ export default class Dashboard extends Component {
           cancelToken: new axios.CancelToken((c) => {
             this.cancelRequest = c;
           }),
+        }),
+        axios.get(requestUrl_groups, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
+          }),
         })
       ])
-      .then(([response_users, response_answers]) => {
-        console.log([requestUrl_users, requestUrl_answers], [response_users.data, response_answers]);
+      .then(([response_users, response_answers, response_groups ]) => {
+        console.log(requestUrl_users, response_users.data);
+        console.log(requestUrl_answers,response_answers.data);
+        console.log(requestUrl_groups,response_groups.data);
         this.setState({
           isLoading: false,
-          error: [response_users.data.error,response_answers.data.error],
-          errorMessage: [response_users.data.errorMessage, response_answers.data.errorMessage],
+          error: [response_users.data.error,response_answers.data.error, response_groups.data.error],
+          errorMessage: [response_users.data.errorMessage, response_answers.data.errorMessage, response_groups.data.errorMessage],
           usersAmount: response_users.data.usersAmount,
-          answersAmount: response_answers.data.answersAmount
+          answersAmount: response_answers.data.answersAmount,
+          groupsAmount: response_groups.data.groupsAmount
         });
       })
     }
@@ -118,7 +128,7 @@ export default class Dashboard extends Component {
               <Row>
                 <Card className="dashboard-statcards">
                   <CardHeader>Number of groups</CardHeader>
-                  <CardBody>15</CardBody>
+                  <CardBody>{this.state.groupsAmount} </CardBody>
                 </Card>
               </Row>
             </Col>

@@ -21,6 +21,7 @@ class Data(Params):
         self.genes = self.app.mongo.db["genes.files"]
         self.users = self.app.mongo.db["users"]
         self.answers = self.app.mongo.db["answers"]
+        self.groups = self.app.mongo.db["groups"]
 
     def get_all_positions(self):
         return list(self.genes.find({}))
@@ -61,3 +62,20 @@ class Data(Params):
             Number of annotation
         """
         return self.answers.count_documents({})
+
+    def initiate_groups(self):
+        self.groups.insert({
+            'groupsAmount': 2,
+            'groupsList': ""
+        })
+
+    def get_number_of_groups(self):
+        """get the number of groups
+
+        Return
+        ------
+        int
+            Number of groups
+        """
+        amount = self.groups.find_one({'groupsAmount': {'$exists': True}})
+        return amount['groupsAmount']
