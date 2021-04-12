@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { FormGroup, CustomInput } from "reactstrap";
+import { FormGroup, CustomInput, Form, Button, Label, Input } from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import cellEditFactory from "react-bootstrap-table2-editor";
@@ -12,10 +12,18 @@ export default class Users extends Component {
   constructor(props) {
     super(props);
     this.utils = new Utils();
-    this.state = { isLoading: true, error: false, errorMessage: "", users: [] };
+    this.state = { 
+      isLoading: true, 
+      error: false, 
+      errorMessage: "", 
+      users: [], 
+      newNumber: ""
+    }
     this.handleChangeAdmin = this.handleChangeAdmin.bind(this);
     this.handleChangeBlocked = this.handleChangeBlocked.bind(this);
-    this.cancelRequest;
+    this.handleChange = this.handleChange.bind(this)
+    this.cancelRequest
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChangeAdmin(event) {
@@ -107,6 +115,13 @@ export default class Users extends Component {
       });
   }
 
+  handleChange(event){
+    event.preventDefault();
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+  }
+
   componentDidMount() {
     console.log("mount")
     if (!this.props.waitForStart) {
@@ -146,9 +161,40 @@ export default class Users extends Component {
     }
   }
 
-  render() {
-    // console.log()
+  handleSubmit(event) {
+    let requestUrl3 = 'api/data/setgroupsamount'
+    let data = {
+    	newNumber: this.state.newNumber
+    }
+    //console.log("newNumber", data.newNumber)
 
+    axios
+      .post(requestUrl3, data, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken : new axios.CancelToken((c) => {
+          this.cancelRequest = c
+        })
+      })
+      .then(response => {
+        console.log(requestUrl3, response.data)
+        this.setState({
+          error: response.data.error,
+          errorMessage: response.data.errorMessage,
+          groupsAmount: response.data.groupsAmount
+        })
+      })
+      .catch(error => {
+        this.setState({
+          error: true,
+          errorMessage: error.response.data.errorMessage,
+          status : errorMessage,
+          success: !response.data.error
+        })
+      })
+  }
+
+  render() {
+    //console.log()
     let columns = [
       {
         editable: false,
@@ -261,6 +307,11 @@ export default class Users extends Component {
               },
             })}
           />
+        <Form onSubmit={this.handleSubmit}>
+          <Label for="groupsAmount"> Number of groups</Label>
+          <Input type="number" name="groupsAmount" id="newNumber" placeholder="" value={this.state.newNumber} onChange={this.handleChange} />
+          <Button> Enter </Button>
+        </Form>
         </div>
       </div>
     );

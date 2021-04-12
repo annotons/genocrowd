@@ -168,8 +168,8 @@ def get_user_amount():
 def get_groups_amount():
     """get the number of groups in the database
 
-    Return
-    ------
+    Returns
+    -------
     int
         Number of groups in the database
     """
@@ -180,4 +180,20 @@ def get_groups_amount():
         'errorMessage': "",
         'groupsAmount': groupsAmount
     }
+    return result
+
+
+@data_bp.route('api/data/setgroupsamount', methods=['POST'])
+@admin_required
+def set_groups_amount():
+    """Update the number of groups
+
+    Returns
+    -------
+    dict
+        error, error message and updated number of groups
+    """
+    data = request.get_json()
+    dataInstance = Data(ca, session)
+    result = dataInstance.set_number_of_groups(data['newNumber'])
     return result
