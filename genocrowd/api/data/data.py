@@ -196,4 +196,4 @@ def set_groups_amount():
     dataInstance = Data(ca, session)
     result = dataInstance.set_number_of_groups(data['newNumber'])
     return result
-    
+  
