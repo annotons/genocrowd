@@ -106,7 +106,7 @@ class Data(Params):
                 }})
 
         return {
-        'error': error,
-        'errorMessage': error_message,
-        'groupsAmount': updated_number
+            'error': error,
+            'errorMessage': error_message,
+           	'groupsAmount': updated_number
         }

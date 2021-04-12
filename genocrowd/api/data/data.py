@@ -182,6 +182,7 @@ def get_groups_amount():
     }
     return result
 
+
 @data_bp.route('api/data/setgroupsamount', methods=['POST'])
 @admin_required
 def set_groups_amount():
