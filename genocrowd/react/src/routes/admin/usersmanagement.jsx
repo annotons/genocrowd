@@ -288,7 +288,6 @@ export default class Users extends Component {
     return (
       <div className="container">
         <h2>User management</h2>
-        <h3>Coucou</h3>
         <hr />
         <div className=".geno-table-height-div">
           <BootstrapTable

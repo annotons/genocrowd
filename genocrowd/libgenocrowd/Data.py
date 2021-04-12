@@ -108,5 +108,5 @@ class Data(Params):
         return {
             'error': error,
             'errorMessage': error_message,
-           	'groupsAmount': updated_number
+            'groupsAmount': updated_number
         }
