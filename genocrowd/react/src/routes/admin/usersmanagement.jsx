@@ -22,8 +22,10 @@ export default class Users extends Component {
     this.handleChangeAdmin = this.handleChangeAdmin.bind(this);
     this.handleChangeBlocked = this.handleChangeBlocked.bind(this);
     this.handleChange = this.handleChange.bind(this)
-    this.cancelRequest
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSubmitGroups = this.handleSubmitGroups.bind(this)
+    this.cancelRequest
+
   }
 
   handleChangeAdmin(event) {
@@ -161,22 +163,22 @@ export default class Users extends Component {
     }
   }
 
-  handleSubmit(event) {
-    let requestUrl3 = 'api/data/setgroupsamount'
+  handleSubmit() {
+    let requestUrl = 'api/data/setgroupsamount'
     let data = {
     	newNumber: this.state.newNumber
     }
     //console.log("newNumber", data.newNumber)
 
     axios
-      .post(requestUrl3, data, {
+      .post(requestUrl, data, {
         baseURL: this.props.config.proxyPath,
-        cancelToken : new axios.CancelToken((c) => {
+        cancelToken: new axios.CancelToken((c) => {
           this.cancelRequest = c
         })
       })
       .then(response => {
-        console.log(requestUrl3, response.data)
+        console.log(requestUrl, response.data)
         this.setState({
           error: response.data.error,
           errorMessage: response.data.errorMessage,
@@ -193,6 +195,23 @@ export default class Users extends Component {
       })
   }
 
+  handleSubmitGroups() {
+    let requestUrl = '/api/admin/setgroup'
+    let data = {
+      qtt: 2
+    }
+    axios
+      .post(requestUrl, data, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c) => {
+          this.cancelRequest = c
+        })
+      })
+      .then(response => {
+        console.log(requestUrl, response.data.gradeList)
+      })
+  }
+
   render() {
     //console.log()
     let columns = [
@@ -203,6 +222,18 @@ export default class Users extends Component {
         formatter: (cell) => {
           return cell ? "Ldap" : "Local";
         },
+        sort: true,
+      },
+      {
+        editable: false,
+        dataField: "grade",
+        text: "Grade",
+        sort: true,
+      },
+      {
+        editable: false,
+        dataField: 'group',
+        text: "Group",
         sort: true,
       },
       {
@@ -312,6 +343,11 @@ export default class Users extends Component {
           <Input type="number" name="groupsAmount" id="newNumber" placeholder="" value={this.state.newNumber} onChange={this.handleChange} />
           <Button> Enter </Button>
         </Form>
+
+        <Form onSubmit={this.handleSubmitGroups}>
+          <Button> Groups </Button>
+        </Form>
+
         </div>
       </div>
     );

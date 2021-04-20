@@ -97,3 +97,12 @@ def set_blocked():
         'error': False,
         'errorMessage': ''
     })
+
+
+@admin_bp.route('/api/admin/setgroup', methods=['POST'])
+@admin_required
+def set_group():
+    local_auth = LocalAuth(current_app, session)
+    data = request.get_json()
+    result = local_auth.set_group(data['qtt'])
+    return result

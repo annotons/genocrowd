@@ -1,5 +1,6 @@
 """Contain the Database Auth Dialog Class"""
 
+import random
 from datetime import datetime
 
 from flask_pymongo import BSONObjectIdConverter
@@ -125,11 +126,12 @@ class LocalAuth(Params):
         """
         return self.users.count_documents({})
 
-    def add_user_to_database(self, username, email, password, role="user"):
+    def add_user_to_database(self, username, email, password, grade, role="user"):
 
         self.app.logger.info("Creating user %s" % username)
         password = self.app.bcrypt.generate_password_hash(password).decode('utf-8')
         created = datetime.utcnow()
+        grade = grade.upper()
         user_id = self.users.insert({
             'username': username,
             'email': email,
@@ -139,7 +141,8 @@ class LocalAuth(Params):
             'isExternal': False,
             'blocked': False,
             'current_annotation': None,
-            'group': None
+            'grade': grade,
+            'groupe': None
         })
 
         new_user = self.users.find_one({'_id': user_id})
@@ -331,3 +334,54 @@ class LocalAuth(Params):
                 '$set': {
                     'blocked': new_status
                 }})
+
+    def set_group(self, groupsamount):
+        """
+        recup des noms des classes
+        n°groupe = 1
+
+        pour chaque classe
+            recup les eleves de cette classe
+            tant que la liste n'est pas vide
+                choisir un eleve random
+                if n°groupe > groupsamount
+                    n°groupe = 1
+                associer n° de groupe à l'eleve
+                groupe ++
+        """
+        error = False
+        error_message = []
+        gradeList = self.users.distinct("grade")
+        gradeList.remove('ADMIN')
+        max_group = groupsamount
+        groupNumber = 1
+
+        for element in gradeList:
+            userCursor = list(self.users.find({'grade': element}))
+            userList = []
+
+            for document in userCursor:
+                document['_id'] = str(document['_id'])
+                userList.append(document)
+
+            for user in userList:
+                selected_user = random.choice(userList)
+                bson = BSONObjectIdConverter(BaseConverter)
+
+                if groupNumber > max_group:
+                    groupNumber = 1
+                    self.users.find_one_and_update({
+                        '_id': bson.to_python(selected_user['_id'])}, {
+                            '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
+                else:
+                    self.users.find_one_and_update({
+                        '_id': bson.to_python(selected_user['_id'])}, {
+                            '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
+                userList.remove(selected_user)
+                groupNumber += 1
+
+        return {
+            'error': error,
+            'errorMessage': error_message,
+            'gradeList': gradeList
+        }

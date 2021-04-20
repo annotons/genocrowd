@@ -131,7 +131,7 @@ def create_app(config='config/genocrowd.ini', app_name='genocrowd', blueprints=N
         if users.find_one() is None:
             # Create default admin user
             local_auth = LocalAuth(app, None)
-            local_auth.add_user_to_database('admin', app.genocrowd_admin_email, app.genocrowd_admin_password, 'admin')
+            local_auth.add_user_to_database('admin', app.genocrowd_admin_email, app.genocrowd_admin_password, 'admin', 'admin')
 
         if blueprints is None:
             blueprints = BLUEPRINTS
