@@ -5,6 +5,7 @@ import traceback
 from flask import (Blueprint, current_app, jsonify, request, session)
 
 from genocrowd.api.auth.login import admin_required
+from genocrowd.libgenocrowd.Data import Data
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
 
@@ -104,5 +105,35 @@ def set_blocked():
 def set_group():
     local_auth = LocalAuth(current_app, session)
     data = request.get_json()
-    result = local_auth.set_group(data['qtt'])
+    result = local_auth.set_group(data['newNumber'])
     return result
+
+
+@admin_bp.route('/api/admin/getgroups', methods=['GET'])
+@admin_required
+def get_groups():
+    """Get all groups
+
+    Returns
+    -------
+    json
+        users: list of all groups info
+        error: True if error, else False
+        errorMessage: the error message of error, else an empty string
+    """
+    try:
+        data_instance = Data(current_app, session)
+        all_groups = data_instance.get_all_groups()
+    except Exception as e:
+        traceback.print_exc(file=sys.stdout)
+        return jsonify({
+            'groups': [],
+            'error': True,
+            'errorMessage': str(e)
+        }), 500
+
+    return jsonify({
+        'groups': all_groups,
+        'error': False,
+        'errorMessage': ''
+    })

@@ -30,6 +30,7 @@ class LocalAuth(Params):
         """
         Params.__init__(self, app, session)
         self.users = self.app.mongo.db["users"]
+        self.groups = self.app.mongo.db["groups"]
 
     def check_inputs(self, inputs):
         """Check user inputs
@@ -336,25 +337,25 @@ class LocalAuth(Params):
                 }})
 
     def set_group(self, groupsamount):
-        """
-        recup des noms des classes
-        n°groupe = 1
+        """Assign a group to each student
 
-        pour chaque classe
-            recup les eleves de cette classe
-            tant que la liste n'est pas vide
-                choisir un eleve random
-                if n°groupe > groupsamount
-                    n°groupe = 1
-                associer n° de groupe à l'eleve
-                groupe ++
+        Parameters
+        ----------
+        groupsamount : str
+            Number of groups
+
+        Return
+        ------
+        dict
+            error, error message and the list of grades
         """
         error = False
         error_message = []
         gradeList = self.users.distinct("grade")
         gradeList.remove('ADMIN')
-        max_group = groupsamount
+        max_group = int(groupsamount)
         groupNumber = 1
+        bson = BSONObjectIdConverter(BaseConverter)
 
         for element in gradeList:
             userCursor = list(self.users.find({'grade': element}))
@@ -364,20 +365,23 @@ class LocalAuth(Params):
                 document['_id'] = str(document['_id'])
                 userList.append(document)
 
+            random.shuffle(userList)
             for user in userList:
-                selected_user = random.choice(userList)
-                bson = BSONObjectIdConverter(BaseConverter)
-
                 if groupNumber > max_group:
                     groupNumber = 1
                     self.users.find_one_and_update({
-                        '_id': bson.to_python(selected_user['_id'])}, {
+                        '_id': bson.to_python(user['_id'])}, {
                             '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
+                    self.groups.update({
+                        'number': groupNumber}, {
+                            '$push': {'student': user}})
                 else:
                     self.users.find_one_and_update({
-                        '_id': bson.to_python(selected_user['_id'])}, {
+                        '_id': bson.to_python(user['_id'])}, {
                             '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
-                userList.remove(selected_user)
+                    self.groups.update({
+                        'number': groupNumber}, {
+                            '$push': {'student': user}})
                 groupNumber += 1
 
         return {

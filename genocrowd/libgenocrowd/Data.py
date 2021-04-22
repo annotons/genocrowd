@@ -65,8 +65,7 @@ class Data(Params):
 
     def initiate_groups(self):
         self.groups.insert({
-            'groupsAmount': 2,
-            'groupsList': ""
+            'groupsAmount': 2
         })
 
     def get_number_of_groups(self):
@@ -81,7 +80,7 @@ class Data(Params):
         return amount['groupsAmount']
 
     def set_number_of_groups(self, number):
-        """Update the number of groups
+        """Update the number of groups and create each group in the database
 
         Parameters
         ----------
@@ -105,8 +104,30 @@ class Data(Params):
                     'groupsAmount': newNumber
                 }})
 
+        """Deleting documents containing old groups"""
+        self.groups.remove({"number": {'$exists': True}})
+
+        """Creation of new empty groups"""
+        for i in range(newNumber):
+            self.groups.insert({'number': i + 1, 'name': "", 'students': []})
+
         return {
             'error': error,
             'errorMessage': error_message,
             'groupsAmount': updated_number
         }
+
+    def get_all_groups(self):
+        """Get all groups info
+
+        Returns
+        -------
+        list
+            All groups info
+        """
+        groupCursor = self.groups.find({"number": {'$exists': True}})
+        groupList = []
+        for document in groupCursor:
+            document['_id'] = str(document['_id'])
+            groupList.append(document)
+        return groupList

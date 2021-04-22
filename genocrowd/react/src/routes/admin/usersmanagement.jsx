@@ -17,13 +17,14 @@ export default class Users extends Component {
       error: false, 
       errorMessage: "", 
       users: [], 
-      newNumber: ""
+      newNumber: "",
+      groups: []
+
     }
     this.handleChangeAdmin = this.handleChangeAdmin.bind(this);
     this.handleChangeBlocked = this.handleChangeBlocked.bind(this);
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleSubmitGroups = this.handleSubmitGroups.bind(this)
     this.cancelRequest
 
   }
@@ -127,7 +128,8 @@ export default class Users extends Component {
   componentDidMount() {
     console.log("mount")
     if (!this.props.waitForStart) {
-      let requestUrl = "/api/admin/getusers";
+      let requestUrl = '/api/admin/getusers';
+      let requestUrl_getgroups = '/api/admin/getgroups';
 
       axios
         .get(requestUrl, {
@@ -154,7 +156,23 @@ export default class Users extends Component {
             success: !response.data.error,
           });
         });
-    }
+      axios
+        .get(requestUrl_getgroups, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
+          }),
+        })
+        .then((response_getgroups) => {
+          console.log(requestUrl_getgroups, response_getgroups.data);
+          this.setState({
+            isLoading: false,
+            error: response_getgroups.data.error,
+            errorMessage: response_getgroups.data.errorMessage,
+            groups: response_getgroups.data.groups,
+          });
+        });
+    };
   }
 
   componentWillUnmount() {
@@ -168,7 +186,6 @@ export default class Users extends Component {
     let data = {
     	newNumber: this.state.newNumber
     }
-    //console.log("newNumber", data.newNumber)
 
     axios
       .post(requestUrl, data, {
@@ -193,27 +210,38 @@ export default class Users extends Component {
           success: !response.data.error
         })
       })
-  }
 
-  handleSubmitGroups() {
-    let requestUrl = '/api/admin/setgroup'
-    let data = {
-      qtt: 2
-    }
+    let requestUrl2 = '/api/admin/setgroup'
     axios
-      .post(requestUrl, data, {
+      .post(requestUrl2, data, {
         baseURL: this.props.config.proxyPath,
         cancelToken: new axios.CancelToken((c) => {
           this.cancelRequest = c
         })
       })
-      .then(response => {
-        console.log(requestUrl, response.data.gradeList)
+      .then(response2 => {
+        console.log(requestUrl2, response2.data.gradeList)
       })
   }
 
+
   render() {
-    //console.log()
+    console.log("groupes",this.state.groups)
+    console.log("users", this.state.users)
+    let bla = [
+      {
+        editable: false,
+        dataField: "number",
+        text: "Group n°",
+        sort: true,
+      },
+      {
+        editable: false,
+        dataField: "name",
+        text: "Name",
+      },
+    ];
+
     let columns = [
       {
         editable: false,
@@ -343,11 +371,27 @@ export default class Users extends Component {
           <Input type="number" name="groupsAmount" id="newNumber" placeholder="" value={this.state.newNumber} onChange={this.handleChange} />
           <Button> Enter </Button>
         </Form>
-
-        <Form onSubmit={this.handleSubmitGroups}>
-          <Button> Groups </Button>
-        </Form>
-
+        </div>
+        <h2>Groups management</h2>
+        <hr />
+        <div className=".geno-table-height-div">
+          <BootstrapTable
+            classes="geno-table"
+            wrapperClasses="geno-table-wrapper"
+            bootstrap4
+            keyField="_id"
+            data={this.state.groups}
+            columns={bla}
+            defaultSorted={defaultSorted}
+            pagination={paginationFactory()}
+            cellEdit={cellEditFactory({
+              mode: "click",
+              autoSelectText: true,
+              beforeSaveCell: (oldValue, newValue, row) => {
+                this.updateQuota(oldValue, newValue, row);
+              },
+            })}
+          />
         </div>
       </div>
     );
