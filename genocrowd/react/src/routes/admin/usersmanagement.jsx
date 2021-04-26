@@ -18,13 +18,16 @@ export default class Users extends Component {
       errorMessage: "", 
       users: [], 
       newNumber: "",
-      groups: []
+      groups: [],
+      groupName:"",
+      groupNumber:""
 
     }
     this.handleChangeAdmin = this.handleChangeAdmin.bind(this);
     this.handleChangeBlocked = this.handleChangeBlocked.bind(this);
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSubmitGroupName = this.handleSubmitGroupName.bind(this)
     this.cancelRequest
 
   }
@@ -221,14 +224,59 @@ export default class Users extends Component {
       })
       .then(response2 => {
         console.log(requestUrl2, response2.data.gradeList)
+        this.setState({
+          error: response2.data.error,
+          errorMessage: response2.data.errorMessage,
+          gradeList: response2.data.gradeList
+        })
+      })
+      .catch(error => {
+        this.setState({
+          error: true,
+          errorMessage: error.response2.data.errorMessage,
+          status: errorMessage,
+          success: !response2.data.error
+        })
+      })
+  }
+
+  handleSubmitGroupName(){
+    //console.log("datanumber", this.state.groupNumber);
+    //console.log("dataname", this.state.groupName);
+    let data = {
+      number: this.state.groupNumber,
+      name: this.state.groupName
+    }
+
+    let requestUrl = 'api/data/updategroupname'
+    axios
+      .post(requestUrl, data, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c)=> {this.cancelRequest = c 
+        })
+      })
+      .then(response => {
+        console.log(requestUrl, response.data.name)
+        this.setState({
+          error: response.data.error,
+          errorMessage: response.data.errorMessage,
+          groupName: response.data.name
+
+        })
+      })
+      .catch(error => {
+        this.setState({
+          error: true,
+          errorMessage: error.response.data.errorMessage,
+          status: errorMessage,
+          success: !response.data.error
+        })
       })
   }
 
 
   render() {
-    console.log("groupes",this.state.groups)
-    console.log("users", this.state.users)
-    let bla = [
+    let columns_groups = [
       {
         editable: false,
         dataField: "number",
@@ -381,7 +429,7 @@ export default class Users extends Component {
             bootstrap4
             keyField="_id"
             data={this.state.groups}
-            columns={bla}
+            columns={columns_groups}
             defaultSorted={defaultSorted}
             pagination={paginationFactory()}
             cellEdit={cellEditFactory({
@@ -392,6 +440,17 @@ export default class Users extends Component {
               },
             })}
           />
+          <Form onSubmit={this.handleSubmitGroupName}>
+            <FormGroup>
+              <Label for="groupName"> Group Name.. </Label>
+            <Input type="text" name="groupName" id="groupName" placeholder="Group name" value={this.state.groupName} onChange={this.handleChange} />
+            </FormGroup>
+            <FormGroup>
+              <Label for="groupNumber"> ..For group n° </Label>
+              <Input type="number" name="groupNumber" id="groupNumber" placeholder="Group number" value={this.state.groupNumber} onChange={this.handleChange}/>
+            </FormGroup>
+            <Button> Enter </Button>
+        </Form>
         </div>
       </div>
     );

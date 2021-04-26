@@ -131,3 +131,21 @@ class Data(Params):
             document['_id'] = str(document['_id'])
             groupList.append(document)
         return groupList
+
+    def update_group_name(self, data):
+        error = False
+        error_message = []
+        name = data['name']
+        number = int(data['number'])
+
+        self.groups.find_one_and_update({
+            'number': number},
+            {'$set': {
+                'name': name
+            }})
+
+        return{
+            'error': error,
+            'error_message': error_message,
+            'name': name
+        }
