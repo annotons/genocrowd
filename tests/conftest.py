@@ -134,6 +134,8 @@ class Client(object):
             "isExternal": False,
             "created": datetime.utcnow(),
             "blocked": False,
+            "grade": "ADMIN" if username == "jdoe" else "mygrade",
+            "group": None,
             "role": 'admin' if username == "jdoe" else "user"
         }
 
