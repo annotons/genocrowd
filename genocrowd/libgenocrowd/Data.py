@@ -79,12 +79,12 @@ class Data(Params):
         amount = self.groups.find_one({'groupsAmount': {'$exists': True}})
         return amount['groupsAmount']
 
-    def set_number_of_groups(self, number):
+    def set_number_of_groups(self, data):
         """Update the number of groups and create each group in the database
 
         Parameters
         ----------
-        number : str
+        data : dict
             New number of groups
 
         Returns
@@ -94,7 +94,7 @@ class Data(Params):
         """
         error = False
         error_message = []
-        newNumber = int(number)
+        newNumber = int(data['newNumber'])
         groupsAmount = self.get_number_of_groups()
 
         if newNumber >= 2:

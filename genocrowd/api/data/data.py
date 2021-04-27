@@ -195,7 +195,7 @@ def set_groups_amount():
     """
     data = request.get_json()
     dataInstance = Data(ca, session)
-    result = dataInstance.set_number_of_groups(data['newNumber'])
+    result = dataInstance.set_number_of_groups(data)
     return result
 
 
