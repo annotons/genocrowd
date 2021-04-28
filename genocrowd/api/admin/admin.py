@@ -105,7 +105,7 @@ def set_blocked():
 def set_group():
     local_auth = LocalAuth(current_app, session)
     data = request.get_json()
-    result = local_auth.set_group(data['newNumber'])
+    result = local_auth.set_group(data)
     return result
 
 

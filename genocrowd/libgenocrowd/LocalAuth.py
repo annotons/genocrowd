@@ -336,7 +336,7 @@ class LocalAuth(Params):
                     'blocked': new_status
                 }})
 
-    def set_group(self, groupsamount):
+    def set_group(self, data):
         """Assign a group to each student
 
         Parameters
@@ -353,7 +353,7 @@ class LocalAuth(Params):
         error_message = []
         gradeList = self.users.distinct("grade")
         gradeList.remove('ADMIN')
-        max_group = int(groupsamount)
+        max_group = int(data["groupsAmount"])
         groupNumber = 1
         bson = BSONObjectIdConverter(BaseConverter)
 
