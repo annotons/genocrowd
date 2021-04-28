@@ -32,4 +32,7 @@ class TestApiData(GenocrowdTestCase):
         response3 = client.client.get('/api/admin/getgroups')
         assert response.status_code == 200 and response2.status_code == 200 and response3.status_code == 200
         assert response.json["error"] is False and response2.json["error"] is False and response3.json["error"] is False
-        assert response2.json["users"][1]["_id"] == response3.json["groups"][0]["student"][0]["_id"]
+        """Test user in the correct group
+            test if jsmith group is group 1 and
+            test if jsmith is the first student in group 1 list"""
+        assert response2.json["users"][1]["group"] == 1 and response2.json["users"][1]["_id"] == response3.json["groups"][0]["student"][0]["_id"]
