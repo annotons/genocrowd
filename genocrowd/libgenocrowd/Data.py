@@ -65,8 +65,7 @@ class Data(Params):
 
     def initiate_groups(self):
         self.groups.insert({
-            'groupsAmount': 2,
-            'groupsList': ""
+            'groupsAmount': 2
         })
 
     def get_number_of_groups(self):
@@ -80,12 +79,12 @@ class Data(Params):
         amount = self.groups.find_one({'groupsAmount': {'$exists': True}})
         return amount['groupsAmount']
 
-    def set_number_of_groups(self, number):
-        """Update the number of groups
+    def set_number_of_groups(self, data):
+        """Update the number of groups and create each group in the database
 
         Parameters
         ----------
-        number : str
+        data : dict
             New number of groups
 
         Returns
@@ -95,7 +94,7 @@ class Data(Params):
         """
         error = False
         error_message = []
-        newNumber = int(number)
+        newNumber = int(data['newNumber'])
         groupsAmount = self.get_number_of_groups()
 
         if newNumber >= 2:
@@ -105,8 +104,48 @@ class Data(Params):
                     'groupsAmount': newNumber
                 }})
 
+        """Deleting documents containing old groups"""
+        self.groups.remove({"number": {'$exists': True}})
+
+        """Creation of new empty groups"""
+        for i in range(newNumber):
+            self.groups.insert({'number': i + 1, 'name': "", 'students': []})
+
         return {
             'error': error,
             'errorMessage': error_message,
             'groupsAmount': updated_number
+        }
+
+    def get_all_groups(self):
+        """Get all groups info
+
+        Returns
+        -------
+        list
+            All groups info
+        """
+        groupCursor = self.groups.find({"number": {'$exists': True}})
+        groupList = []
+        for document in groupCursor:
+            document['_id'] = str(document['_id'])
+            groupList.append(document)
+        return groupList
+
+    def update_group_name(self, data):
+        error = False
+        error_message = []
+        name = data['name']
+        number = int(data['number'])
+
+        self.groups.find_one_and_update({
+            'number': number},
+            {'$set': {
+                'name': name
+            }})
+
+        return{
+            'error': error,
+            'error_message': error_message,
+            'name': name
         }

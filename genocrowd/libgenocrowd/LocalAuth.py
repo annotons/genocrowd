@@ -1,5 +1,6 @@
 """Contain the Database Auth Dialog Class"""
 
+import random
 from datetime import datetime
 
 from flask_pymongo import BSONObjectIdConverter
@@ -29,6 +30,7 @@ class LocalAuth(Params):
         """
         Params.__init__(self, app, session)
         self.users = self.app.mongo.db["users"]
+        self.groups = self.app.mongo.db["groups"]
 
     def check_inputs(self, inputs):
         """Check user inputs
@@ -125,11 +127,12 @@ class LocalAuth(Params):
         """
         return self.users.count_documents({})
 
-    def add_user_to_database(self, username, email, password, role="user"):
+    def add_user_to_database(self, username, email, password, grade, role="user"):
 
         self.app.logger.info("Creating user %s" % username)
         password = self.app.bcrypt.generate_password_hash(password).decode('utf-8')
         created = datetime.utcnow()
+        grade = grade.upper()
         user_id = self.users.insert({
             'username': username,
             'email': email,
@@ -139,7 +142,8 @@ class LocalAuth(Params):
             'isExternal': False,
             'blocked': False,
             'current_annotation': None,
-            'group': None
+            'grade': grade,
+            'groupe': None
         })
 
         new_user = self.users.find_one({'_id': user_id})
@@ -331,3 +335,57 @@ class LocalAuth(Params):
                 '$set': {
                     'blocked': new_status
                 }})
+
+    def set_group(self, data):
+        """Assign a group to each student
+
+        Parameters
+        ----------
+        groupsamount : str
+            Number of groups
+
+        Return
+        ------
+        dict
+            error, error message and the list of grades
+        """
+        error = False
+        error_message = []
+        gradeList = self.users.distinct("grade")
+        gradeList.remove('ADMIN')
+        max_group = int(data["groupsAmount"])
+        groupNumber = 1
+        bson = BSONObjectIdConverter(BaseConverter)
+
+        for element in gradeList:
+            userCursor = list(self.users.find({'grade': element}))
+            userList = []
+
+            for document in userCursor:
+                document['_id'] = str(document['_id'])
+                userList.append(document)
+
+            random.shuffle(userList)
+            for user in userList:
+                if groupNumber > max_group:
+                    groupNumber = 1
+                    self.users.find_one_and_update({
+                        '_id': bson.to_python(user['_id'])}, {
+                            '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
+                    self.groups.update({
+                        'number': groupNumber}, {
+                            '$push': {'student': user}})
+                else:
+                    self.users.find_one_and_update({
+                        '_id': bson.to_python(user['_id'])}, {
+                            '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
+                    self.groups.update({
+                        'number': groupNumber}, {
+                            '$push': {'student': user}})
+                groupNumber += 1
+
+        return {
+            'error': error,
+            'errorMessage': error_message,
+            'gradeList': gradeList
+        }

@@ -10,6 +10,7 @@ class TestApiAuth(GenocrowdTestCase):
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
             "email": "jwick@genocrowd.org",
+            "grade": "mygrade",
             "role": 'user'
         }
 
@@ -30,6 +31,7 @@ class TestApiAuth(GenocrowdTestCase):
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
             "email": "jwick@genocrowd.org",
+            "grade": "mygrade",
             "role": 'user'
         }
 
@@ -60,6 +62,7 @@ class TestApiAuth(GenocrowdTestCase):
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
             "email": "jwick@genocrowd.org",
+            "grade": "mygrade",
             "role": 'user'
         }
 
@@ -79,6 +82,7 @@ class TestApiAuth(GenocrowdTestCase):
             "password": "dontkillmydog",
             "passwordconf": "dontkillmydog",
             "email": "xx",
+            "grade": "mygrade",
             "role": 'user'
         }
 
@@ -98,6 +102,7 @@ class TestApiAuth(GenocrowdTestCase):
             "password": "dontkillmydog",
             "passwordconf": "dontstealmycar",
             "email": "jwick@genocrowd.org",
+            "grade": "mygrade",
             "role": 'user'
         }
 

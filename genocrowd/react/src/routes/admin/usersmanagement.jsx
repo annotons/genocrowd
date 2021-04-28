@@ -17,13 +17,19 @@ export default class Users extends Component {
       error: false, 
       errorMessage: "", 
       users: [], 
-      newNumber: ""
+      newNumber: "",
+      groups: [],
+      groupName:"",
+      groupNumber:""
+
     }
     this.handleChangeAdmin = this.handleChangeAdmin.bind(this);
     this.handleChangeBlocked = this.handleChangeBlocked.bind(this);
     this.handleChange = this.handleChange.bind(this)
-    this.cancelRequest
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSubmitGroupName = this.handleSubmitGroupName.bind(this)
+    this.cancelRequest
+
   }
 
   handleChangeAdmin(event) {
@@ -125,7 +131,8 @@ export default class Users extends Component {
   componentDidMount() {
     console.log("mount")
     if (!this.props.waitForStart) {
-      let requestUrl = "/api/admin/getusers";
+      let requestUrl = '/api/admin/getusers';
+      let requestUrl_getgroups = '/api/admin/getgroups';
 
       axios
         .get(requestUrl, {
@@ -152,7 +159,23 @@ export default class Users extends Component {
             success: !response.data.error,
           });
         });
-    }
+      axios
+        .get(requestUrl_getgroups, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
+          }),
+        })
+        .then((response_getgroups) => {
+          console.log(requestUrl_getgroups, response_getgroups.data);
+          this.setState({
+            isLoading: false,
+            error: response_getgroups.data.error,
+            errorMessage: response_getgroups.data.errorMessage,
+            groups: response_getgroups.data.groups,
+          });
+        });
+    };
   }
 
   componentWillUnmount() {
@@ -161,22 +184,21 @@ export default class Users extends Component {
     }
   }
 
-  handleSubmit(event) {
-    let requestUrl3 = 'api/data/setgroupsamount'
+  handleSubmit() {
+    let requestUrl = 'api/data/setgroupsamount'
     let data = {
     	newNumber: this.state.newNumber
     }
-    //console.log("newNumber", data.newNumber)
 
     axios
-      .post(requestUrl3, data, {
+      .post(requestUrl, data, {
         baseURL: this.props.config.proxyPath,
-        cancelToken : new axios.CancelToken((c) => {
+        cancelToken: new axios.CancelToken((c) => {
           this.cancelRequest = c
         })
       })
       .then(response => {
-        console.log(requestUrl3, response.data)
+        console.log(requestUrl, response.data)
         this.setState({
           error: response.data.error,
           errorMessage: response.data.errorMessage,
@@ -191,10 +213,83 @@ export default class Users extends Component {
           success: !response.data.error
         })
       })
+
+    let requestUrl2 = '/api/admin/setgroup'
+    axios
+      .post(requestUrl2, data, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c) => {
+          this.cancelRequest = c
+        })
+      })
+      .then(response2 => {
+        console.log(requestUrl2, response2.data.gradeList)
+        this.setState({
+          error: response2.data.error,
+          errorMessage: response2.data.errorMessage,
+          gradeList: response2.data.gradeList
+        })
+      })
+      .catch(error => {
+        this.setState({
+          error: true,
+          errorMessage: error.response2.data.errorMessage,
+          status: errorMessage,
+          success: !response2.data.error
+        })
+      })
   }
 
+  handleSubmitGroupName(){
+    //console.log("datanumber", this.state.groupNumber);
+    //console.log("dataname", this.state.groupName);
+    let data = {
+      number: this.state.groupNumber,
+      name: this.state.groupName
+    }
+
+    let requestUrl = 'api/data/updategroupname'
+    axios
+      .post(requestUrl, data, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c)=> {this.cancelRequest = c 
+        })
+      })
+      .then(response => {
+        console.log(requestUrl, response.data.name)
+        this.setState({
+          error: response.data.error,
+          errorMessage: response.data.errorMessage,
+          groupName: response.data.name
+
+        })
+      })
+      .catch(error => {
+        this.setState({
+          error: true,
+          errorMessage: error.response.data.errorMessage,
+          status: errorMessage,
+          success: !response.data.error
+        })
+      })
+  }
+
+
   render() {
-    //console.log()
+    let columns_groups = [
+      {
+        editable: false,
+        dataField: "number",
+        text: "Group n°",
+        sort: true,
+      },
+      {
+        editable: false,
+        dataField: "name",
+        text: "Name",
+      },
+    ];
+
     let columns = [
       {
         editable: false,
@@ -203,6 +298,18 @@ export default class Users extends Component {
         formatter: (cell) => {
           return cell ? "Ldap" : "Local";
         },
+        sort: true,
+      },
+      {
+        editable: false,
+        dataField: "grade",
+        text: "Grade",
+        sort: true,
+      },
+      {
+        editable: false,
+        dataField: 'group',
+        text: "Group",
         sort: true,
       },
       {
@@ -311,6 +418,38 @@ export default class Users extends Component {
           <Label for="groupsAmount"> Number of groups</Label>
           <Input type="number" name="groupsAmount" id="newNumber" placeholder="" value={this.state.newNumber} onChange={this.handleChange} />
           <Button> Enter </Button>
+        </Form>
+        </div>
+        <h2>Groups management</h2>
+        <hr />
+        <div className=".geno-table-height-div">
+          <BootstrapTable
+            classes="geno-table"
+            wrapperClasses="geno-table-wrapper"
+            bootstrap4
+            keyField="_id"
+            data={this.state.groups}
+            columns={columns_groups}
+            defaultSorted={defaultSorted}
+            pagination={paginationFactory()}
+            cellEdit={cellEditFactory({
+              mode: "click",
+              autoSelectText: true,
+              beforeSaveCell: (oldValue, newValue, row) => {
+                this.updateQuota(oldValue, newValue, row);
+              },
+            })}
+          />
+          <Form onSubmit={this.handleSubmitGroupName}>
+            <FormGroup>
+              <Label for="groupName"> Group Name.. </Label>
+            <Input type="text" name="groupName" id="groupName" placeholder="Group name" value={this.state.groupName} onChange={this.handleChange} />
+            </FormGroup>
+            <FormGroup>
+              <Label for="groupNumber"> ..For group n° </Label>
+              <Input type="number" name="groupNumber" id="groupNumber" placeholder="Group number" value={this.state.groupNumber} onChange={this.handleChange}/>
+            </FormGroup>
+            <Button> Enter </Button>
         </Form>
         </div>
       </div>

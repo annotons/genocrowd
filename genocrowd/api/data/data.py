@@ -195,5 +195,21 @@ def set_groups_amount():
     """
     data = request.get_json()
     dataInstance = Data(ca, session)
-    result = dataInstance.set_number_of_groups(data['newNumber'])
+    result = dataInstance.set_number_of_groups(data)
+    return result
+
+
+@data_bp.route('api/data/updategroupname', methods=['POST'])
+@admin_required
+def update_group_name():
+    """Update the name of a group
+
+    Returns
+    -------
+    dict
+        error, error message and group name
+    """
+    data = request.get_json()
+    dataInstance = Data(ca, session)
+    result = dataInstance.update_group_name(data)
     return result

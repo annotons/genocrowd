@@ -66,6 +66,8 @@ class TestApi(GenocrowdTestCase):
             'blocked': False,
             'isExternal': False,
             'created': response.json["config"]["user"]["created"],
+            'grade': "ADMIN",
+            'group': None,
             'role': 'admin'
 
         }
@@ -106,6 +108,8 @@ class TestApi(GenocrowdTestCase):
             'blocked': False,
             'isExternal': False,
             'created': response.json["config"]["user"]["created"],
+            'grade': "mygrade",
+            'group': None,
             'role': 'user'
         }
 

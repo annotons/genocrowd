@@ -52,7 +52,7 @@ def signup():
     local_auth.check_inputs(data)
     if not local_auth.get_error():
         # FIXME is it safe to pass role? where does it come from?
-        new_user = local_auth.add_user_to_database(data['username'], data['email'], data['password'], data['role'])
+        new_user = local_auth.add_user_to_database(data['username'], data['email'], data['password'], data['grade'], data['role'])
         new_user['_id'] = str(new_user['_id'])
         session['user'] = new_user
 

@@ -17,6 +17,7 @@ export default class Signup extends Component {
       email: '',
       password: '',
       passwordconf: '',
+      grade: '',
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -48,6 +49,7 @@ export default class Signup extends Component {
       this.validateEmail(this.state.email) &&
       this.state.username.length > 0 &&
       this.state.password.length > 0 &&
+      this.state.grade.length > 0 &&
       this.validatePassword()
     )
   }
@@ -59,6 +61,7 @@ export default class Signup extends Component {
       email: this.state.email,
       password: this.state.password,
       passwordconf: this.state.passwordconf,
+      grade: this.state.grade,
       role: 'user'
     }
     this.setState({isLoading: true} , () => {
@@ -94,7 +97,8 @@ export default class Signup extends Component {
           username: '',
           email: '',
           password: '',
-          passwordconf: ''
+          passwordconf: '',
+          grade: ''
         })
       })
     event.preventDefault()
@@ -121,6 +125,10 @@ export default class Signup extends Component {
                 <Label for="email">Email</Label>
                 <Input type="email" name="email" id="email" placeholder="email" value={this.state.email} onChange={this.handleChange} />
                     <span className='error' hidden={this.validateEmail(this.state.email)}>Please respect the email format: user@example.com</span>
+              </FormGroup>
+              <FormGroup>
+                <Label for="grade">Grade</Label>
+                <Input type="text" name="grade" id="grade" placeholder="grade" value={this.state.grade} onChange={this.handleChange} />
               </FormGroup>
               <FormGroup>
                 <Label for="username">Username</Label>
