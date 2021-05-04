@@ -6,7 +6,7 @@ from BCBio import GFF
 from flask import Blueprint, request, session
 from flask import current_app as ca
 
-from genocrowd.api.auth.login import admin_required
+from genocrowd.api.auth.login import admin_required, login_required
 from genocrowd.libgenocrowd.Data import Data
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
@@ -212,4 +212,12 @@ def update_group_name():
     data = request.get_json()
     dataInstance = Data(ca, session)
     result = dataInstance.update_group_name(data)
+    return result
+
+
+@data_bp.route('/api/data/gettopannotation')
+@login_required
+def get_top_annotation():
+    dataInstance = Data(ca, session)
+    result = dataInstance.get_top_annotation()
     return result

@@ -1,5 +1,6 @@
 from flask import current_app as ca
 
+from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 from genocrowd.libgenocrowd.Params import Params
 
 import gridfs
@@ -109,7 +110,7 @@ class Data(Params):
 
         """Creation of new empty groups"""
         for i in range(newNumber):
-            self.groups.insert({'number': i + 1, 'name': "", 'students': []})
+            self.groups.insert({'number': i + 1, 'name': "", 'student': []})
 
         return {
             'error': error,
@@ -148,4 +149,55 @@ class Data(Params):
             'error': error,
             'error_message': error_message,
             'name': name
+        }
+
+    def get_top_annotation(self):
+        """Get top annotator and top group
+
+        Returns
+        -------
+            dict
+                list of top 3 users and groups, error and error message
+
+        """
+        error = False
+        error_message = []
+        top_users = []
+        top_groups = []
+        nb = self.get_number_of_groups()
+        liste_temp = [0] * nb
+        userList = LocalAuth.get_all_users(self)
+
+        for element in userList:
+            """We don't want Admin in the ranking"""
+            if element['group'] is not None:
+                dico = {}
+                dico["username"] = element['username']
+                dico["score"] = element['total_annotation']
+                top_users.append(dico)
+
+                """sums the annotations for each group"""
+                index = element['group'] - 1
+                liste_temp[index] = liste_temp[index] + element['total_annotation']
+
+        """get the group name"""
+        for i, element in enumerate(liste_temp):
+            dico = {}
+            temp = []
+            groupCursor = self.groups.find({'number': i + 1})
+            groupCursor[0]['_id'] = str(groupCursor[0]['_id'])
+            temp.append(groupCursor[0])
+
+            dico["name"] = temp[0]['name']
+            dico["score"] = element
+            top_groups.append(dico)
+
+        top_groups = sorted(top_groups, key=lambda k: k['score'], reverse=True)
+        top_users = sorted(top_users, key=lambda k: k['score'], reverse=True)
+
+        return {
+            'top_users': top_users[:3],
+            'top_groups': top_groups[:3],
+            'error': error,
+            'errorMessage': error_message
         }

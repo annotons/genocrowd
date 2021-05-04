@@ -1,21 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import {
-  Button,
-  CardBody,
-  Row,
-  Container,
-  Col,
-  Card,
-  CardTitle,
-  CardSubtitle,
-  CardImg,
-  CardHeader,
-  Progress,
-  ListGroup,
-  ListGroupItem,
-  Table,
-} from "reactstrap";
+import { Button, CardBody, Row, Container, Col, Card, CardTitle, CardSubtitle, CardImg, CardHeader, Progress, ListGroup, ListGroupItem} from "reactstrap";
+import BootstrapTable from "react-bootstrap-table-next";
 import PropTypes from "prop-types";
 import Identicon from "react-identicons";
 import { Redirect } from "react-router";
@@ -25,6 +11,8 @@ export default class Dashboard extends Component {
     super(props);
     this.state = {
       start: false,
+      top_users: [],
+      top_groups: []
     };
     this.setStart = this.setStart.bind(this);
   }
@@ -34,11 +22,13 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount(){
+    console.log("mount")
     if (!this.props.waitForStart) {
       let requestUrl_users = 'api/data/getusersamount';
       let requestUrl_answers = 'api/data/getanswersamount';
       let requestUrl_groups = 'api/data/getgroupsamount';
-      
+      let requestUrl_top = 'api/data/gettopannotation  ';
+
       Promise.all([
         axios.get(requestUrl_users, {
           baseURL: this.props.config.proxyPath,
@@ -72,12 +62,56 @@ export default class Dashboard extends Component {
           groupsAmount: response_groups.data.groupsAmount
         });
       })
+
+      axios
+        .get(requestUrl_top, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c) => {
+          this.cancelRequest = c;
+          }),
+        })
+        .then((response_top) => {
+          console.log(requestUrl_top, response_top.data);
+          this.setState({
+            error: response_top.data.error,
+            errorMessage: response_top.data.errorMessage,
+            top_groups: response_top.data.top_groups,
+            top_users: response_top.data.top_users
+          });
+
+        })
     }
   }
 
 
   render() {
     let html = <Redirect to="/annotator" />;
+    let columns_users = [
+      {
+        editable: false,
+        dataField:"username",
+        text: "User"
+      },
+      {
+        editable: false,
+        dataField: "score",
+        text: "Score"
+      }
+    ]
+
+    let columns_groups = [
+      {
+        editable: false,
+        dataField: "name",
+        text: "Group",
+      },
+      {
+        editable: false,
+        dataField: "score",
+        text: "Score",
+      }
+    ]
+
     if (this.state.start === false) {
       html = (
         <Container>
@@ -154,32 +188,26 @@ export default class Dashboard extends Component {
                 <Col>
                   <Card>
                     <CardHeader className="center-div">
-                      Top annotators
+                      Top 3 annotators
                     </CardHeader>
                     <CardBody>
-                      <Table className="center-div">
-                        <thead>
-                          <tr>
-                            <th>Weekly</th>
-                            <th>Global</th>
-                          </tr>
-                        </thead>
-                      </Table>
+                      <BootstrapTable
+                        keyField = "_id"
+                        data={this.state.top_users}
+                        columns= {columns_users}
+                      />
                     </CardBody>
                   </Card>
                 </Col>
                 <Col>
                   <Card>
-                    <CardHeader className="center-div">Top groups</CardHeader>
+                    <CardHeader className="center-div">Top 3 groups</CardHeader>
                     <CardBody>
-                      <Table className="center-div">
-                        <thead>
-                          <tr>
-                            <th>Weekly</th>
-                            <th>Global</th>
-                          </tr>
-                        </thead>
-                      </Table>
+                      <BootstrapTable
+                        keyField = "_id"
+                        data={this.state.top_groups}
+                        columns= {columns_groups}
+                      />
                     </CardBody>
                   </Card>
                 </Col>
