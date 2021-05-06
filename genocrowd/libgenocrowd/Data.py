@@ -181,14 +181,11 @@ class Data(Params):
                 liste_temp[index] = liste_temp[index] + element['total_annotation']
 
         """get the group name"""
+        groups_name = self.get_groups_name()
         for i, element in enumerate(liste_temp):
             dico = {}
-            temp = []
-            groupCursor = self.groups.find({'number': i + 1})
-            groupCursor[0]['_id'] = str(groupCursor[0]['_id'])
-            temp.append(groupCursor[0])
 
-            dico["name"] = temp[0]['name']
+            dico["name"] = groups_name['groups_name'][i]
             dico["score"] = element
             top_groups.append(dico)
 
@@ -198,6 +195,27 @@ class Data(Params):
         return {
             'top_users': top_users[:3],
             'top_groups': top_groups[:3],
+            'error': error,
+            'errorMessage': error_message
+        }
+
+    def get_groups_names(self):
+        """Get groups name
+
+        Returns
+        -------
+            dict
+                error, error message and list of groups names
+        """
+        error = False
+        error_message = []
+        groups_names = []
+        groupCursor = self.groups.find({'number': {'$exists': True}})
+        for document in groupCursor:
+            document['_id'] = str(document['_id'])
+            groups_names.append(document['name'])
+        return {
+            'groups_names': groups_names,
             'error': error,
             'errorMessage': error_message
         }

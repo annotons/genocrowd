@@ -12,7 +12,8 @@ export default class Dashboard extends Component {
     this.state = {
       start: false,
       top_users: [],
-      top_groups: []
+      top_groups: [],
+      groups_names: []
     };
     this.setStart = this.setStart.bind(this);
   }
@@ -28,6 +29,7 @@ export default class Dashboard extends Component {
       let requestUrl_answers = 'api/data/getanswersamount';
       let requestUrl_groups = 'api/data/getgroupsamount';
       let requestUrl_top = 'api/data/gettopannotation  ';
+      let requestUrl_groupsnames = 'api/data/getgroupsnames';
 
       Promise.all([
         axios.get(requestUrl_users, {
@@ -80,6 +82,21 @@ export default class Dashboard extends Component {
           });
 
         })
+
+      axios
+        .get(requestUrl_groupsnames, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
+          }),
+        })
+        .then((response_groupsnames) => {
+          this.setState({
+            'error': response_groupsnames.data.error,
+            'errorMessage': response_groupsnames.data.errorMessage,
+            'groups_names': response_groupsnames.data.groups_names
+          });
+        })
     }
   }
 
@@ -122,10 +139,10 @@ export default class Dashboard extends Component {
                 <CardTitle tag="h3">
                   {this.props.config.user.username}
                 </CardTitle>
-                <CardSubtitle>GroupName</CardSubtitle>
+                <CardSubtitle></CardSubtitle>
                 <CardBody>
                   <br></br>
-                  <Container></Container>
+                  <Container>{this.state.groups_names[this.props.config.user.group-1]}</Container>
                   <Progress value={2 * 5}></Progress>
                   <br></br>
                   <Identicon

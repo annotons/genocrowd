@@ -215,9 +215,24 @@ def update_group_name():
     return result
 
 
-@data_bp.route('/api/data/gettopannotation')
+@data_bp.route('/api/data/gettopannotation', methods=['GET'])
 @login_required
 def get_top_annotation():
     dataInstance = Data(ca, session)
     result = dataInstance.get_top_annotation()
+    return result
+
+
+@data_bp.route('/api/data/getgroupsnames', methods=['GET'])
+@login_required
+def get_groups_names():
+    """ Get groups names
+
+    Returns
+    -------
+        dict
+            error, error message and list of groups names
+    """
+    dataInstance = Data(ca, session)
+    result = dataInstance.get_groups_names()
     return result
