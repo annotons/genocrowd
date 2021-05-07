@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Button, CardBody, Row, Container, Col, Card, CardTitle, CardSubtitle, CardImg, CardHeader, Progress, ListGroup, ListGroupItem} from "reactstrap";
+import { Button, CardBody, Row, Container, Col, Card, CardTitle, CardSubtitle, CardHeader, ListGroup, ListGroupItem} from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import PropTypes from "prop-types";
 import Identicon from "react-identicons";
 import { Redirect } from "react-router";
+import ProgressBar from 'react-bootstrap/ProgressBar'
+
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -28,8 +30,9 @@ export default class Dashboard extends Component {
       let requestUrl_users = 'api/data/getusersamount';
       let requestUrl_answers = 'api/data/getanswersamount';
       let requestUrl_groups = 'api/data/getgroupsamount';
-      let requestUrl_top = 'api/data/gettopannotation  ';
+      let requestUrl_top = 'api/data/gettopannotation';
       let requestUrl_groupsnames = 'api/data/getgroupsnames';
+      let requestUrl_genes = '/api/data/countallgenes';
 
       Promise.all([
         axios.get(requestUrl_users, {
@@ -97,6 +100,21 @@ export default class Dashboard extends Component {
             'groups_names': response_groupsnames.data.groups_names
           });
         })
+
+      axios
+        .get(requestUrl_genes, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c
+          }),
+        })
+        .then((response_genes) => {
+          this.setState({
+            'error': response_genes.data.error,
+            'errorMessage': response_genes.data.errorMessage,
+            'genes': response_genes.data.genes
+          })
+        })
     }
   }
 
@@ -143,7 +161,6 @@ export default class Dashboard extends Component {
                 <CardBody>
                   <br></br>
                   <Container>{this.state.groups_names[this.props.config.user.group-1]}</Container>
-                  <Progress value={2 * 5}></Progress>
                   <br></br>
                   <Identicon
                     size={100}
@@ -155,10 +172,11 @@ export default class Dashboard extends Component {
             <Col>
               <Card body outline className="dashboard-progresscards">
                 <CardTitle>Project progress</CardTitle>
-                <CardImg
-                  size="100%"
-                  src="../../../../static/logo/fauxcamembert.png"
-                ></CardImg>
+                <CardBody>
+                  <ProgressBar>
+                    <ProgressBar striped variant="success" now={this.answersAmount} key={1} max={this.state.genes} label={this.answersAmount}/>
+                  </ProgressBar>
+                </CardBody>
                 <hr></hr>
                 <Button success>Get Started</Button>
               </Card>

@@ -27,6 +27,9 @@ class Data(Params):
     def get_all_positions(self):
         return list(self.genes.find({}))
 
+    def count_all_genes(self):
+        return self.genes.count_documents({})
+
     def get_current_annotation(self, username):
         user = self.users.find_one({"username": username})
         return user["current_annotation"]
@@ -181,11 +184,11 @@ class Data(Params):
                 liste_temp[index] = liste_temp[index] + element['total_annotation']
 
         """get the group name"""
-        groups_name = self.get_groups_name()
+        groups_names = self.get_groups_names()
         for i, element in enumerate(liste_temp):
             dico = {}
 
-            dico["name"] = groups_name['groups_name'][i]
+            dico["name"] = groups_names['groups_names'][i]
             dico["score"] = element
             top_groups.append(dico)
 

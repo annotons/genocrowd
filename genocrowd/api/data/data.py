@@ -236,3 +236,24 @@ def get_groups_names():
     dataInstance = Data(ca, session)
     result = dataInstance.get_groups_names()
     return result
+
+
+@data_bp.route('/api/data/countallgenes', methods=['GET'])
+@login_required
+def count_all_genes():
+    """Get the quantity of genes to annotate
+
+    Returns
+    -------
+        dict
+            error, error message and quantity of genes to annotate
+    """
+    error = False
+    errorMessage = []
+    dataInstance = Data(ca, session)
+    result = dataInstance.count_all_genes()
+    return {
+        'error': error,
+        'errorMessage': errorMessage,
+        'genes': result
+    }
