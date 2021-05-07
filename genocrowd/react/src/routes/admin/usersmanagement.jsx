@@ -187,7 +187,8 @@ export default class Users extends Component {
   handleSubmit() {
     let requestUrl = 'api/data/setgroupsamount'
     let data = {
-    	newNumber: this.state.newNumber
+    	newNumber: this.state.newNumber,
+      groupsAmount: this.state.newNumber
     }
 
     axios

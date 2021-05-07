@@ -1,5 +1,6 @@
 from flask import current_app as ca
 
+from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 from genocrowd.libgenocrowd.Params import Params
 
 import gridfs
@@ -25,6 +26,9 @@ class Data(Params):
 
     def get_all_positions(self):
         return list(self.genes.find({}))
+
+    def count_all_genes(self):
+        return self.genes.count_documents({})
 
     def get_current_annotation(self, username):
         user = self.users.find_one({"username": username})
@@ -109,7 +113,7 @@ class Data(Params):
 
         """Creation of new empty groups"""
         for i in range(newNumber):
-            self.groups.insert({'number': i + 1, 'name': "", 'students': []})
+            self.groups.insert({'number': i + 1, 'name': "", 'student': []})
 
         return {
             'error': error,
@@ -148,4 +152,73 @@ class Data(Params):
             'error': error,
             'error_message': error_message,
             'name': name
+        }
+
+    def get_top_annotation(self):
+        """Get top annotator and top group
+
+        Returns
+        -------
+            dict
+                list of top 3 users and groups, error and error message
+
+        """
+        error = False
+        error_message = []
+        top_users = []
+        top_groups = []
+        nb = self.get_number_of_groups()
+        liste_temp = [0] * nb
+        userList = LocalAuth.get_all_users(self)
+
+        for element in userList:
+            """We don't want Admin in the ranking"""
+            if element['group'] is not None:
+                dico = {}
+                dico["username"] = element['username']
+                dico["score"] = element['total_annotation']
+                top_users.append(dico)
+
+                """sums the annotations for each group"""
+                index = element['group'] - 1
+                liste_temp[index] = liste_temp[index] + element['total_annotation']
+
+        """get the group name"""
+        groups_names = self.get_groups_names()
+        for i, element in enumerate(liste_temp):
+            dico = {}
+
+            dico["name"] = groups_names['groups_names'][i]
+            dico["score"] = element
+            top_groups.append(dico)
+
+        top_groups = sorted(top_groups, key=lambda k: k['score'], reverse=True)
+        top_users = sorted(top_users, key=lambda k: k['score'], reverse=True)
+
+        return {
+            'top_users': top_users[:3],
+            'top_groups': top_groups[:3],
+            'error': error,
+            'errorMessage': error_message
+        }
+
+    def get_groups_names(self):
+        """Get groups name
+
+        Returns
+        -------
+            dict
+                error, error message and list of groups names
+        """
+        error = False
+        error_message = []
+        groups_names = []
+        groupCursor = self.groups.find({'number': {'$exists': True}})
+        for document in groupCursor:
+            document['_id'] = str(document['_id'])
+            groups_names.append(document['name'])
+        return {
+            'groups_names': groups_names,
+            'error': error,
+            'errorMessage': error_message
         }
