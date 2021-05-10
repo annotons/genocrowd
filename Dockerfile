@@ -31,7 +31,7 @@ RUN apk add --no-cache \
     mkdir /genocrowd && \
     cd /genocrowd && \
     mv /requirements.txt /genocrowd/requirements.txt && \
-    pip install -r requirements.txt && \
+    pip3 install -r requirements.txt && \
     apk --purge del .build-deps && \
     rm /etc/nginx/conf.d/default.conf && \
     rm -r /root/.cache
@@ -39,7 +39,7 @@ RUN apk add --no-cache \
 COPY . /genocrowd
 WORKDIR /genocrowd
 
-RUN pip install -e .
+RUN pip3 install -e .
 
 COPY docker/nginx.conf /etc/nginx/
 COPY docker/nginx_genocrowd.conf /etc/nginx/conf.d/
