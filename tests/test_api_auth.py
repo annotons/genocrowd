@@ -11,7 +11,8 @@ class TestApiAuth(GenocrowdTestCase):
             "passwordconf": "dontkillmydog",
             "email": "jwick@genocrowd.org",
             "grade": "mygrade",
-            "role": 'user'
+            "role": 'user',
+            "total_annotation": 0
         }
 
         response = client.client.post('/api/auth/signup', json=ok_data)

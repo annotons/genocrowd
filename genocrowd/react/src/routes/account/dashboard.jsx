@@ -1,30 +1,21 @@
 import React, { Component } from "react";
 import axios from "axios";
-import {
-  Button,
-  CardBody,
-  Row,
-  Container,
-  Col,
-  Card,
-  CardTitle,
-  CardSubtitle,
-  CardImg,
-  CardHeader,
-  Progress,
-  ListGroup,
-  ListGroupItem,
-  Table,
-} from "reactstrap";
+import { Button, CardBody, Row, Container, Col, Card, CardTitle, CardSubtitle, CardHeader, ListGroup, ListGroupItem} from "reactstrap";
+import BootstrapTable from "react-bootstrap-table-next";
 import PropTypes from "prop-types";
 import Identicon from "react-identicons";
 import { Redirect } from "react-router";
+import ProgressBar from 'react-bootstrap/ProgressBar'
+
 
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       start: false,
+      top_users: [],
+      top_groups: [],
+      groups_names: []
     };
     this.setStart = this.setStart.bind(this);
   }
@@ -34,11 +25,15 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount(){
+    console.log("mount")
     if (!this.props.waitForStart) {
       let requestUrl_users = 'api/data/getusersamount';
       let requestUrl_answers = 'api/data/getanswersamount';
       let requestUrl_groups = 'api/data/getgroupsamount';
-      
+      let requestUrl_top = 'api/data/gettopannotation';
+      let requestUrl_groupsnames = 'api/data/getgroupsnames';
+      let requestUrl_genes = '/api/data/countallgenes';
+
       Promise.all([
         axios.get(requestUrl_users, {
           baseURL: this.props.config.proxyPath,
@@ -72,12 +67,86 @@ export default class Dashboard extends Component {
           groupsAmount: response_groups.data.groupsAmount
         });
       })
+
+      axios
+        .get(requestUrl_top, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c) => {
+          this.cancelRequest = c;
+          }),
+        })
+        .then((response_top) => {
+          console.log(requestUrl_top, response_top.data);
+          this.setState({
+            error: response_top.data.error,
+            errorMessage: response_top.data.errorMessage,
+            top_groups: response_top.data.top_groups,
+            top_users: response_top.data.top_users
+          });
+
+        })
+
+      axios
+        .get(requestUrl_groupsnames, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c;
+          }),
+        })
+        .then((response_groupsnames) => {
+          this.setState({
+            'error': response_groupsnames.data.error,
+            'errorMessage': response_groupsnames.data.errorMessage,
+            'groups_names': response_groupsnames.data.groups_names
+          });
+        })
+
+      axios
+        .get(requestUrl_genes, {
+          baseURL: this.props.config.proxyPath,
+          cancelToken: new axios.CancelToken((c) => {
+            this.cancelRequest = c
+          }),
+        })
+        .then((response_genes) => {
+          this.setState({
+            'error': response_genes.data.error,
+            'errorMessage': response_genes.data.errorMessage,
+            'genes': response_genes.data.genes
+          })
+        })
     }
   }
 
 
   render() {
     let html = <Redirect to="/annotator" />;
+    let columns_users = [
+      {
+        editable: false,
+        dataField:"username",
+        text: "User"
+      },
+      {
+        editable: false,
+        dataField: "score",
+        text: "Score"
+      }
+    ]
+
+    let columns_groups = [
+      {
+        editable: false,
+        dataField: "name",
+        text: "Group",
+      },
+      {
+        editable: false,
+        dataField: "score",
+        text: "Score",
+      }
+    ]
+
     if (this.state.start === false) {
       html = (
         <Container>
@@ -88,11 +157,10 @@ export default class Dashboard extends Component {
                 <CardTitle tag="h3">
                   {this.props.config.user.username}
                 </CardTitle>
-                <CardSubtitle>GroupName</CardSubtitle>
+                <CardSubtitle></CardSubtitle>
                 <CardBody>
                   <br></br>
-                  <Container></Container>
-                  <Progress value={2 * 5}></Progress>
+                  <Container>{this.state.groups_names[this.props.config.user.group-1]}</Container>
                   <br></br>
                   <Identicon
                     size={100}
@@ -104,10 +172,11 @@ export default class Dashboard extends Component {
             <Col>
               <Card body outline className="dashboard-progresscards">
                 <CardTitle>Project progress</CardTitle>
-                <CardImg
-                  size="100%"
-                  src="../../../../static/logo/fauxcamembert.png"
-                ></CardImg>
+                <CardBody>
+                  <ProgressBar>
+                    <ProgressBar striped variant="success" now={this.answersAmount} key={1} max={this.state.genes} label={this.answersAmount}/>
+                  </ProgressBar>
+                </CardBody>
                 <hr></hr>
                 <Button success>Get Started</Button>
               </Card>
@@ -154,32 +223,26 @@ export default class Dashboard extends Component {
                 <Col>
                   <Card>
                     <CardHeader className="center-div">
-                      Top annotators
+                      Top 3 annotators
                     </CardHeader>
                     <CardBody>
-                      <Table className="center-div">
-                        <thead>
-                          <tr>
-                            <th>Weekly</th>
-                            <th>Global</th>
-                          </tr>
-                        </thead>
-                      </Table>
+                      <BootstrapTable
+                        keyField = "_id"
+                        data={this.state.top_users}
+                        columns= {columns_users}
+                      />
                     </CardBody>
                   </Card>
                 </Col>
                 <Col>
                   <Card>
-                    <CardHeader className="center-div">Top groups</CardHeader>
+                    <CardHeader className="center-div">Top 3 groups</CardHeader>
                     <CardBody>
-                      <Table className="center-div">
-                        <thead>
-                          <tr>
-                            <th>Weekly</th>
-                            <th>Global</th>
-                          </tr>
-                        </thead>
-                      </Table>
+                      <BootstrapTable
+                        keyField = "_id"
+                        data={this.state.top_groups}
+                        columns= {columns_groups}
+                      />
                     </CardBody>
                   </Card>
                 </Col>

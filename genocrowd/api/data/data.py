@@ -6,7 +6,7 @@ from BCBio import GFF
 from flask import Blueprint, request, session
 from flask import current_app as ca
 
-from genocrowd.api.auth.login import admin_required
+from genocrowd.api.auth.login import admin_required, login_required
 from genocrowd.libgenocrowd.Data import Data
 from genocrowd.libgenocrowd.LocalAuth import LocalAuth
 
@@ -213,3 +213,47 @@ def update_group_name():
     dataInstance = Data(ca, session)
     result = dataInstance.update_group_name(data)
     return result
+
+
+@data_bp.route('/api/data/gettopannotation', methods=['GET'])
+@login_required
+def get_top_annotation():
+    dataInstance = Data(ca, session)
+    result = dataInstance.get_top_annotation()
+    return result
+
+
+@data_bp.route('/api/data/getgroupsnames', methods=['GET'])
+@login_required
+def get_groups_names():
+    """ Get groups names
+
+    Returns
+    -------
+        dict
+            error, error message and list of groups names
+    """
+    dataInstance = Data(ca, session)
+    result = dataInstance.get_groups_names()
+    return result
+
+
+@data_bp.route('/api/data/countallgenes', methods=['GET'])
+@login_required
+def count_all_genes():
+    """Get the quantity of genes to annotate
+
+    Returns
+    -------
+        dict
+            error, error message and quantity of genes to annotate
+    """
+    error = False
+    errorMessage = []
+    dataInstance = Data(ca, session)
+    result = dataInstance.count_all_genes()
+    return {
+        'error': error,
+        'errorMessage': errorMessage,
+        'genes': result
+    }
