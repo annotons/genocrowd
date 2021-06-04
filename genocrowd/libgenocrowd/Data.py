@@ -24,6 +24,10 @@ class Data(Params):
         self.answers = self.app.mongo.db["answers"]
         self.groups = self.app.mongo.db["groups"]
 
+    def get_user_level(self, username):
+        user = self.users.find_one({"username": username})
+        return user["level"]
+
     def get_all_positions(self):
         return list(self.genes.find({}))
 
@@ -222,3 +226,33 @@ class Data(Params):
             'error': error,
             'errorMessage': error_message
         }
+
+    def find_genes_level(self, maliste, value):
+        """Select genes according to a difficulty level
+
+        Returns
+        -------
+        list
+            dict
+                chromosome, start, end, strand, isAnnotable, difficulty, priority, tags
+        """
+        good_difficulty = []
+        for element in maliste:
+            if element['difficulty'] == value:
+                good_difficulty.append(element)
+        return good_difficulty
+
+    def select_genes(self, i, maliste):
+        """Select the list of genes whose difficulty matches the user's level
+
+        Returns
+        -------
+            list
+                dict
+                    chromosome, start, end, strand, isAnnotable, difficulty, priority, tags
+        """
+        switcher = {
+            0: self.find_genes_level(maliste, 1521)
+            # TODO complete switcher
+        }
+        return switcher.get(i, "Invalid level number")

@@ -21,6 +21,8 @@ data_bp = Blueprint('data', __name__, url_prefix='/')
 def gene_from_apollo():
     """ Receives the GFF file from the client:
         - Splits the genes in separate GFF files
+        - Add a priority to each genes
+        - Calculates the difficulty of each genes
         - Saves them in the database
     Returns
     -------
@@ -31,6 +33,7 @@ def gene_from_apollo():
     """
     db = ca.mongo.db
     fs = gridfs.GridFS(db, collection="genes")
+    priority = request.form['priority']
     file = request.files['file']
     with tempfile.NamedTemporaryFile(mode='w+') as full_gff:
         file.save(full_gff.name)
@@ -41,13 +44,16 @@ def gene_from_apollo():
         count = 1
         for rec in GFF.parse(full_gff):
             gene_list = rec.features
+            nb_features = len(rec.features)
             for gene in gene_list:
+                # TODO change difficulty calculation
+                difficulty = (gene.location.end - gene.location.start) - nb_features * 10
                 rec.annotations = {}
                 rec.seq = ""
                 rec.features = [gene]
                 gff_out = StringIO()
                 GFF.write([rec], gff_out)
-                fs.put(gff_out.getvalue().encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True)
+                fs.put(gff_out.getvalue().encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True, difficulty=difficulty, priority=priority, tags=[])
                 count += 1
 
     # FIXME refresh gene list in UI
@@ -123,6 +129,33 @@ def remove_gene_from_db():
     result = {'error': False,
               'errorMessage': ""
               }
+    return result
+
+
+@data_bp.route('api/data/removeallgenes', methods=["GET"])
+@admin_required
+def remove_all_genes_from_db():
+    """Remove all genes from de db
+
+    Return
+    ------
+    json
+        error : Boolean
+        errorMessage: str
+    """
+    dataInstance = Data(ca, session)
+    gene_list = dataInstance.get_all_positions()
+
+    db = ca.mongo.db
+    fs = gridfs.GridFS(db, collection="genes")
+
+    for element in gene_list:
+        fs.delete(element['_id'])
+
+    result = {
+        'error': False,
+        'errorMessage': "",
+    }
     return result
 
 

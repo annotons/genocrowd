@@ -25,10 +25,15 @@ def annotation_start():
         url: url for the apollo window, centered on the gene position
         attributes: chromosome on which the gene is
     """
+
     DataInstance = Data(ca, session)
     all_positions = DataInstance.get_all_positions()
+    level = DataInstance.get_user_level(session["user"]["username"])
+
+    restrict_positions = DataInstance.select_genes(level, all_positions)
+
     # FIXME error if no gene in db
-    selected_item = Utils.get_random_items(1, all_positions)[0]
+    selected_item = Utils.get_random_items(1, restrict_positions)[0]
     ca.logger.info("Selected gene: {}".format(selected_item))
 
     db = ca.mongo.db

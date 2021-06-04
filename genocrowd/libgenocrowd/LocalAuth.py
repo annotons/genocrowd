@@ -144,7 +144,8 @@ class LocalAuth(Params):
             'current_annotation': None,
             'grade': grade,
             'group': None,
-            'total_annotation': 0
+            'total_annotation': 0,
+            'level': 0
         })
 
         new_user = self.users.find_one({'_id': user_id})
