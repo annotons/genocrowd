@@ -242,7 +242,7 @@ export default class GeneBoard extends Component {
                   color="danger"
                   name="remove_all"
                   label="removeAll"
-                  onClick={this.handleRemoveAllGenes}
+                  onClick={() => window.confirm("Are you sure you wish to delete this item?") && this.handleRemoveAllGenes() }
                 >Remove All</Button>
               </div>
             </FormGroup>
