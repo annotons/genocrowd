@@ -31,6 +31,9 @@ class Data(Params):
     def get_all_positions(self):
         return list(self.genes.find({}))
 
+    def get_all_answers(self):
+        return list(self.answers.find({}))
+
     def count_all_genes(self):
         return self.genes.count_documents({})
 
@@ -237,7 +240,7 @@ class Data(Params):
                 chromosome, start, end, strand, isAnnotable, difficulty, priority, tags
         """
         good_difficulty = []
-        for element in maliste:
+        for element in geneList:
             if element['difficulty'] == value:
                 good_difficulty.append(element)
         return good_difficulty

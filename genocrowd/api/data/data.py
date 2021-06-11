@@ -44,9 +44,9 @@ def gene_from_apollo():
         count = 1
         for rec in GFF.parse(full_gff):
             gene_list = rec.features
-            nb_features = len(gene.sub_features)
             for gene in gene_list:
                 # TODO change difficulty calculation
+                nb_features = len(gene.sub_features)
                 difficulty = (gene.location.end - gene.location.start) - nb_features * 10
                 rec.annotations = {}
                 rec.seq = ""
