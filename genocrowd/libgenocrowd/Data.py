@@ -21,7 +21,7 @@ class Data(Params):
         Params.__init__(self, app, session)
         self.genes = self.app.mongo.db["genes.files"]
         self.users = self.app.mongo.db["users"]
-        self.answers = self.app.mongo.db["answers"]
+        self.answers = self.app.mongo.db["answers.files"]
         self.groups = self.app.mongo.db["groups"]
 
     def get_user_level(self, username):
@@ -255,7 +255,7 @@ class Data(Params):
                     chromosome, start, end, strand, isAnnotable, difficulty, priority, tags
         """
         switcher = {
-            0: self.find_genes_level(geneList, 2503)
+            0: self.find_genes_level(geneList, 2513)
             # TODO complete switcher
         }
         return switcher.get(i, "Invalid level number")
