@@ -13,9 +13,11 @@ export default class SpecificGeneSelection extends Component {
       error: false,
       errorMessage: "",
       selectedFile: null,
+      priority:0,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.cancelRequest;
   }
 
@@ -23,6 +25,7 @@ export default class SpecificGeneSelection extends Component {
     let requestUrl = "/api/data/uploadgenes";
     const data = new FormData();
     data.append("file", this.state.selectedFile);
+    data.append("priority", this.state.priority);
 
     axios
       .post(requestUrl, data, {
@@ -56,6 +59,12 @@ export default class SpecificGeneSelection extends Component {
     });
   }
 
+  handleChange(event){
+    event.preventDefault();
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+  }
 
   render() {
     return (
@@ -67,7 +76,13 @@ export default class SpecificGeneSelection extends Component {
             type="file"
             name="file"
             id="exampleFile"
-            onChange={(e) => this.onChangeHandler(e)}
+            onChange={(e)=> this.onChangeHandler(e)}
+          />
+          <Input 
+            type="number"
+            name="priority"
+            id="priority"
+            onChange = {(e)=> this.handleChange(e)}
           />
           <br></br>
           Import the GFF file associated to the gene you wish to annotate:

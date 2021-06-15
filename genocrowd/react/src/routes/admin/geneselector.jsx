@@ -14,6 +14,7 @@ export default class GeneBoard extends Component {
     this.state = { isLoading: true, error: false, errorMessage: "", genes: [] };
     this.handleChangeAnnotable = this.handleChangeAnnotable.bind(this);
     this.handleRemoveGene = this.handleRemoveGene.bind(this);
+    this.handleRemoveAllGenes = this.handleRemoveAllGenes.bind(this);
     this.cancelRequest;
   }
 
@@ -100,6 +101,21 @@ export default class GeneBoard extends Component {
           success: !response.data.error,
         });
       });
+  }
+
+  handleRemoveAllGenes(){
+    let requestUrl = "api/data/removeallgenes";
+
+    axios
+      .get(requestUrl, {
+        baseURL: this.props.config.proxyPath,
+        cancelToken: new axios.CancelToken((c) => {
+          this.cancelRequest = c;
+        }),
+      })
+      .then((response) => {
+        console.log(requestUrl, response.data);
+      })
   }
 
   componentDidMount() {
@@ -220,6 +236,16 @@ export default class GeneBoard extends Component {
         <h2>Gene management</h2>
         <hr />
         <div className=".geno-table-height-div">
+          <FormGroup>
+              <div>
+                <Button
+                  color="danger"
+                  name="remove_all"
+                  label="removeAll"
+                  onClick={() => window.confirm("Are you sure you wish to delete this item?") && this.handleRemoveAllGenes() }
+                >Remove All</Button>
+              </div>
+            </FormGroup>
           <BootstrapTable
             classes="geno-table"
             wrapperClasses="geno-table-wrapper"
