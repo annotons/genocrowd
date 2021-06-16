@@ -5,6 +5,8 @@ from genocrowd.libgenocrowd.Params import Params
 
 import gridfs
 
+from pymongo import ReturnDocument
+
 
 class Data(Params):
     """Manage DB"""
@@ -57,11 +59,27 @@ class Data(Params):
                     'current_annotation': data
                 }})
 
+    def set_annotable(self, gene, new_status):
+        """ Set a new Annotable status to a gene
+
+        Parameters
+        ----------
+        gene : string
+            The concerned gene id
+        new_status : boolean
+        """
+        update_gene = self.genes.find_one_and_update({
+            '_id': gene}, {
+                '$set': {
+                    'isAnnotable': new_status
+                }}, return_document=ReturnDocument.AFTER)
+        return update_gene['isAnnotable']
+
     def store_answers_from_user(self, username, data):
         db = ca.mongo.db
         fs = gridfs.GridFS(db, collection="answers")
         gene = self.get_current_annotation(username)
-        fs.put(data.encode(), _id=gene["_id"], chromosome=gene["chromosome"], start=gene["start"], end=gene["end"], strand=gene["strand"], isAnnotable=True)
+        fs.put(data.encode(), _id=gene["_id"], chromosome=gene["chromosome"], start=gene["start"], end=gene["end"], strand=gene["strand"], isAnnotable=True, isValidated=False)
         gene = self.update_current_annotation(username, None)
 
     def get_number_of_answers(self):
