@@ -53,7 +53,7 @@ def gene_from_apollo():
                 rec.features = [gene]
                 gff_out = StringIO()
                 GFF.write([rec], gff_out)
-                fs.put(gff_out.getvalue().encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True, difficulty=difficulty, priority=priority, tags=[])
+                fs.put(gff_out.getvalue().encode(), _id=gene.id, chromosome=rec.id, start=gene.location.start, end=gene.location.end, strand=gene.location.strand, isAnnotable=True, isValidated=False, difficulty=difficulty, priority=priority, tags=[])
                 count += 1
 
     # FIXME refresh gene list in UI
@@ -96,8 +96,8 @@ def set_annotable():
     """
     data = request.get_json()
     dataInstance = Data(ca, session)
-    gene = dataInstance.update_position_info(data["gene"], "isAnnotable", data["newAnnot"])
-    if gene["isAnnotable"] == data["newAnnot"]:
+    gene = dataInstance.set_annotable(data["gene"], data["newstatus"])
+    if gene["isAnnotable"] == data["newstatus"]:
         result = {
             'error': False,
             'errorMessage': ""
@@ -107,6 +107,7 @@ def set_annotable():
             'error': True,
             'errorMessage': "No Update!"
         }
+
     return result
 
 

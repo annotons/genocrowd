@@ -23,16 +23,16 @@ export default class GeneBoard extends Component {
     console.log(geneT)
     let index = this.state.genes.findIndex((gene) => gene._id == geneT);
 
-    let newAnnot = 0;
+    let newstatus = 0;
     console.log(event.target.value)
     if (event.target.value == 0) {
-      newAnnot = 1;
+      newstatus = 1;
     }
 
     let requestUrl = "/api/data/setannotable";
     let data = {
       gene: geneT,
-      newAnnot: newAnnot,
+      newstatus: newstatus,
     };
 
     axios
@@ -50,7 +50,7 @@ export default class GeneBoard extends Component {
           errorMessage: response.data.errorMessage,
           success: !response.data.error,
           genes: update(this.state.genes, {
-            [index]: { isAnnotable: { $set: newAnnot } },
+            [index]: { isAnnotable: { $set: newstatus } },
           }),
         });
         console.log(this.state.genes[index])
