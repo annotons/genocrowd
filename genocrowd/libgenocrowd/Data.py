@@ -36,6 +36,9 @@ class Data(Params):
     def get_all_answers(self):
         return list(self.answers.find({}))
 
+    def get_not_validated(self):
+        return list(self.answers.find({'isValidated': False}))
+
     def count_all_genes(self):
         return self.genes.count_documents({})
 
@@ -74,6 +77,17 @@ class Data(Params):
                     'isAnnotable': new_status
                 }}, return_document=ReturnDocument.AFTER)
         return update_gene['isAnnotable']
+
+    def set_validated(self, gene, new_status):
+        """
+        """
+        updated_answer = self.answers.find_one_and_update({
+            '_id': gene}, {
+                '$set': {
+                    'isValidated': new_status
+                }}, return_document=ReturnDocument.AFTER)
+
+        return updated_answer
 
     def store_answers_from_user(self, username, data):
         db = ca.mongo.db

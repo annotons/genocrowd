@@ -82,6 +82,18 @@ def admin_get_genes():
     return result
 
 
+@data_bp.route('api/data/getallanswers', methods=['GET'])
+def get_all_answers():
+    dataInstance = Data(ca, session)
+    answers = dataInstance.get_all_answers()
+    result = {
+        'error': False,
+        'errorMessage': "",
+        'answer': answers
+    }
+    return result
+
+
 @data_bp.route('api/data/setannotable', methods=["POST"])
 @admin_required
 def set_annotable():
@@ -98,6 +110,28 @@ def set_annotable():
     dataInstance = Data(ca, session)
     gene = dataInstance.set_annotable(data["gene"], data["newstatus"])
     if gene["isAnnotable"] == data["newstatus"]:
+        result = {
+            'error': False,
+            'errorMessage': ""
+        }
+    else:
+        result = {
+            'error': True,
+            'errorMessage': "No Update!"
+        }
+
+    return result
+
+
+@data_bp.route('api/data/setvalidated', methods=["POST"])
+@admin_required
+def set_validated():
+    """
+    """
+    data = request.get_json()
+    dataInstance = Data(ca, session)
+    gene = dataInstance.set_validated(data["gene"], data["newstatus"])
+    if gene["isValidated"] == data["newstatus"]:
         result = {
             'error': False,
             'errorMessage': ""
