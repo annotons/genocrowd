@@ -2,7 +2,6 @@ import time
 from io import StringIO
 
 from apollo import ApolloInstance
-# from flask import current_app as ca
 
 from flask import Blueprint, session
 from flask import current_app as ca
@@ -27,17 +26,85 @@ def annotation_start():
     """
 
     DataInstance = Data(ca, session)
-    all_positions = DataInstance.get_all_positions()
-    level = DataInstance.get_user_level(session["user"]["username"])
+    current_gene = DataInstance.get_current_annotation(session["user"]["username"])
 
-    restrict_positions = DataInstance.select_genes(level, all_positions)
+    if not current_gene:
+        all_positions = DataInstance.get_all_positions()
+        level = DataInstance.get_user_level(session["user"]["username"])
+        restrict_positions = DataInstance.select_genes(level, all_positions)
+
+        # FIXME error if no gene in db
+        selected_item = Utils.get_random_items(1, restrict_positions)[0]
+        ca.logger.info("Selected gene: {}".format(selected_item))
+
+        db = ca.mongo.db
+        fs = gridfs.GridFS(db, collection="genes")  # FIXME not sure we really need gridfs (small chunks of gff)
+        gff_file = fs.get(selected_item["_id"])
+
+        gff_str = StringIO()
+        gff_str.write(gff_file.read().decode())
+
+        gff_str.seek(0)
+
+        ca.logger.info("Loading gff: {}".format(gff_str.read()))
+
+        gff_str.seek(0)
+
+        apollo = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
+        apollo.annotations.load_gff3("%s_%s" % (ca.apollo_org_id, session["user"]["email"]), gff_str)
+
+        time.sleep(1)
+
+        url = "%s/annotator/loadLink?loc=%s:%s..%s&organism=%s_%s" % (ca.apollo_url_ext, selected_item["chromosome"], selected_item["start"], selected_item["end"], ca.apollo_org_id, session["user"]["email"])
+        DataInstance.update_current_annotation(session["user"]["username"], selected_item)
+    else:
+        selected_item = DataInstance.get_current_annotation(session["user"]["username"])
+        url = "%s/annotator/loadLink?loc=%s:%s..%s&organism=%s_%s" % (ca.apollo_url_ext, selected_item["chromosome"], selected_item["start"], selected_item["end"], ca.apollo_org_id, session["user"]["email"])
+
+    return {'url': url}
+
+
+@apollo_bp.route('api/apollo/save', methods=["POST"])
+def annotation_end():
+    """gets the new annotation and saves it in mongodb"""
+    DataInstance = Data(ca, session)
+    current_gene = DataInstance.get_current_annotation(session["user"]["username"])
+
+    apollo = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
+    features = apollo.annotations.get_features(organism="%s_%s" % (ca.apollo_org_id, session["user"]["email"]), sequence=current_gene["chromosome"])["features"]
+
+    gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "%s_%s" % (ca.apollo_org_id, session["user"]["email"]))
+
+    DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
+    apollo.organisms.delete_features("%s_%s" % (ca.apollo_org_id, session["user"]["email"]))
+
+    return {
+        'error': False,
+        'errorMessage': 'no error'
+    }
+
+
+@apollo_bp.route('/api/apollo/validation', methods=["GET"])
+def validation():
+    """Selects a gene from the answers and imports it in the Annotation track
+
+    Returns
+    -------
+    json
+        url: url for the apollo window, centered on the gene position
+        attributes: chromosome on which the gene is
+        gene_id : current gene id
+    """
+
+    DataInstance = Data(ca, session)
+    all_positions = DataInstance.get_not_validated()
 
     # FIXME error if no gene in db
-    selected_item = Utils.get_random_items(1, restrict_positions)[0]
+    selected_item = all_positions[0]
     ca.logger.info("Selected gene: {}".format(selected_item))
 
     db = ca.mongo.db
-    fs = gridfs.GridFS(db, collection="genes")  # FIXME not sure we really need gridfs (small chunks of gff)
+    fs = gridfs.GridFS(db, collection="answers")  # FIXME not sure we really need gridfs (small chunks of gff)
     gff_file = fs.get(selected_item["_id"])
 
     gff_str = StringIO()
@@ -50,23 +117,13 @@ def annotation_start():
     gff_str.seek(0)
 
     apollo = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
+    apollo.organisms.delete_features("%s_%s" % (ca.apollo_org_id, session["user"]["email"]))
     apollo.annotations.load_gff3("%s_%s" % (ca.apollo_org_id, session["user"]["email"]), gff_str)
 
     time.sleep(1)
 
     url = "%s/annotator/loadLink?loc=%s:%s..%s&organism=%s_%s" % (ca.apollo_url_ext, selected_item["chromosome"], selected_item["start"], selected_item["end"], ca.apollo_org_id, session["user"]["email"])
     DataInstance.update_current_annotation(session["user"]["username"], selected_item)
-    return {'url': url}
-
-
-@apollo_bp.route('api/apollo/save', methods=["POST"])
-def annotation_end():
-    """gets the new annotation and saves it in mongodb"""
-    DataInstance = Data(ca, session)
-    current_gene = DataInstance.get_current_annotation(session["user"]["username"])
-    apollo = ApolloInstance(ca.apollo_url, ca.apollo_admin_email, ca.apollo_admin_password)
-    features = apollo.annotations.get_features(organism="%s_%s" % (ca.apollo_org_id, session["user"]["email"]), sequence=current_gene["chromosome"])["features"]
-    gff_file = apollo.annotations.get_gff3(features[0]["uniquename"], "%s_%s" % (ca.apollo_org_id, session["user"]["email"]))
-    DataInstance.store_answers_from_user(session["user"]["username"], gff_file)
-    apollo.organisms.delete_features("%s_%s" % (ca.apollo_org_id, session["user"]["email"]))
-    return {'error': False, 'errorMessage': 'no error'}
+    return {
+        'url': url,
+        'gene_id': selected_item["_id"]}
