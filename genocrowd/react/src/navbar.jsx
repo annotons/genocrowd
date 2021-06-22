@@ -7,14 +7,22 @@ export default class GenocrowdNavbar extends Component {
   constructor (props) {
     super(props)
     this.toggle = this.toggle.bind(this)
+    this.toggleAdmin = this.toggleAdmin.bind(this)
     this.state = {
-      dropdownOpen: false
+      dropdownOpen: false,
+      dropdownOpenAdmin: false
     }
   }
 
   toggle () {
     this.setState({
-      dropdownOpen: !this.state.dropdownOpen
+      dropdownOpen: !this.state.dropdownOpen,
+    })
+  }
+
+  toggleAdmin(){
+    this.setState({
+      dropdownOpenAdmin: !this.state.dropdownOpenAdmin
     })
   }
 
@@ -43,7 +51,21 @@ export default class GenocrowdNavbar extends Component {
         if (this.props.config.user.isAdmin) {
           adminLinks = (
             <>
-            <NavItem><Link className="nav-link" to="/admin"><i className="fas fa-chess-king"></i> Admin</Link></NavItem>
+            <NavItem>
+              <Dropdown nav isOpen={this.state.dropdownOpenAdmin} toggle={this.toggleAdmin}>
+                <DropdownToggle nav caret>
+                  <i className="fas fa-chess-king"></i> Admin
+                </DropdownToggle>
+                <DropdownMenu className="bg-dark">
+                  <DropdownItem className="bg-dark" tag="Link">
+                    <Link className="nav-link" to="/admin"><i className="fas fa-chess-king"></i> Admin</Link>
+                  </DropdownItem>
+                  <DropdownItem className="bg-dark" tag="Link">
+                    <Link className="nav-link" to="/validation"><i className="fas fa-check-circle"></i> Validation</Link>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </NavItem>
             </>
           )
         }
