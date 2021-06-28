@@ -55,7 +55,7 @@
     "jquery": "^3.6.0",
     "js-file-download": "^0.4.12",
     "pretty-time": "^1.1.0",
-    "prismjs": "^1.23.0",
+    "prismjs": "^1.24.0",
     "react": "^16.14.0",
     "react-ace": "^8.1.0",
     "react-addons-update": "^15.6.3",
