@@ -157,6 +157,16 @@ def update_password():
     return result
 
 
+@auth_bp.route('/api/auth/levelup', methods=['POST'])
+@login_required
+def user_level_up():
+    data = request.get_json()
+    local_auth = LocalAuth(ca, session)
+    result = local_auth.user_level_up(data['annotator'])
+
+    return result
+
+
 @auth_bp.route('/api/auth/delete', methods=['GET'])
 @login_required
 def delete_account():

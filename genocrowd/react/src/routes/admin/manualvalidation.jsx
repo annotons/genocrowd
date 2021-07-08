@@ -16,7 +16,7 @@ export default class Validation extends Component {
 			category: 1,
 			url: "",
 			finished: false,
-			gene_id: "",
+			gene: "",
 			answers: [],
 	})
 		this.setvalidated = this.setvalidated.bind(this)
@@ -25,20 +25,19 @@ export default class Validation extends Component {
 
 
 	setvalidated(event) {
-		let gene = this.state.gene_id;
-		let newstatus = 0;
-		console.log(gene)
+		let gene_id = this.state.gene['_id'];
+		let newstatus = false;
+		console.log(gene_id)
 		
-		if (event.target.value == 0) {
-			newstatus = 1;
+		if (event.target.value == false) {
+			newstatus = true;
 		}
 
 		let requestUrl = 'api/data/setvalidated';
 		let data = {
-			'gene': gene,
+			'gene': gene_id,
 			'newstatus': newstatus,
 		}
-
 		axios
 			.post(requestUrl, data, {
 				baseURL: this.props.config.proxyPath,
@@ -54,12 +53,83 @@ export default class Validation extends Component {
 					success: !response.data.error,
 				})
 			})
+
+		//Call level_up
+		let annotator = this.state.gene['annotator'];
+		let infos = {
+			'annotator': annotator,
+		}
+		let requestUrl_levelup = '/api/auth/levelup';
+		axios
+			.post(requestUrl_levelup, infos, {
+				baseURL: this.props.config.proxyPath,
+				cancelToken: new axios.CancelToken((c) => {
+					this.cancelRequest = c;
+				}),
+			})
+			.then((response_levelup) => {
+				console.log(requestUrl_levelup, response_levelup.data)
+			})
 	}
 
 
-	handleChangeValidated(){
-		console.log(this.state.url)
-	}
+	handleChangeValidated(event){
+		let geneT = event.target.getAttribute("gene");
+	    console.log('Gene_id', geneT)
+	    let index = this.state.answers.findIndex((gene) => gene._id == geneT);
+
+	    let newstatus = false;
+	    console.log(event.target.value)
+	    if (event.target.value == 'false') {
+	    	newstatus = true;
+
+		    //Call level_up when gene set to validated
+			let annotator = event.target.getAttribute('annotator');
+			console.log('Annotator', annotator)
+			let infos = {
+				'annotator': annotator,
+			}
+			let requestUrl_levelup = '/api/auth/levelup';
+			axios
+				.post(requestUrl_levelup, infos, {
+					baseURL: this.props.config.proxyPath,
+					cancelToken: new axios.CancelToken((c) => {
+						this.cancelRequest = c;
+					}),
+				})
+				.then((response_levelup) => {
+					console.log(requestUrl_levelup, response_levelup.data)
+				})
+	    }
+	    console.log('newstatus', newstatus)
+	    let requestUrl = "/api/data/setvalidated";
+	    let data = {
+	      gene: geneT,
+	      newstatus: newstatus,
+	    };
+
+	    axios
+	      .post(requestUrl, data, {
+	        baseURL: this.props.config.proxyPath,
+	        cancelToken: new axios.CancelToken((c) => {
+	          this.cancelRequest = c;
+	        }),
+	      })
+	      .then((response) => {
+	        console.log(requestUrl, response.data);
+	        console.log(this.state.answers[index])
+	        this.setState({
+	          error: response.data.error,
+	          errorMessage: response.data.errorMessage,
+	          success: !response.data.error,
+	          answers: update(this.state.answers, {
+	            [index]: { isValidated: { $set: newstatus } },
+	          }),
+	        });
+	        console.log(this.state.answers[index])
+
+	      });
+  	}
 
 
 	componentDidMount () {
@@ -83,7 +153,7 @@ export default class Validation extends Component {
 				console.log(Response)
 				this.setState({
 					url: Response.data.url,
-					gene_id : Response.data.gene_id,
+					gene : Response.data.gene,
 				})
 			})
 		
@@ -125,6 +195,12 @@ export default class Validation extends Component {
 			},
 			{
 				editable: false,
+				dataField: "annotator",
+				text: "Annotator",
+				sort: "true",
+			},
+			{
+				editable: false,
 				dataField: "isAnnotable",
 				text: "Annotable",
 				sort: true,
@@ -141,6 +217,7 @@ export default class Validation extends Component {
 								<CustomInput
 									type="switch"
 									gene={row._id}
+									annotator={row.annotator}
 									id={"set-validated-" + row.id}
 									name="isValidatd"
 									onChange={this.handleChangeValidated}
