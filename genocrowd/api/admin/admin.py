@@ -137,3 +137,52 @@ def get_groups():
         'error': False,
         'errorMessage': ''
     })
+
+
+# TODO code lost:
+#  - level_management.jsx doing:
+#     - axios.get /api/admin/getlevel
+#     - display an editable table with levels, and an "add" button
+#     - call /api/admin/savelevel when saving changes
+
+@admin_bp.route('/api/admin/getlevel', methods=['GET'])
+@admin_required
+def get_level():
+    """Get information about levels
+
+    Returns
+    -------
+    json
+    """
+    try:
+        data_instance = Data(current_app, session)
+        all_levels = data_instance.get_level()  # TODO not implemented, code lost
+    except Exception as e:
+        traceback.print_exc(file=sys.stdout)
+        return jsonify({
+            'levels': [],
+            'error': True,
+            'errorMessage': str(e)
+        }), 500
+
+    return jsonify({
+        'levels': all_levels,
+        'error': False,
+        'errorMessage': ''
+    })
+
+
+@admin_bp.route('/api/admin/savelevel', methods=['POST'])
+@admin_required
+def save_level():
+    """
+    """
+    data = request.get_json()
+    dataInstance = Data(current_app, session)
+    result = dataInstance.save_level(data)  # TODO not implemented, code lost
+
+    return {
+        'truc': result,
+        'error': False,
+        'errorMessage': "",
+    }
