@@ -24,3 +24,4 @@ sentry-sdk[flask]==0.10.2
 configparser
 deepdiff
 markupsafe==2.0.1
+PyMongo<3
