@@ -148,7 +148,7 @@ class Data(Params):
                 }})
 
         """Deleting documents containing old groups"""
-        self.groups.remove({"number": {'$exists': True}})
+        self.groups.remove_one({"number": {'$exists': True}})
 
         """Creation of new empty groups"""
         for i in range(newNumber):
