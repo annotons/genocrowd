@@ -141,14 +141,14 @@ class Data(Params):
         groupsAmount = self.get_number_of_groups()
 
         if newNumber >= 2:
-            updated_number = self.groups.update_one(
+            updated_number = self.groups.update_many(
                 {'groupsAmount': groupsAmount},
                 {'$set': {
                     'groupsAmount': newNumber
                 }})
 
         """Deleting documents containing old groups"""
-        self.groups.delete_one({"number": {'$exists': True}})
+        self.groups.delete_many({"number": {'$exists': True}})
 
         """Creation of new empty groups"""
         for i in range(newNumber):
@@ -157,7 +157,7 @@ class Data(Params):
         return {
             'error': error,
             'errorMessage': error_message,
-            'groupsAmount': updated_number
+            'groupsAmount': updated_number.modified_count
         }
 
     def get_all_groups(self):
