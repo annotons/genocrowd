@@ -107,7 +107,7 @@ class Data(Params):
         return self.answers.count_documents({})
 
     def initiate_groups(self):
-        self.groups.insert({
+        self.groups.insert_one({
             'groupsAmount': 2
         })
 
@@ -152,7 +152,7 @@ class Data(Params):
 
         """Creation of new empty groups"""
         for i in range(newNumber):
-            self.groups.insert({'number': i + 1, 'name': "", 'student': []})
+            self.groups.insert_one({'number': i + 1, 'name': "", 'student': []})
 
         return {
             'error': error,

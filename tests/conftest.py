@@ -140,7 +140,7 @@ class Client(object):
         }
 
         auth = LocalAuth(self.app, self.session)
-        auth.users.insert(uinfo)
+        auth.users.insert_one(uinfo)
         user = auth.users.find_one({'username': uinfo['username']})
         user['_id'] = str(user['_id'])
         return user

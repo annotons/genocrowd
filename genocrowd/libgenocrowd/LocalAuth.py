@@ -133,7 +133,7 @@ class LocalAuth(Params):
         password = self.app.bcrypt.generate_password_hash(password).decode('utf-8')
         created = datetime.utcnow()
         grade = grade.upper()
-        user_id = self.users.insert({
+        user_id = self.users.insert_one({
             'username': username,
             'email': email,
             'password': password,
@@ -374,14 +374,14 @@ class LocalAuth(Params):
                     self.users.find_one_and_update({
                         '_id': bson.to_python(user['_id'])}, {
                             '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
-                    self.groups.update({
+                    self.groups.update_one({
                         'number': groupNumber}, {
                             '$push': {'student': user}})
                 else:
                     self.users.find_one_and_update({
                         '_id': bson.to_python(user['_id'])}, {
                             '$set': {'group': groupNumber}}, return_document=ReturnDocument.AFTER)
-                    self.groups.update({
+                    self.groups.update_one({
                         'number': groupNumber}, {
                             '$push': {'student': user}})
                 groupNumber += 1
