@@ -35,4 +35,7 @@ class TestApiData(GenocrowdTestCase):
         """Test user in the correct group
             test if jsmith group is group 1 and
             test if jsmith is the first student in group 1 list"""
-        assert response2.json["users"][1]["group"] == 1 and response2.json["users"][1]["_id"] == response3.json["groups"][0]["student"][0]["_id"]
+        assert len(response2.json["users"]) == 2
+        assert "group" in response2.json["users"][1]
+        assert response2.json["users"][1]["group"] == 1
+        assert response2.json["users"][1]["_id"] == response3.json["groups"][0]["student"][0]["_id"]
