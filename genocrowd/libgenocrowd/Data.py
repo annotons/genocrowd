@@ -187,7 +187,7 @@ class Data(Params):
                 'name': name
             }})
 
-        return{
+        return {
             'error': error,
             'error_message': error_message,
             'name': name

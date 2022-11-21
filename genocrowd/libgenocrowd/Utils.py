@@ -31,9 +31,9 @@ class Utils():
             try:
                 call(*args)
                 break
-            except Exception as e:
+            except Exception:
                 if i == max_redo:
-                    raise(e)
+                    raise
                 traceback.print_exc(file=sys.stdout)
                 logger.debug("Fail to execute {}. Retrying in {} sec...".format(call.__name__, sleep_time))
                 time.sleep(sleep_time)
