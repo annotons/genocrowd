@@ -6,7 +6,7 @@
 
 Genocrowd is a web app aiming to ease manual genome annotation curation by citizens.
 
-It is still under heavy development.
+It is still under development.
 
 ## Documentation
 
