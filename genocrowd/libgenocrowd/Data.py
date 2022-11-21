@@ -141,7 +141,7 @@ class Data(Params):
         groupsAmount = self.get_number_of_groups()
 
         if newNumber >= 2:
-            updated_number = self.groups.update(
+            updated_number = self.groups.update_one(
                 {'groupsAmount': groupsAmount},
                 {'$set': {
                     'groupsAmount': newNumber

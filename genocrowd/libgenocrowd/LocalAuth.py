@@ -148,7 +148,7 @@ class LocalAuth(Params):
             'level': 0
         })
 
-        new_user = self.users.find_one({'_id': user_id})
+        new_user = self.users.find_one({'_id': user_id.inserted_id})
 
         apolloinstance = ApolloUsers()
         apolloinstance.add_user(username, email, password, role)
